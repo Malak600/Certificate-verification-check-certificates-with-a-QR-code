@@ -1,0 +1,54 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix cred: <https://www.w3.org/2018/credentials#> .
+@prefix certichain: <https://certichain.iku.edu.tr/schema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+certichain:CertificateShape a sh:NodeShape ;
+    sh:targetClass cred:VerifiableCredential, certichain:ParticipationCertificate ;
+    sh:property [
+        sh:path cred:issuer ;
+        sh:minCount 1 ;
+        sh:message "Certificate must specify an issuer." ;
+    ] ;
+    sh:property [
+        sh:path cred:validFrom ;
+        sh:minCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "Certificate must have a validFrom ISO dateTime timestamp." ;
+    ] ;
+    sh:property [
+        sh:path cred:credentialSubject ;
+        sh:minCount 1 ;
+        sh:node certichain:CredentialSubjectShape ;
+        sh:message "Certificate must include a valid credentialSubject." ;
+    ] ;
+    sh:property [
+        sh:path certichain:salt ;
+        sh:minCount 1 ;
+        sh:minLength 16 ;
+        sh:datatype xsd:string ;
+        sh:message "Certificate must have a cryptographic salt of at least 16 characters for privacy." ;
+    ] .
+
+certichain:CredentialSubjectShape a sh:NodeShape ;
+    sh:property [
+        sh:path certichain:recipientName ;
+        sh:minCount 1 ;
+        sh:minLength 2 ;
+        sh:datatype xsd:string ;
+        sh:message "Recipient must have a non-empty name." ;
+    ] ;
+    sh:property [
+        sh:path certichain:eventTitle ;
+        sh:minCount 1 ;
+        sh:minLength 2 ;
+        sh:datatype xsd:string ;
+        sh:message "Subject must include the event title." ;
+    ] ;
+    sh:property [
+        sh:path certichain:eventDate ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "Subject must include the event date." ;
+    ] .
