@@ -1,0 +1,101 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertiChain – Connect wallet</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f4f6f8; color: #1f2a2e; margin: 0; padding: 24px; }
+  .card { max-width: 480px; margin: 40px auto; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  h1 { margin: 0 0 4px; font-size: 1.5rem; }
+  p.sub { margin: 0 0 20px; color: #5b6b70; }
+  button { width: 100%; padding: 12px; font-size: 1rem; border: 0; border-radius: 8px; cursor: pointer; background: #1c6e8c; color: #fff; margin-top: 8px; }
+  button.warn { background: #b3541e; }
+  .row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e9eb; word-break: break-all; gap: 12px; }
+  .row b { flex: none; }
+  #status { margin-top: 16px; padding: 10px; border-radius: 8px; background: #eef2ef; }
+  .ok { color: #2e7d4f; } .bad { color: #b3541e; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1>CertiChain</h1>
+  <p class="sub">Connect your MetaMask wallet to the Sepolia test network.</p>
+
+  <button id="connectBtn">Connect MetaMask</button>
+  <button id="switchBtn" class="warn" hidden>Switch to Sepolia</button>
+
+  <div id="info" hidden>
+    <div class="row"><b>Wallet</b><span id="address"></span></div>
+    <div class="row"><b>Network</b><span id="network"></span></div>
+    <div class="row"><b>Balance</b><span id="balance"></span></div>
+  </div>
+
+  <div id="status">Not connected.</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+  const SEPOLIA_CHAIN_ID = "0xaa36a7"; // 11155111 in hex
+
+  const $ = (id) => document.getElementById(id);
+  const setStatus = (text, cls = "") => { $("status").textContent = text; $("status").className = cls; };
+
+  async function refresh() {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const accounts = await provider.send("eth_accounts", []);
+    if (accounts.length === 0) { $("info").hidden = true; setStatus("Not connected."); return; }
+
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    const onSepolia = chainId === SEPOLIA_CHAIN_ID;
+
+    $("address").textContent = accounts[0];
+    $("network").textContent = onSepolia ? "Sepolia ✅" : "Wrong network (" + chainId + ")";
+    $("network").className = onSepolia ? "ok" : "bad";
+    $("switchBtn").hidden = onSepolia;
+    $("info").hidden = false;
+
+    if (onSepolia) {
+      const wei = await provider.getBalance(accounts[0]);
+      $("balance").textContent = Number(ethers.formatEther(wei)).toFixed(4) + " SepoliaETH";
+      setStatus("Connected to Sepolia.", "ok");
+    } else {
+      $("balance").textContent = "—";
+      setStatus("Please switch to the Sepolia network.", "bad");
+    }
+  }
+
+  async function connect() {
+    if (!window.ethereum) { setStatus("MetaMask is not installed. Install it from metamask.io.", "bad"); return; }
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      await refresh();
+    } catch (e) {
+      setStatus("Connection rejected: " + (e.message || e), "bad");
+    }
+  }
+
+  async function switchToSepolia() {
+    try {
+      await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_ID }] });
+    } catch (e) {
+      setStatus("Could not switch network: " + (e.message || e), "bad");
+    }
+  }
+
+  $("connectBtn").onclick = connect;
+  $("switchBtn").onclick = switchToSepolia;
+
+  if (window.ethereum) {
+    window.ethereum.on("accountsChanged", refresh);
+    window.ethereum.on("chainChanged", refresh);
+    refresh();
+  } else {
+    setStatus("MetaMask is not installed. Install it from metamask.io.", "bad");
+  }
+</script>
+</body>
+</html>
+
+</body></html>
