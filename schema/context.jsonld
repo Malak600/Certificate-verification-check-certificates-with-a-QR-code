@@ -1,0 +1,32 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "id": "@id",
+    "type": "@type",
+    "cert": "https://certichain.iku.edu.tr/vocab#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "https://schema.org/",
+
+    "Certificate": "cert:Certificate",
+    "event": { "@id": "cert:event", "@type": "@id" },
+    "participant": { "@id": "cert:participant", "@type": "@id" },
+    "issuedBy": { "@id": "prov:wasAttributedTo", "@type": "@id" },
+    "issuedOn": { "@id": "cert:issuedOn", "@type": "xsd:date" },
+    "salt": "cert:salt",
+    "hash": "cert:hash",
+
+    "Event": "cert:Event",
+    "title": "schema:name",
+    "date": { "@id": "schema:startDate", "@type": "xsd:date" },
+    "organiser": "schema:organizer",
+
+    "Participant": "cert:Participant",
+    "name": "schema:name",
+    "email": "schema:email",
+
+    "Issuer": "cert:Issuer",
+    "clubName": "schema:name",
+    "wallet": "cert:wallet"
+  }
+}
