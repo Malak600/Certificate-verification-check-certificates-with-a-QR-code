@@ -1,0 +1,57 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+@prefix cert: <https://certichain.iku.edu.tr/vocab#> .
+@prefix schema: <https://schema.org/> .
+
+cert:CertificateShape
+    a sh:NodeShape ;
+    sh:targetClass cert:Certificate ;
+
+    sh:property [
+        sh:path cert:event ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "A certificate must link exactly one event." ;
+    ] ;
+
+    sh:property [
+        sh:path cert:participant ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "A certificate must link exactly one participant." ;
+    ] ;
+
+    sh:property [
+        sh:path <http://www.w3.org/ns/prov#wasAttributedTo> ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:nodeKind sh:IRI ;
+        sh:message "A certificate must name the issuer that issued it." ;
+    ] ;
+
+    sh:property [
+        sh:path cert:issuedOn ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:date ;
+        sh:message "A certificate must carry an issue date." ;
+    ] ;
+
+    sh:property [
+        sh:path cert:salt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "A certificate must carry a salt." ;
+    ] ;
+
+    sh:property [
+        sh:path cert:hash ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[a-f0-9]{64}$" ;
+        sh:message "The hash must be a 64-character lowercase SHA-256 hex string." ;
+    ] .
