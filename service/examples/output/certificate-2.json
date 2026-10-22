@@ -1,0 +1,43 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2",
+    "http://www.w3.org/ns/prov#",
+    {
+      "certichain": "https://certichain.iku.edu.tr/schema#",
+      "ParticipationCertificate": "certichain:ParticipationCertificate",
+      "eventTitle": "certichain:eventTitle",
+      "eventDate": "certichain:eventDate",
+      "hours": "certichain:hours",
+      "recipientName": "certichain:recipientName",
+      "recipientEmail": "certichain:recipientEmail",
+      "salt": "certichain:salt",
+      "clubName": "certichain:clubName"
+    }
+  ],
+  "id": "urn:uuid:82fc121e-f6a1-478e-a3df-41d0f4648984",
+  "type": [
+    "VerifiableCredential",
+    "ParticipationCertificate"
+  ],
+  "issuer": {
+    "id": "did:pkh:eip155:11155111:0x2200002676000000000000000000000000000000",
+    "name": "Istanbul Kültür University Computer Club"
+  },
+  "validFrom": "2026-10-22T12:03:55.828Z",
+  "credentialSubject": {
+    "id": "urn:uuid:1b9bbf34347f5cac",
+    "recipientName": "Mohammed Ammar",
+    "recipientEmail": "2200002676@stu.iku.edu.tr",
+    "eventTitle": "Blockchain & Smart Contracts 101",
+    "eventDate": "2026-10-22",
+    "hours": 4
+  },
+  "wasAttributedTo": {
+    "id": "did:pkh:eip155:11155111:0x2200002676000000000000000000000000000000"
+  },
+  "wasGeneratedBy": {
+    "type": "prov:Activity",
+    "name": "Istanbul Kültür University Computer Club - Blockchain & Smart Contracts 101"
+  },
+  "salt": "dba116a23bad529bc4b5e386923631f2"
+}
