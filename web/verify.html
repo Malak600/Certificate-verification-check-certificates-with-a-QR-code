@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertiChain – Verify a certificate</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f4f6f8; color: #1f2a2e; margin: 0; padding: 24px 16px; }
+  .card { max-width: 640px; margin: 0 auto 20px; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  h1 { margin: 0 0 4px; font-size: 1.5rem; }
+  h2 { margin: 0 0 12px; font-size: 1.1rem; }
+  p.sub { margin: 0 0 8px; color: #5b6b70; }
+  .hint { color: #5b6b70; font-size: .9rem; }
+  label { display: block; font-weight: 600; margin: 12px 0 4px; }
+  input[type=text] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5d1; border-radius: 8px; font-size: .95rem; font-family: ui-monospace, monospace; }
+  button { padding: 12px 18px; font-size: 1rem; border: 0; border-radius: 8px; cursor: pointer; background: #1c6e8c; color: #fff; margin-top: 12px; }
+  button.small { padding: 6px 10px; font-size: .85rem; background: #5b6b70; margin: 4px 4px 0 0; }
+  .or { text-align: center; color: #5b6b70; margin: 16px 0 4px; }
+  .result { border-radius: 12px; padding: 20px; text-align: center; }
+  .result .big { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+  .result.valid   { background: #ddefe3; color: #1e5c37; }
+  .result.revoked { background: #fdecd8; color: #8a4a12; }
+  .result.notfound{ background: #f8dddd; color: #8c1d1d; }
+  .result.wait    { background: #eef2ef; color: #1f2a2e; }
+  .details { text-align: left; margin-top: 12px; font-size: .95rem; }
+  .details div { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px solid rgba(0,0,0,.08); word-break: break-all; }
+  .demo { border: 2px dashed #d9a441; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>CertiChain – Verify a certificate</h1>
+  <p class="sub">Check that a certificate from the IKU Computer Club is genuine. No wallet needed.</p>
+  <p class="hint" id="modeNote"></p>
+</div>
+
+<!-- 1. Input: hash from the QR link, typed in, or computed from an uploaded file -->
+<div class="card">
+  <h2>Certificate</h2>
+  <label for="hashInput">Certificate hash</label>
+  <input type="text" id="hashInput" placeholder="0x… (filled in automatically when you open the QR link)">
+  <div class="or">— or —</div>
+  <label for="certFile">Upload the certificate file (.json)</label>
+  <input type="file" id="certFile" accept=".json,application/json">
+  <p class="hint">The hash is calculated in your browser; the file is not uploaded anywhere.</p>
+  <button id="verifyBtn">Verify</button>
+</div>
+
+<!-- 2. Result -->
+<div class="card" id="resultCard" hidden>
+  <div id="result" class="result wait"></div>
+</div>
+
+<!-- 3. Demo controls (only while the contract is not deployed yet) -->
+<div class="card demo" id="demoCard" hidden>
+  <h2>Demo mode</h2>
+  <p class="hint">The smart contract is not connected yet. Preview the three results:</p>
+  <button class="small" data-demo="1">✅ Valid</button>
+  <button class="small" data-demo="2">⚠️ Revoked</button>
+  <button class="small" data-demo="0">❌ Not found</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+  /* ---------- Settings: fill in after Malak deploys the contract ---------- */
+  const CONTRACT_ADDRESS = "";   // e.g. "0x1234...abcd" (CertificateRegistry on Sepolia)
+  const RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";   // public, read-only, free
+  const ISSUER_NAMES = {};       // optional: { "0xwallet...": "IKU Computer Club" }
+  const ABI = ["function verify(bytes32) view returns (uint8 status, address issuer, uint64 issuedAt, uint64 revokedAt)"];
+
+  const $ = (id) => document.getElementById(id);
+  const DEMO = !CONTRACT_ADDRESS;
+  $("modeNote").textContent = DEMO
+    ? "Demo mode: not connected to the blockchain yet."
+    : "Connected to the CertificateRegistry contract on Sepolia.";
+  $("demoCard").hidden = !DEMO;
+
+  /* ---------- Hashing: same rule as the certificate service ----------
+     Canonical JSON (keys sorted, no spaces), then SHA-256, written as 0x + 64 hex. */
+  function canonicalJson(v) {
+    if (v === null || typeof v !== "object") return JSON.stringify(v);
+    if (Array.isArray(v)) return "[" + v.map(canonicalJson).join(",") + "]";
+    return "{" + Object.keys(v).sort().map(k => JSON.stringify(k) + ":" + canonicalJson(v[k])).join(",") + "}";
+  }
+  async function sha256Hex(text) {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+    return "0x" + [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+  const isHash = (h) => /^0x[0-9a-fA-F]{64}$/.test(h);
+
+  $("certFile").onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    try {
+      const cert = JSON.parse(await file.text());
+      $("hashInput").value = await sha256Hex(canonicalJson(cert));
+    } catch {
+      show("notfound", "❌ Not a valid certificate file", "The file could not be read as a certificate (.json).");
+    }
+  };
+
+  /* ---------- Showing a result ---------- */
+  function show(kind, title, text, rows = []) {
+    $("resultCard").hidden = false;
+    const box = $("result");
+    box.className = "result " + kind;
+    box.innerHTML = "";
+    const big = document.createElement("div"); big.className = "big"; big.textContent = title;
+    const p = document.createElement("div"); p.textContent = text;
+    box.append(big, p);
+    if (rows.length) {
+      const d = document.createElement("div"); d.className = "details";
+      rows.forEach(([k, v]) => {
+        const row = document.createElement("div");
+        const a = document.createElement("b"); a.textContent = k;
+        const b = document.createElement("span"); b.textContent = v;
+        row.append(a, b); d.appendChild(row);
+      });
+      box.appendChild(d);
+    }
+  }
+  const fmtTime = (s) => new Date(Number(s) * 1000).toLocaleString();
+  const issuerName = (a) => ISSUER_NAMES[a.toLowerCase()] || a;
+
+  function showStatus(status, issuer, issuedAt, revokedAt, hash) {
+    if (status === 1) {
+      show("valid", "✅ Valid", "This certificate was issued and has not been revoked.",
+        [["Issued by", issuerName(issuer)], ["Issued on", fmtTime(issuedAt)], ["Hash", hash]]);
+    } else if (status === 2) {
+      show("revoked", "⚠️ Revoked", "This certificate was issued but later revoked by the club.",
+        [["Issued by", issuerName(issuer)], ["Issued on", fmtTime(issuedAt)], ["Revoked on", fmtTime(revokedAt)], ["Hash", hash]]);
+    } else {
+      show("notfound", "❌ Not found", "No certificate with this hash was issued. The file may have been edited.", [["Hash", hash]]);
+    }
+  }
+
+  /* ---------- Verify ---------- */
+  async function verify() {
+    const hash = $("hashInput").value.trim();
+    if (!isHash(hash)) {
+      show("notfound", "❌ Invalid input", "Enter a certificate hash (0x followed by 64 hex characters) or upload the certificate file.");
+      return;
+    }
+    if (DEMO) {
+      show("wait", "Demo mode", "Use the demo buttons below to preview the results.", [["Hash", hash]]);
+      return;
+    }
+    show("wait", "Checking…", "Reading the blockchain.");
+    try {
+      const provider = new ethers.JsonRpcProvider(RPC_URL);
+      const registry = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+      const [status, issuer, issuedAt, revokedAt] = await registry.verify(hash);
+      showStatus(Number(status), issuer, issuedAt, revokedAt, hash);
+    } catch (e) {
+      show("notfound", "Could not check", "The blockchain could not be reached. Try again in a moment.");
+    }
+  }
+  $("verifyBtn").onclick = verify;
+
+  /* demo buttons */
+  document.querySelectorAll("[data-demo]").forEach(b => b.onclick = () => {
+    const now = Math.floor(Date.now() / 1000);
+    const h = isHash($("hashInput").value.trim()) ? $("hashInput").value.trim() : "0x" + "ab".repeat(32);
+    showStatus(Number(b.dataset.demo), "0xD9549…f93AE (IKU Computer Club)", now - 86400 * 3, now - 3600, h);
+  });
+
+  /* QR link: verify.html?hash=0x… opens and checks automatically */
+  const fromUrl = new URLSearchParams(location.search).get("hash");
+  if (fromUrl) { $("hashInput").value = fromUrl; verify(); }
+</script>
+</body>
+</html>
