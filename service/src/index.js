@@ -20,9 +20,9 @@ export {
  * Orchestrates the full batch processing pipeline:
  * 1. Parses attendance CSV
  * 2. Builds W3C VC v2.0 JSON-LD credentials with cryptographic salt
- * 3. Enforces SHACL schema conformance
- * 4. Deterministically computes SHA-256 hashes (for Ethereum Sepolia issueBatch)
- * 5. Generates QR codes pointing to verification URLs
+ * 3. Enforces SHACL schema conformance (backed by shared schema/ rules)
+ * 4. Deterministically computes SHA-256 hashes via RFC 8785 canonical JSON
+ * 5. Generates QR codes pointing to web/verify.html (?hash=0x...)
  * 6. Renders tamper-evident PDF certificates
  *
  * @param {string|Buffer} csvContent - Raw CSV file data
@@ -56,7 +56,7 @@ export async function processBatch(csvContent, eventDetails, issuerDetails, opti
       // Build JSON-LD document
       const cert = buildCertificate(participant, eventDetails, issuerDetails);
 
-      // Validate against SHACL shape
+      // Validate against SHACL shape rules
       const valReport = validateCertificate(cert);
       if (!valReport.conforms) {
         errors.push({
@@ -66,11 +66,11 @@ export async function processBatch(csvContent, eventDetails, issuerDetails, opti
         continue;
       }
 
-      // Compute deterministic hash (URDNA2015 canonicalization + SHA-256)
+      // Compute deterministic hash (RFC 8785 canonical JSON + SHA-256, matches web/verify.html)
       const { hash } = await hashCertificate(cert);
 
-      // Build verification URL
-      const verificationUrl = buildVerificationUrl(verifyBaseUrl, cert.id);
+      // Build verification URL (?hash=0x... for instant verification in web/verify.html)
+      const verificationUrl = buildVerificationUrl(verifyBaseUrl, hash, 'hash');
 
       // Generate QR Code PNG Buffer
       const qrPng = await generateQrBuffer(verificationUrl);
