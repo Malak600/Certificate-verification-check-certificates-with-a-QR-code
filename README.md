@@ -59,7 +59,7 @@ flowchart LR
 |---|---|---|
 | Malak Alfakavi | Certificate registry smart contract | Team lead, smart-contract developer |
 | Raghd Alfakavi | Issuer dashboard and verification page | Frontend, customer liaison |
-| Ammar cashlan | Certificate generator and storage service | Backend developer |
+| Mohammed Ammar | Certificate generator and storage service | Backend developer |
 | Mohamad Mahfouz Khalil | Credential schema, tests and CI | Test engineer, quality lead |
 
 **Customer:** IKU Computer Club — contact: Asmaa, events organization coordinator ([interview notes](customer-interview.md))
