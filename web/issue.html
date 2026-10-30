@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertiChain – Issue certificates</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f4f6f8; color: #1f2a2e; margin: 0; padding: 24px 16px; }
+  .card { max-width: 760px; margin: 0 auto 20px; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  h1 { margin: 0 0 4px; font-size: 1.5rem; }
+  h2 { margin: 0 0 12px; font-size: 1.1rem; }
+  p.sub { margin: 0 0 16px; color: #5b6b70; }
+  label { display: block; font-weight: 600; margin: 12px 0 4px; }
+  input[type=text], input[type=date] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5d1; border-radius: 8px; font-size: 1rem; }
+  input[type=file] { margin-top: 4px; }
+  button { padding: 12px 18px; font-size: 1rem; border: 0; border-radius: 8px; cursor: pointer; background: #1c6e8c; color: #fff; }
+  button:disabled { background: #9fb3ba; cursor: not-allowed; }
+  .wallet { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .hint { color: #5b6b70; font-size: .9rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .95rem; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e5e9eb; }
+  th { background: #eef2ef; }
+  tr.bad td { color: #b3541e; }
+  .msg { margin-top: 14px; padding: 10px; border-radius: 8px; background: #eef2ef; }
+  .ok { color: #2e7d4f; } .err { color: #b3541e; }
+</style>
+</head>
+<body>
+
+<!-- 1. Wallet: the organiser must connect MetaMask (the issuer wallet) -->
+<div class="card wallet">
+  <div>
+    <h1>CertiChain – Issue certificates</h1>
+    <p class="sub" style="margin:0">For event organisers of the IKU Computer Club.</p>
+  </div>
+  <div>
+    <button id="connectBtn">Connect MetaMask</button>
+    <div id="walletInfo" class="hint"></div>
+  </div>
+</div>
+
+<!-- 2. Event details -->
+<div class="card">
+  <h2>1. Event details</h2>
+  <label for="title">Event title</label>
+  <input type="text" id="title" placeholder="e.g. Git & GitHub Workshop">
+  <label for="date">Event date</label>
+  <input type="date" id="date">
+  <label for="club">Club name</label>
+  <input type="text" id="club" value="IKU Computer Club">
+</div>
+
+<!-- 3. Attendance list (CSV) -->
+<div class="card">
+  <h2>2. Attendance list</h2>
+  <p class="hint">Upload a CSV file with the columns <code>name,email</code> (one attendee per line).</p>
+  <input type="file" id="csvFile" accept=".csv,text/csv">
+  <div id="csvMsg"></div>
+  <table id="preview" hidden>
+    <thead><tr><th>#</th><th>Name</th><th>E-mail</th><th>Check</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- 4. Issue -->
+<div class="card">
+  <h2>3. Issue</h2>
+  <p class="hint">Demo mode: the smart contract is not connected yet, so nothing is written to the blockchain.</p>
+  <button id="issueBtn" disabled>Issue certificates</button>
+  <div id="issueMsg"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+  const SEPOLIA_CHAIN_ID = "0xaa36a7";
+  const $ = (id) => document.getElementById(id);
+
+  let wallet = null;     // connected MetaMask address
+  let attendees = [];    // valid rows from the CSV: { name, email }
+
+  /* ---------- Wallet ---------- */
+  async function connect() {
+    if (!window.ethereum) { $("walletInfo").textContent = "MetaMask is not installed."; return; }
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      wallet = accounts[0];
+      const net = chainId === SEPOLIA_CHAIN_ID ? "Sepolia ✅" : "Wrong network – switch to Sepolia";
+      $("walletInfo").textContent = wallet.slice(0, 6) + "…" + wallet.slice(-4) + " · " + net;
+      $("connectBtn").textContent = "Connected";
+    } catch (e) {
+      $("walletInfo").textContent = "Connection rejected.";
+    }
+    updateIssueButton();
+  }
+  $("connectBtn").onclick = connect;
+
+  /* ---------- CSV ---------- */
+  // Reads simple CSV lines "name,email". Skips a header line if it says name/email.
+  function parseCsv(text) {
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l !== "");
+    if (lines.length && /^name\s*,\s*email$/i.test(lines[0])) lines.shift();
+    return lines.map(line => {
+      const parts = line.split(",").map(p => p.trim().replace(/^"|"$/g, ""));
+      return { name: parts[0] || "", email: parts[1] || "" };
+    });
+  }
+
+  function checkRow(r) {
+    if (!r.name) return "Missing name";
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email)) return "Invalid e-mail";
+    return "";
+  }
+
+  $("csvFile").onchange = async (e) => {
+    const file = e.target.files[0];
+    attendees = [];
+    const body = $("preview").querySelector("tbody");
+    body.innerHTML = "";
+    $("preview").hidden = true;
+    $("issueMsg").textContent = "";
+    if (!file) { updateIssueButton(); return; }
+
+    const rows = parseCsv(await file.text());
+    if (rows.length === 0) {               // scenario: empty CSV must be rejected
+      $("csvMsg").innerHTML = '<p class="err">The file is empty. Nothing to issue.</p>';
+      updateIssueButton();
+      return;
+    }
+
+    let bad = 0;
+    rows.forEach((r, i) => {
+      const problem = checkRow(r);
+      if (problem) bad++; else attendees.push(r);
+      const tr = document.createElement("tr");
+      if (problem) tr.className = "bad";
+      [i + 1, r.name, r.email, problem || "✔"].forEach(v => {
+        const td = document.createElement("td");
+        td.textContent = v;          // textContent: never inject HTML from the file
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+    $("preview").hidden = false;
+    $("csvMsg").innerHTML = bad
+      ? `<p class="err">${attendees.length} valid, ${bad} with problems (fix them in the file and upload again).</p>`
+      : `<p class="ok">${attendees.length} attendees ready.</p>`;
+    updateIssueButton();
+  };
+
+  /* ---------- Issue (demo) ---------- */
+  function updateIssueButton() {
+    $("issueBtn").disabled = !(wallet && attendees.length && $("title").value.trim() && $("date").value);
+  }
+  ["title", "date", "club"].forEach(id => $(id).addEventListener("input", updateIssueButton));
+
+  $("issueBtn").onclick = () => {
+    // Later: send the list to Ammar's service (hashes + PDFs) and call issueBatch(hashes) on Malak's contract.
+    $("issueMsg").innerHTML =
+      `<p class="msg ok">Demo: ${attendees.length} certificates for "${$("title").value.trim().replace(/[<>&"]/g, "")}" would be issued from ${wallet.slice(0, 6)}…${wallet.slice(-4)}.</p>`;
+  };
+</script>
+</body>
+</html>
