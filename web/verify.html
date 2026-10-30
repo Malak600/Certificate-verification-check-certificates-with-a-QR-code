@@ -64,9 +64,9 @@
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <script>
   /* ---------- Settings: fill in after Malak deploys the contract ---------- */
-  const CONTRACT_ADDRESS = "";   // e.g. "0x1234...abcd" (CertificateRegistry on Sepolia)
+  const CONTRACT_ADDRESS = "0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860";
   const RPC_URL = "https://ethereum-sepolia-rpc.publicnode.com";   // public, read-only, free
-  const ISSUER_NAMES = {};       // optional: { "0xwallet...": "IKU Computer Club" }
+  const ISSUER_NAMES ={ "0xd954914175f78a0eb7f146d12f4a00fd942f93ae": "IKU Computer Club" };
   const ABI = ["function verify(bytes32) view returns (uint8 status, address issuer, uint64 issuedAt, uint64 revokedAt)"];
 
   const $ = (id) => document.getElementById(id);
