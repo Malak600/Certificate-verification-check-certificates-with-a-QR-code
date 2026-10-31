@@ -29,15 +29,18 @@ export function sha256(data) {
 }
 
 /**
- * Builds the verification URL for a given certificate ID.
+ * Builds the verification URL for a given certificate ID or hash.
+ * Supports both ?hash= (for web/verify.html auto-check) and ?id= parameters.
+ *
  * @param {string} baseUrl
- * @param {string} certificateId
+ * @param {string} identifier - Certificate hash or ID
+ * @param {string} [paramName='hash'] - 'hash' or 'id'
  * @returns {string}
  */
-export function buildVerificationUrl(baseUrl, certificateId) {
+export function buildVerificationUrl(baseUrl, identifier, paramName = 'hash') {
   const cleanBase = (baseUrl || 'https://certichain.example.com/verify').replace(/\/+$/, '');
-  const cleanId = encodeURIComponent(certificateId);
-  return `${cleanBase}?id=${cleanId}`;
+  const cleanParam = encodeURIComponent(identifier);
+  return `${cleanBase}?${paramName}=${cleanParam}`;
 }
 
 /**

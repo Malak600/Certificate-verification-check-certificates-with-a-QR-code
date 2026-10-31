@@ -11,7 +11,7 @@ async function runDemo() {
   await fs.mkdir(outputDir, { recursive: true });
 
   const sampleCsv = `name,email
-Asmaa ComputerClub,asmaa@stu.iku.edu.tr
+Participant One,participant1@stu.iku.edu.tr
 Ammar Cashlan,2200002676@stu.iku.edu.tr
 `;
 
