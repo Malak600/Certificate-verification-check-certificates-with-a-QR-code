@@ -51,4 +51,5 @@ Gas for a 70-person event in one batch: about **2.0 million gas**.
 ## Deployments
 | Network | Address | Date | Deployed by |
 
-| Sepolia | 0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860 | 30 Oct 2026 | Malak Alfakavi |
+| Sepolia |
+0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860 | 30 Oct 2026 | Malak Alfakavi |
