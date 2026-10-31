@@ -49,7 +49,7 @@ Gas for a 70-person event in one batch: about **2.0 million gas**.
 2. `npm run deploy:sepolia`
 
 ## Deployments
-| Network | Address | Date | Deployed by |
 
-| Sepolia |
-0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860 | 30 Oct 2026 | Malak Alfakavi |
+| Network | Address | Date | Deployed by |
+|---|---|---|---|
+| Sepolia | 0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860 | 30 Oct 2026 | Malak Alfakavi |
