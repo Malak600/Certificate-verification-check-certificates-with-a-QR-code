@@ -147,18 +147,70 @@
       : `<p class="ok">${attendees.length} attendees ready.</p>`;
     updateIssueButton();
   };
+  /* ---------- Issue (real contract) ---------- */
+  const CONTRACT_ADDRESS = "0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860";
+  const ABI = ["function issueBatch(bytes32[] hashes)"];
 
-  /* ---------- Issue (demo) ---------- */
   function updateIssueButton() {
     $("issueBtn").disabled = !(wallet && attendees.length && $("title").value.trim() && $("date").value);
   }
   ["title", "date", "club"].forEach(id => $(id).addEventListener("input", updateIssueButton));
 
-  $("issueBtn").onclick = () => {
-    // Later: send the list to Ammar's service (hashes + PDFs) and call issueBatch(hashes) on Malak's contract.
-    $("issueMsg").innerHTML =
-      `<p class="msg ok">Demo: ${attendees.length} certificates for "${$("title").value.trim().replace(/[<>&"]/g, "")}" would be issued from ${wallet.slice(0, 6)}…${wallet.slice(-4)}.</p>`;
+  function setMsg(text, ok, linkHref, linkText) {
+    const p = document.createElement("p");
+    p.className = "msg " + (ok ? "ok" : "err");
+    p.textContent = text;
+    if (linkHref) {
+      p.appendChild(document.createTextNode(" "));
+      const a = document.createElement("a");
+      a.href = linkHref; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = linkText;
+      p.appendChild(a);
+    }
+    $("issueMsg").replaceChildren(p);
+  }
+
+  function friendlyError(err) {
+    if (err.code === "ACTION_REJECTED" || err.code === 4001) return "Cancelled";
+    const text = (JSON.stringify(err) + " " + (err.message || "")).toLowerCase();
+    if (text.includes("accesscontrol") || text.includes("role") || text.includes("not authorised") || text.includes("not authorized")) {
+      return "This wallet is not an authorised club issuer";
+    }
+    if (text.includes("already")) return "Already issued";
+    return "Something went wrong: " + (err.shortMessage || err.message);
+  }
+
+  function tempHash(a) {
+    const data = [a.name, a.email, $("title").value.trim(), $("date").value, $("club").value.trim()].join("|");
+    return ethers.keccak256(ethers.toUtf8Bytes(data));
+  }
+
+  $("issueBtn").onclick = async () => {
+    $("issueBtn").disabled = true;
+    try {
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      if (chainId !== SEPOLIA_CHAIN_ID) {
+        await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_ID }] });
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+      const hashes = attendees.map(tempHash);
+      setMsg("Waiting for MetaMask confirmation…", true);
+      const tx = await contract.issueBatch(hashes);
+      setMsg("Transaction sent, waiting for confirmation…", true);
+      await tx.wait();
+
+      setMsg(`✅ ${hashes.length} certificates issued`, true,
+        "https://sepolia.etherscan.io/tx/" + tx.hash, "View on Etherscan");
+    } catch (err) {
+      setMsg(friendlyError(err), false);
+    } finally {
+      updateIssueButton();
+    }
   };
+
 </script>
 </body>
 </html>
