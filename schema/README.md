@@ -60,3 +60,12 @@ The certificate service runs SHACL validation **before** hashing and sending any
 | **O5** | Personal data fields written on chain | 0 |
 
 The shape is the gate that enforces both: it blocks malformed certificates (O4) and it forbids personal data fields from being part of a valid certificate (O5). The salt ensures that even the SHA-256 hash cannot be reversed to reveal a name (KVKK compliance, story S8).
+
+---
+
+## Week 2 Verification & CI Update (Milestone 2 Sign-Off)
+
+* **CI Pipeline Integration:** The GitHub Actions pipeline ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) now verifies both `service/` and `contracts/` tests with automated coverage checking.
+* **Specification Compliance:** Verified exact alignment with `HASHING.md` canonical JSON formatting and test vectors in [`service/tests/hashingSpec.test.js`](../service/tests/hashingSpec.test.js).
+* **KVKK Privacy Verification:** Automated audit in [`service/tests/privacyAndCompliance.test.js`](../service/tests/privacyAndCompliance.test.js) verifies that zero personal data fields are exposed to the public blockchain.
+* **Full Report:** See [`docs/WEEK2_TEST_REPORT.md`](../docs/WEEK2_TEST_REPORT.md).
