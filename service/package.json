@@ -1,12 +1,12 @@
 {
   "name": "certichain-certificate-service",
-  "version": "1.1.0",
-  "description": "CertiChain Verifiable Blockchain Certificate Generator and Storage Service",
+  "version": "1.2.0",
+  "description": "CertiChain Verifiable Blockchain Certificate Generator and Storage API Service",
   "main": "src/index.js",
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "start": "node src/index.js"
+    "start": "node src/server.js"
   },
   "keywords": [
     "blockchain",
