@@ -15,6 +15,7 @@
   input[type=file] { margin-top: 4px; }
   button { padding: 12px 18px; font-size: 1rem; border: 0; border-radius: 8px; cursor: pointer; background: #1c6e8c; color: #fff; }
   button:disabled { background: #9fb3ba; cursor: not-allowed; }
+  button.zip-btn { background: #2e7d4f; margin-top: 12px; }
   .wallet { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
   .hint { color: #5b6b70; font-size: .9rem; }
   table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .95rem; }
@@ -23,6 +24,9 @@
   tr.bad td { color: #b3541e; }
   .msg { margin-top: 14px; padding: 10px; border-radius: 8px; background: #eef2ef; }
   .ok { color: #2e7d4f; } .err { color: #b3541e; }
+  .pdf-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .pdf-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f8fafb; border: 1px solid #e5e9eb; border-radius: 6px; font-size: 0.9rem; }
+  .pdf-item a { color: #1c6e8c; text-decoration: none; font-weight: 600; }
 </style>
 </head>
 <body>
@@ -65,18 +69,28 @@
 <!-- 4. Issue -->
 <div class="card">
   <h2>3. Issue</h2>
-  <p class="hint">Demo mode: the smart contract is not connected yet, so nothing is written to the blockchain.</p>
+  <p class="hint">Certificates are generated via the local service and written to the Sepolia blockchain via MetaMask.</p>
   <button id="issueBtn" disabled>Issue certificates</button>
   <div id="issueMsg"></div>
+
+  <!-- Download ZIP & Individual PDFs -->
+  <div id="downloadsArea" hidden>
+    <button id="downloadZipBtn" class="zip-btn">Download all PDFs (ZIP)</button>
+    <div id="pdfLinks" class="pdf-list"></div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
   const SEPOLIA_CHAIN_ID = "0xaa36a7";
+  const SERVICE_URL = "http://localhost:3001";
   const $ = (id) => document.getElementById(id);
 
-  let wallet = null;     // connected MetaMask address
-  let attendees = [];    // valid rows from the CSV: { name, email }
+  let wallet = null;         // connected MetaMask address
+  let attendees = [];        // valid rows from the CSV: { name, email }
+  let rawCsvContent = "";    // raw CSV string sent to Ammar's API
+  let issuedItems = [];      // returned items with PDF download URLs
 
   /* ---------- Wallet ---------- */
   async function connect() {
@@ -96,7 +110,6 @@
   $("connectBtn").onclick = connect;
 
   /* ---------- CSV ---------- */
-  // Reads simple CSV lines "name,email". Skips a header line if it says name/email.
   function parseCsv(text) {
     const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l !== "");
     if (lines.length && /^name\s*,\s*email$/i.test(lines[0])) lines.shift();
@@ -115,14 +128,17 @@
   $("csvFile").onchange = async (e) => {
     const file = e.target.files[0];
     attendees = [];
+    rawCsvContent = "";
     const body = $("preview").querySelector("tbody");
     body.innerHTML = "";
     $("preview").hidden = true;
     $("issueMsg").textContent = "";
+    $("downloadsArea").hidden = true;
     if (!file) { updateIssueButton(); return; }
 
-    const rows = parseCsv(await file.text());
-    if (rows.length === 0) {               // scenario: empty CSV must be rejected
+const text = await file.text();
+    rawCsvContent = text.replace(/^\uFEFF/, "").trim();    const rows = parseCsv(rawCsvContent);
+    if (rows.length === 0) {
       $("csvMsg").innerHTML = '<p class="err">The file is empty. Nothing to issue.</p>';
       updateIssueButton();
       return;
@@ -136,7 +152,7 @@
       if (problem) tr.className = "bad";
       [i + 1, r.name, r.email, problem || "✔"].forEach(v => {
         const td = document.createElement("td");
-        td.textContent = v;          // textContent: never inject HTML from the file
+        td.textContent = v;
         tr.appendChild(td);
       });
       body.appendChild(tr);
@@ -147,7 +163,8 @@
       : `<p class="ok">${attendees.length} attendees ready.</p>`;
     updateIssueButton();
   };
-  /* ---------- Issue (real contract) ---------- */
+
+  /* ---------- Issue (Service API + Smart Contract) ---------- */
   const CONTRACT_ADDRESS = "0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860";
   const ABI = ["function issueBatch(bytes32[] hashes)"];
 
@@ -177,16 +194,13 @@
       return "This wallet is not an authorised club issuer";
     }
     if (text.includes("already")) return "Already issued";
+    if (text.includes("failed to fetch")) return "Cannot connect to Certificate Service (is port 3001 running?)";
     return "Something went wrong: " + (err.shortMessage || err.message);
-  }
-
-  function tempHash(a) {
-    const data = [a.name, a.email, $("title").value.trim(), $("date").value, $("club").value.trim()].join("|");
-    return ethers.keccak256(ethers.toUtf8Bytes(data));
   }
 
   $("issueBtn").onclick = async () => {
     $("issueBtn").disabled = true;
+    $("downloadsArea").hidden = true;
     try {
       const chainId = await window.ethereum.request({ method: "eth_chainId" });
       if (chainId !== SEPOLIA_CHAIN_ID) {
@@ -196,14 +210,46 @@
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
-      const hashes = attendees.map(tempHash);
+      // Step 1: Send CSV + event details to Ammar's backend service
+      setMsg("Generating certificates & QR codes via service…", true);
+      const response = await fetch(`${SERVICE_URL}/api/issue`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          csv: rawCsvContent,
+          event: {
+            title: $("title").value.trim(),
+            date: $("date").value,
+            hours: 2
+          },
+          issuer: {
+            name: $("club").value.trim(),
+            clubName: $("club").value.trim(),
+            walletAddress: wallet
+          }
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Certificate service returned an error.");
+      }
+      if (!data.hashes || data.hashes.length === 0) {
+        throw new Error(data.errors?.[0]?.error || "No valid certificates generated.");
+      }
+
+      // Step 2: Record the real hashes on Sepolia via MetaMask
       setMsg("Waiting for MetaMask confirmation…", true);
-      const tx = await contract.issueBatch(hashes);
+      const tx = await contract.issueBatch(data.hashes);
       setMsg("Transaction sent, waiting for confirmation…", true);
       await tx.wait();
 
-      setMsg(`✅ ${hashes.length} certificates issued`, true,
+      // Step 3: Show success + enable PDF/ZIP downloads
+      issuedItems = data.items || [];
+      setMsg(`✅ ${data.hashes.length} certificates issued`, true,
         "https://sepolia.etherscan.io/tx/" + tx.hash, "View on Etherscan");
+
+      renderDownloads(issuedItems);
     } catch (err) {
       setMsg(friendlyError(err), false);
     } finally {
@@ -211,6 +257,51 @@
     }
   };
 
+  function renderDownloads(items) {
+    const container = $("pdfLinks");
+    container.innerHTML = "";
+    items.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "pdf-item";
+      const span = document.createElement("span");
+      span.textContent = `${item.name} (${item.email})`;
+      const a = document.createElement("a");
+      a.href = `${SERVICE_URL}${item.pdfDownloadUrl}`;
+      a.target = "_blank";
+      a.download = `${item.name.replace(/\s+/g, "_")}.pdf`;
+      a.textContent = "Download PDF";
+      div.append(span, a);
+      container.appendChild(div);
+    });
+    $("downloadsArea").hidden = items.length === 0;
+  }
+
+  $("downloadZipBtn").onclick = async () => {
+    const btn = $("downloadZipBtn");
+    btn.disabled = true;
+    btn.textContent = "Creating ZIP…";
+    try {
+      const zip = new JSZip();
+      for (const item of issuedItems) {
+        const res = await fetch(`${SERVICE_URL}${item.pdfDownloadUrl}`);
+        const blob = await res.blob();
+        const fileName = `${item.name.replace(/[^a-z0-9]/gi, "_")}_certificate.pdf`;
+        zip.file(fileName, blob);
+      }
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "CertiChain_Certificates.zip";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setMsg("Failed to bundle ZIP: " + err.message, false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Download all PDFs (ZIP)";
+    }
+  };
 </script>
 </body>
 </html>
