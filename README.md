@@ -3,7 +3,7 @@
 **Verifiable blockchain certificates for university club events**
 
 > SEN0401 Special Topics: Blockchain · Istanbul Kültür University · 2026–2027 Fall
-> Status: 📝 **Proposal stage**: nothing is implemented yet.
+> Status: 🚀 **Active implementation (MVP working end-to-end on Sepolia)**.
 
 ---
 
@@ -70,7 +70,7 @@ flowchart LR
 |---|---|
 | 22 Oct 2026 | Proposal submitted, repository set up, customer interview done ✅ |
 | 9 Nov 2026 | Smart contract with tests deployed on Sepolia ✅ |
-| 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end |
+| 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end |✅
 | 7 Dec 2026 | Verification page done; trial at the IKU Computer Club's December workshops |
 | 16 Dec 2026 | Release v1.0 and test report |
 
