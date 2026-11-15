@@ -20,3 +20,24 @@ jobs:
         run: |
           npm install
           npm test
+
+  contract-tests:
+    name: Contract tests & coverage (Objective O2)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install contract dependencies
+        working-directory: contracts
+        run: |
+          npm install
+      - name: Run Hardhat tests
+        working-directory: contracts
+        run: |
+          npm test
+      - name: Verify contract coverage (Objective O2 >= 90%)
+        working-directory: contracts
+        run: |
+          npm run coverage
