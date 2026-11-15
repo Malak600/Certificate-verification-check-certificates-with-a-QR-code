@@ -12,6 +12,7 @@
 - **Smart Contract:** `CertificateRegistry.sol` (Solidity `v0.8.34`, OpenZeppelin `AccessControl`)
 - **Contract Address:** [`0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860`](https://sepolia.etherscan.io/address/0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860#code)
 - **Verification Status:** Verified Source Code & ABI on Sepolia Etherscan ✅
+- **Compiler & Verification Settings:** Deployed & verified on Etherscan using Solidity `v0.8.34` (`optimizer: disabled`, EVM `default`), whereas `contracts/hardhat.config.js` targets `0.8.24` (`optimizer: enabled, runs: 200`) for local offline testing & coverage.
 - **Test Coverage:** 100% Line Coverage · 95.45% Branch Coverage (Hardhat)
 
 ---
