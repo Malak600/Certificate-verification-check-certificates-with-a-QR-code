@@ -42,7 +42,7 @@ Only cryptographic hashes go on chain. **No personal data is stored on the block
 ```mermaid
 flowchart LR
     O[Event organiser] -->|CSV + event info| D[Issuer dashboard<br/>web/issue.html]
-    D -->|POST /api/batches| S[Certificate service<br/>Node.js · JSON-LD + SHACL + PDF/QR]
+    D -->|POST /api/issue| S[Certificate service<br/>Node.js · JSON-LD + SHACL + PDF/QR]
     S -->|SHA-256 hashes + PDFs| D
     D -->|issueBatch via MetaMask| C[(CertificateRegistry<br/>Sepolia Testnet)]
     S -->|PDF with QR| H[Certificate holder]
