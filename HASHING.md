@@ -47,7 +47,7 @@ Expected SHA-256 hash:
 
 ## 6. Verify by File Upload / QR Link
 - Scanning the QR code opens `web/verify.html?hash=0x...` and queries `CertificateRegistry.verify(hash)` directly on Sepolia.
-- Uploading the certificate JSON file on `web/verify.html` canonicalizes the JSON in-browser and recomputes the identical SHA-256 hash locally.
+- Every PDF embeds the certificate JSON as the attached file `certichain-certificate.json`. Uploading the **PDF** (or that JSON) on `web/verify.html` reads the JSON, canonicalizes it in the browser and recomputes the identical SHA-256 hash locally (story S7). An edited file gives a different hash, so the page shows ❌ Not found.
 
 ## 7. Status
 - [x] Service (`service/src/certificateHasher.js`) implements RFC 8785 canonical JSON + SHA-256

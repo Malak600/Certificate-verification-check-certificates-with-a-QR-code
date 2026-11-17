@@ -10,6 +10,9 @@ const require = createRequire(import.meta.url);
 // Unicode fonts (DejaVu Sans) so Turkish (ş, ğ, ı, İ ...) and Arabic names
 // print correctly. The standard PDF fonts only support WinAnsi and crashed
 // the whole batch on an Arabic name ("WinAnsi cannot encode").
+/** File name of the certificate JSON embedded in every PDF (read by web/verify.html). */
+export const CERTIFICATE_ATTACHMENT_NAME = 'certichain-certificate.json';
+
 const FONT_DIR = path.join(path.dirname(require.resolve('dejavu-fonts-ttf/package.json')), 'ttf');
 
 const ARABIC = /[\u0600-\u06FF\u0750-\u077F]/;
@@ -311,6 +314,18 @@ export async function generateCertificatePdf(
       color: rgb(0.5, 0.55, 0.6),
     });
   }
+
+  // Story S7: embed the certificate JSON inside the PDF, so a verifier can
+  // upload the PDF itself on web/verify.html. The page re-hashes this JSON
+  // (canonical JSON + SHA-256, see HASHING.md) and checks the hash on chain;
+  // an edited file gives a different hash and shows "Not found".
+  const issuedDate = new Date(certificate.validFrom || Date.now());
+  await pdfDoc.attach(Buffer.from(JSON.stringify(certificate, null, 2), 'utf8'), CERTIFICATE_ATTACHMENT_NAME, {
+    mimeType: 'application/json',
+    description: 'CertiChain certificate data. SHA-256 of its canonical JSON is the on-chain hash.',
+    creationDate: issuedDate,
+    modificationDate: issuedDate,
+  });
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes);

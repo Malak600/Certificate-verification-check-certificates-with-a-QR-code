@@ -41,8 +41,8 @@
   <label for="hashInput">Certificate hash</label>
   <input type="text" id="hashInput" placeholder="0x… (filled in automatically when you open the QR link)">
   <div class="or">— or —</div>
-  <label for="certFile">Upload the certificate file (.json)</label>
-  <input type="file" id="certFile" accept=".json,application/json">
+  <label for="certFile">Upload the certificate (PDF or .json)</label>
+  <input type="file" id="certFile" accept=".pdf,application/pdf,.json,application/json">
   <p class="hint">The hash is calculated in your browser; the file is not uploaded anywhere.</p>
   <button id="verifyBtn">Verify</button>
 </div>
@@ -62,6 +62,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script>
   /* ---------- Settings: fill in after Malak deploys the contract ---------- */
   const CONTRACT_ADDRESS = "0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860";
@@ -89,16 +90,85 @@
   }
   const isHash = (h) => /^0x[0-9a-fA-F]{64}$/.test(h);
 
+  /* ---------- Reading an uploaded certificate (story S7) ----------
+     Every PDF made by the certificate service carries the certificate JSON
+     as an embedded file. We read it, hash it, and check that hash on chain. */
+  const ATTACHMENT_NAME = "certichain-certificate.json";
+  let fileCert = null;   // certificate JSON from the uploaded file, shown with the result
+
+  function pdfText(obj) {
+    const { PDFString, PDFHexString } = PDFLib;
+    return (obj instanceof PDFString || obj instanceof PDFHexString) ? obj.decodeText() : "";
+  }
+  function findEmbeddedFile(node, depth = 0) {
+    const { PDFName, PDFArray, PDFDict } = PDFLib;
+    if (!(node instanceof PDFDict) || depth > 10) return null;
+    const names = node.lookupMaybe(PDFName.of("Names"), PDFArray);
+    if (names) {
+      for (let i = 0; i + 1 < names.size(); i += 2) {
+        const spec = names.lookup(i + 1, PDFDict);
+        const fileName = pdfText(spec.lookupMaybe(PDFName.of("UF"), PDFLib.PDFString, PDFLib.PDFHexString))
+          || pdfText(spec.lookupMaybe(PDFName.of("F"), PDFLib.PDFString, PDFLib.PDFHexString))
+          || pdfText(names.lookup(i));
+        if (fileName === ATTACHMENT_NAME) {
+          const ef = spec.lookup(PDFName.of("EF"), PDFDict);
+          return PDFLib.decodePDFRawStream(ef.lookup(PDFName.of("F"))).decode();
+        }
+      }
+    }
+    const kids = node.lookupMaybe(PDFName.of("Kids"), PDFArray);
+    if (kids) {
+      for (let i = 0; i < kids.size(); i++) {
+        const found = findEmbeddedFile(kids.lookup(i), depth + 1);
+        if (found) return found;
+      }
+    }
+    return null;
+  }
+  async function certFromPdf(bytes) {
+    const { PDFDocument, PDFName, PDFDict } = PDFLib;
+    const doc = await PDFDocument.load(bytes, { updateMetadata: false });
+    const namesDict = doc.catalog.lookupMaybe(PDFName.of("Names"), PDFDict);
+    const tree = namesDict && namesDict.lookupMaybe(PDFName.of("EmbeddedFiles"), PDFDict);
+    const data = tree && findEmbeddedFile(tree);
+    if (!data) return null;
+    return JSON.parse(new TextDecoder().decode(data));
+  }
+
   $("certFile").onchange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+    fileCert = null;
+    $("hashInput").value = "";
     try {
-      const cert = JSON.parse(await file.text());
+      const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+      const cert = isPdf ? await certFromPdf(new Uint8Array(await file.arrayBuffer()))
+                         : JSON.parse(await file.text());
+      if (!cert || typeof cert !== "object") {
+        show("notfound", "❌ No certificate data in this PDF",
+          "This PDF does not contain CertiChain certificate data. It may be an older certificate or another file. Scan its QR code instead.");
+        return;
+      }
+      fileCert = cert;
       $("hashInput").value = await sha256Hex(canonicalJson(cert));
+      verify();
     } catch {
-      show("notfound", "❌ Not a valid certificate file", "The file could not be read as a certificate (.json).");
+      show("notfound", "❌ Not a valid certificate file", "The file could not be read as a CertiChain certificate (PDF or .json).");
     }
   };
+  $("hashInput").addEventListener("input", () => { fileCert = null; });
+
+  /* Details printed on the certificate, taken from the verified data, so the
+     verifier can compare them with what the PDF shows. */
+  function certRows() {
+    const s = fileCert && fileCert.credentialSubject;
+    if (!s) return [];
+    const rows = [];
+    if (s.recipientName) rows.push(["Name on certificate", s.recipientName]);
+    if (s.eventTitle) rows.push(["Event", s.eventTitle]);
+    if (s.eventDate) rows.push(["Event date", s.eventDate]);
+    return rows;
+  }
 
   /* ---------- Showing a result ---------- */
   function show(kind, title, text, rows = []) {
@@ -125,13 +195,17 @@
 
   function showStatus(status, issuer, issuedAt, revokedAt, hash) {
     if (status === 1) {
-      show("valid", "✅ Valid", "This certificate was issued and has not been revoked.",
-        [["Issued by", issuerName(issuer)], ["Issued on", fmtTime(issuedAt)], ["Hash", hash]]);
+      show("valid", "✅ Valid",
+        fileCert ? "This certificate was issued and has not been revoked. Check that the name, event and date below match the ones printed on it."
+                 : "This certificate was issued and has not been revoked.",
+        [...certRows(), ["Issued by", issuerName(issuer)], ["Issued on", fmtTime(issuedAt)], ["Hash", hash]]);
     } else if (status === 2) {
       show("revoked", "⚠️ Revoked", "This certificate was issued but later revoked by the club.",
-        [["Issued by", issuerName(issuer)], ["Issued on", fmtTime(issuedAt)], ["Revoked on", fmtTime(revokedAt)], ["Hash", hash]]);
+        [...certRows(), ["Issued by", issuerName(issuer)], ["Issued on", fmtTime(issuedAt)], ["Revoked on", fmtTime(revokedAt)], ["Hash", hash]]);
     } else {
-      show("notfound", "❌ Not found", "No certificate with this hash was issued. The file may have been edited.", [["Hash", hash]]);
+      show("notfound", "❌ Not found",
+        fileCert ? "This file does not match any issued certificate. It may have been edited after it was issued."
+                 : "No certificate with this hash was issued. The file may have been edited.", [["Hash", hash]]);
     }
   }
 
