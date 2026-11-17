@@ -1,0 +1,4 @@
+node_modules/
+schema-samples/
+__pycache__/
+.env

@@ -1,57 +1,120 @@
-@prefix sh:   <http://www.w3.org/ns/shacl#> .
-@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
-@prefix cert: <https://certichain.iku.edu.tr/vocab#> .
-@prefix schema: <https://schema.org/> .
+@prefix sh:         <http://www.w3.org/ns/shacl#> .
+@prefix xsd:        <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix cred:       <https://www.w3.org/2018/credentials#> .
+@prefix prov:       <http://www.w3.org/ns/prov#> .
+@prefix schema:     <https://schema.org/> .
+@prefix certichain: <https://certichain.iku.edu.tr/schema#> .
 
-cert:CertificateShape
+# Matches the certificate JSON built by service/src/certificateBuilder.js
+# (W3C VC v2.0 + PROV-O + CertiChain terms) and described in HASHING.md.
+# The hash itself is NOT a field of the certificate: it is SHA-256 of the
+# canonical certificate JSON, so it cannot be inside the document it hashes.
+
+certichain:CertificateShape
     a sh:NodeShape ;
-    sh:targetClass cert:Certificate ;
+    sh:targetClass certichain:ParticipationCertificate ;
 
     sh:property [
-        sh:path cert:event ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:nodeKind sh:IRI ;
-        sh:message "A certificate must link exactly one event." ;
+        sh:path rdf:type ;
+        sh:hasValue cred:VerifiableCredential ;
+        sh:message "A certificate must also be a W3C VerifiableCredential." ;
     ] ;
 
     sh:property [
-        sh:path cert:participant ;
+        sh:path cred:issuer ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:nodeKind sh:IRI ;
-        sh:message "A certificate must link exactly one participant." ;
+        sh:pattern "^did:pkh:eip155:11155111:0x[0-9a-f]{40}$" ;
+        sh:node certichain:IssuerShape ;
+        sh:message "A certificate must name exactly one issuer as a Sepolia did:pkh (lowercase wallet address)." ;
     ] ;
 
     sh:property [
-        sh:path <http://www.w3.org/ns/prov#wasAttributedTo> ;
+        sh:path prov:wasAttributedTo ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:nodeKind sh:IRI ;
-        sh:message "A certificate must name the issuer that issued it." ;
+        sh:equals cred:issuer ;
+        sh:message "prov:wasAttributedTo must point to the same issuer as cred:issuer." ;
     ] ;
 
     sh:property [
-        sh:path cert:issuedOn ;
+        sh:path cred:validFrom ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:dateTime ;
+        sh:message "A certificate must carry one issue timestamp (validFrom, ISO-8601)." ;
+    ] ;
+
+    sh:property [
+        sh:path cred:credentialSubject ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:node certichain:SubjectShape ;
+        sh:message "A certificate must have exactly one valid credentialSubject." ;
+    ] ;
+
+    sh:property [
+        sh:path prov:wasGeneratedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A certificate must name the event activity that generated it." ;
+    ] ;
+
+    sh:property [
+        sh:path certichain:salt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[0-9a-f]{32}$" ;
+        sh:message "A certificate must carry one 32-character lowercase hex salt (16 random bytes)." ;
+    ] .
+
+certichain:IssuerShape
+    a sh:NodeShape ;
+    sh:property [
+        sh:path schema:name ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message "The issuer must have a club name." ;
+    ] .
+
+certichain:SubjectShape
+    a sh:NodeShape ;
+    sh:property [
+        sh:path certichain:recipientName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message "The subject must have exactly one non-empty recipient name." ;
+    ] ;
+    sh:property [
+        sh:path certichain:recipientEmail ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:message "The subject may have at most one recipient email." ;
+    ] ;
+    sh:property [
+        sh:path certichain:eventTitle ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:minLength 1 ;
+        sh:message "The subject must have exactly one non-empty event title." ;
+    ] ;
+    sh:property [
+        sh:path certichain:eventDate ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:datatype xsd:date ;
-        sh:message "A certificate must carry an issue date." ;
+        sh:message "The subject must have exactly one event date (YYYY-MM-DD)." ;
     ] ;
-
     sh:property [
-        sh:path cert:salt ;
-        sh:minCount 1 ;
+        sh:path certichain:hours ;
         sh:maxCount 1 ;
-        sh:datatype xsd:string ;
-        sh:message "A certificate must carry a salt." ;
-    ] ;
-
-    sh:property [
-        sh:path cert:hash ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:datatype xsd:string ;
-        sh:pattern "^[a-f0-9]{64}$" ;
-        sh:message "The hash must be a 64-character lowercase SHA-256 hex string." ;
+        sh:message "The subject may have at most one hours value." ;
     ] .

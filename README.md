@@ -13,6 +13,7 @@
 - **Contract Address:** [`0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860`](https://sepolia.etherscan.io/address/0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860#code)
 - **Verification Status:** Verified Source Code & ABI on Sepolia Etherscan ✅
 - **Compiler & Verification Settings:** Deployed & verified on Etherscan using Solidity `v0.8.34` (`optimizer: disabled`, EVM `default`), whereas `contracts/hardhat.config.js` targets `0.8.24` (`optimizer: enabled, runs: 200`) for local offline testing & coverage.
+- **Public verify page:** https://malak600.github.io/Certificate-verification-check-certificates-with-a-QR-code/web/verify.html (GitHub Pages; every QR code opens this page with `?hash=0x...`)
 - **Test Coverage:** 100% Line Coverage · 95.45% Branch Coverage (Hardhat)
 
 ---
@@ -32,7 +33,7 @@ CertiChain lets a club issue certificates that **anyone can verify in seconds**,
 1. The **event organiser** uploads the attendance list (CSV) and event metadata via the Issuer Dashboard (`issue.html`).
 2. The backend service builds each certificate as a **W3C JSON-LD** credential, validates it against a **SHACL** shape, computes its canonical **SHA-256 hash** (see [HASHING.md](HASHING.md)), and embeds a verification **QR code** into a downloadable PDF.
 3. The organiser anchors the batch of SHA-256 hashes onto **Ethereum Sepolia** via **MetaMask** (`issueBatch`).
-4. A **verifier** scans the QR code or uploads the PDF/JSON-LD on the Verification Page (`verify.html`) and immediately sees **✅ Valid**, **⚠️ Revoked**, or **❌ Not found**.
+4. A **verifier** scans the QR code, pastes the hash or uploads the certificate JSON on the Verification Page (`verify.html`) and immediately sees **✅ Valid**, **⚠️ Revoked**, or **❌ Not found**.
 
 Only cryptographic hashes go on chain. **No personal data is stored on the blockchain** (KVKK compliant).
 

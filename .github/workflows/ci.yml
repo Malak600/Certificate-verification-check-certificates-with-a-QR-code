@@ -21,6 +21,26 @@ jobs:
           npm install
           npm test
 
+  shacl-conformance:
+    name: SHACL conformance of real certificates (Objective O4)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install service and pySHACL
+        run: |
+          npm install --prefix service
+          pip install pyshacl
+      - name: Generate a 30-person batch with the real service pipeline
+        run: node schema/tools/generate-samples.mjs schema-samples
+      - name: Validate every certificate against schema/certificate-shape.ttl
+        run: python schema/tools/validate.py schema-samples
+
   contract-tests:
     name: Contract tests & coverage (Objective O2)
     runs-on: ubuntu-latest

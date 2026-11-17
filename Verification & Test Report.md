@@ -20,6 +20,8 @@ This report documents the verification, testing, and continuous integration deli
 
 All criteria required by the project proposal's **Definition of Done (DoD)** for Milestone 2 have been verified and passed.
 
+> **Update 17 Nov 2026:** the SHACL shape and context were aligned with the certificates the service really produces, and O4 is now checked in CI with pySHACL on a real 30-person batch (see section 8). Contract storage details in section 3 were corrected to match `CertificateRegistry.sol`.
+
 ---
 
 ## 2. Objective O2: Smart Contract Test & Coverage Verification
@@ -60,11 +62,11 @@ All criteria required by the project proposal's **Definition of Done (DoD)** for
   2. Executed `service/tests/privacyAndCompliance.test.js`.
 * **Findings:**
   * Contract storage contains **only**:
-    * `mapping(bytes32 => CertificateRecord)` where keys are 32-byte cryptographic digests.
-    * Struct members: `address issuer`, `uint64 issuedAt`, `bool revoked`, `uint64 revokedAt`.
+    * `mapping(bytes32 => Record)` where keys are 32-byte cryptographic digests.
+    * Struct `Record` members: `address issuer`, `uint64 issuedAt`, `uint64 revokedAt` (revoked = `revokedAt != 0`; there is no separate `bool`).
   * Emitted Events:
-    * `event CertificateIssued(bytes32 indexed hash, address indexed issuer, uint64 issuedAt)`
-    * `event CertificateRevoked(bytes32 indexed hash, address indexed issuer, uint64 revokedAt)`
+    * `event CertificateIssued(bytes32 indexed certHash, address indexed issuer, uint64 issuedAt)`
+    * `event CertificateRevoked(bytes32 indexed certHash, address indexed revokedBy, uint64 revokedAt)`
   * **Zero plain-text personal fields exist in on-chain storage or event topics/data.**
   * Salt entropy: Each credential embeds a unique 32-character hexadecimal CSPRNG salt (`16 bytes`). Dictionary attacks against candidate participant names are computationally infeasible without the off-chain salt.
 
@@ -95,8 +97,8 @@ The CI workflow was expanded from a single backend check to a comprehensive qual
 |---|---|---|---|---|
 | **O1** | Public verification response time | $< 10$ s | Ready for Phase 4 trial | Pending club trial |
 | **O2** | Contract test line coverage | $\ge 90\%$ | **100%** | **Passed (Exceeded)** ✅ |
-| **O3** | 30-person batch issuance speed | $< 5$ min | **~7.2 s** | **Passed (Exceeded)** ✅ |
-| **O4** | SHACL shape conformance rate | $100\%$ | **100%** | **Passed** ✅ |
+| **O3** | 30-person batch issuance speed | $< 5$ min | ~7.2 s (service side; on-chain confirmation not included) | To be re-measured end to end on 23 Nov ⏳ |
+| **O4** | SHACL shape conformance rate | $100\%$ | **30/30 = 100%** (CI job `shacl-conformance`, 17 Nov) | **Passed** ✅ |
 | **O5** | Personal data fields on-chain | $0$ | **0** | **Passed** ✅ |
 
 ---
@@ -106,3 +108,12 @@ The CI workflow was expanded from a single backend check to a comprehensive qual
 As Quality Lead and Verification Lead for CertiChain, I confirm that all Milestone 2 criteria are satisfied. The codebase is ready for integration testing in Phase 3.
 
 *Signed:* **Mohamad Mahfouz Khalil** (Student No: 2200009092)
+
+---
+
+## 8. Update — 17 Nov 2026 (review fixes)
+
+* **O4 is now a real SHACL check.** Before this update, `schema/certificate-shape.ttl` targeted `cert:Certificate` in the `vocab#` namespace, while the service builds `certichain:ParticipationCertificate` (`schema#` namespace, W3C VC v2 fields). The shape therefore matched no certificate at all, and the service's JavaScript validator was a hand-written approximation. The shape and `schema/context.jsonld` now describe the real certificate (see `HASHING.md`), and the CI job `shacl-conformance` generates a 30-person batch with the real pipeline and validates every certificate with pySHACL. Result: **30/30 conform**, and **10/10 deliberately broken certificates are rejected** (missing name, bad date, short salt, wrong issuer, …).
+* The shape no longer requires a `hash` field inside the certificate: the hash is SHA-256 of the certificate itself, so it cannot be one of its fields.
+* **Arabic names crashed the batch** (`WinAnsi cannot encode`) and Turkish letters were printed without accents (Ayşe → Ayse). The PDF generator now embeds DejaVu Sans, so both print correctly.
+* **QR codes pointed to a placeholder domain** (`certichain.example.com`). They now point to the GitHub Pages copy of `web/verify.html` (override with `VERIFY_BASE_URL`).

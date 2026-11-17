@@ -9,7 +9,7 @@ import { sha256 } from '../src/utils.js';
  * Verification test for HASHING.md specification compliance.
  */
 
-test('HASHING.md Spec - reproduces worked example canonical hash exactly', async () => {
+test('HASHING.md Spec - reproduces the earlier v1 example hash exactly (canonicalisation regression)', async () => {
   // Exact JSON from Section 5 of HASHING.md (in mixed key order)
   const cert = {
     id: 'https://certichain.example/c/0001',

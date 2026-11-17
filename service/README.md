@@ -52,7 +52,7 @@ Uploads attendance CSV and event metadata, generates certificates, returns hashe
       "name": "Ammar Cashlan",
       "email": "2200002676@stu.iku.edu.tr",
       "hash": "0x56f851...",
-      "verificationUrl": "https://certichain.example.com/verify?hash=0x56f851...",
+      "verificationUrl": "https://malak600.github.io/Certificate-verification-check-certificates-with-a-QR-code/web/verify.html?hash=0x56f851...",
       "pdfDownloadUrl": "/api/certificate/0x56f851.../pdf"
     }
   ]

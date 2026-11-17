@@ -4,7 +4,7 @@ import { hashCertificate } from './certificateHasher.js';
 import { validateCertificate } from './shaclValidator.js';
 import { generateQrBuffer } from './qrGenerator.js';
 import { generateCertificatePdf } from './pdfGenerator.js';
-import { buildVerificationUrl } from './utils.js';
+import { buildVerificationUrl, DEFAULT_VERIFY_BASE_URL } from './utils.js';
 
 export {
   parseAttendanceCsv,
@@ -39,7 +39,7 @@ export {
  */
 export async function processBatch(csvContent, eventDetails, issuerDetails, options = {}) {
   const verifyBaseUrl =
-    options.verifyBaseUrl || process.env.VERIFY_BASE_URL || 'https://certichain.example.com/verify';
+    options.verifyBaseUrl || process.env.VERIFY_BASE_URL || DEFAULT_VERIFY_BASE_URL;
 
   // Step 1: Parse CSV
   const participants = parseAttendanceCsv(csvContent);
