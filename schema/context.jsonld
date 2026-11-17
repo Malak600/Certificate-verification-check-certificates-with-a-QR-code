@@ -3,30 +3,30 @@
     "@version": 1.1,
     "id": "@id",
     "type": "@type",
-    "cert": "https://certichain.iku.edu.tr/vocab#",
+
+    "cred": "https://www.w3.org/2018/credentials#",
     "prov": "http://www.w3.org/ns/prov#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
     "schema": "https://schema.org/",
+    "certichain": "https://certichain.iku.edu.tr/schema#",
 
-    "Certificate": "cert:Certificate",
-    "event": { "@id": "cert:event", "@type": "@id" },
-    "participant": { "@id": "cert:participant", "@type": "@id" },
-    "issuedBy": { "@id": "prov:wasAttributedTo", "@type": "@id" },
-    "issuedOn": { "@id": "cert:issuedOn", "@type": "xsd:date" },
-    "salt": "cert:salt",
-    "hash": "cert:hash",
+    "VerifiableCredential": "cred:VerifiableCredential",
+    "ParticipationCertificate": "certichain:ParticipationCertificate",
 
-    "Event": "cert:Event",
-    "title": "schema:name",
-    "date": { "@id": "schema:startDate", "@type": "xsd:date" },
-    "organiser": "schema:organizer",
-
-    "Participant": "cert:Participant",
+    "issuer": { "@id": "cred:issuer", "@type": "@id" },
+    "validFrom": { "@id": "cred:validFrom", "@type": "xsd:dateTime" },
+    "credentialSubject": { "@id": "cred:credentialSubject", "@type": "@id" },
     "name": "schema:name",
-    "email": "schema:email",
 
-    "Issuer": "cert:Issuer",
-    "clubName": "schema:name",
-    "wallet": "cert:wallet"
+    "wasAttributedTo": { "@id": "prov:wasAttributedTo", "@type": "@id" },
+    "wasGeneratedBy": { "@id": "prov:wasGeneratedBy", "@type": "@id" },
+
+    "recipientName": "certichain:recipientName",
+    "recipientEmail": "certichain:recipientEmail",
+    "eventTitle": "certichain:eventTitle",
+    "eventDate": { "@id": "certichain:eventDate", "@type": "xsd:date" },
+    "hours": "certichain:hours",
+    "clubName": "certichain:clubName",
+    "salt": "certichain:salt"
   }
 }

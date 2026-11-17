@@ -2,25 +2,31 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
+import fontkit from '@pdf-lib/fontkit';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+
+// Unicode fonts (DejaVu Sans) so Turkish (ş, ğ, ı, İ ...) and Arabic names
+// print correctly. The standard PDF fonts only support WinAnsi and crashed
+// the whole batch on an Arabic name ("WinAnsi cannot encode").
+const FONT_DIR = path.join(path.dirname(require.resolve('dejavu-fonts-ttf/package.json')), 'ttf');
+
+const ARABIC = /[\u0600-\u06FF\u0750-\u077F]/;
+const FIRST_STRONG = /[A-Za-z\u00C0-\u024F\u0600-\u06FF\u0750-\u077F]/;
+
 /**
- * Normalizes text to ensure compatibility with standard WinAnsi PDF fonts.
- * Transliterates Turkish and other accented characters.
+ * Prepares user text for pdf-lib + fontkit. fontkit already joins Arabic
+ * letters and lays out an Arabic line right-to-left, but it also reverses any
+ * Latin letters or numbers inside that line ("Ahmed" -> "demhA", "12" -> "21").
+ * Pre-reversing those runs cancels that out.
  */
-function toWinAnsiCompatibleText(text) {
+export function toPdfText(text) {
   if (!text) return '';
-  return String(text)
-    .replace(/ş/g, 's')
-    .replace(/Ş/g, 'S')
-    .replace(/ç/g, 'c')
-    .replace(/Ç/g, 'C')
-    .replace(/ğ/g, 'g')
-    .replace(/Ğ/g, 'G')
-    .replace(/ı/g, 'i')
-    .replace(/İ/g, 'I')
-    .replace(/ö/g, 'o')
-    .replace(/Ö/g, 'O')
-    .replace(/ü/g, 'u')
-    .replace(/Ü/g, 'U');
+  const str = String(text);
+  const first = str.match(FIRST_STRONG);
+  if (!first || !ARABIC.test(first[0])) return str;
+  return str.replace(/[^\u0600-\u06FF\u0750-\u077F\s]+/g, run => [...run].reverse().join(''));
 }
 
 /**
@@ -118,9 +124,15 @@ export async function generateCertificatePdf(
     await createDefaultCertificatePage(pdfDoc);
   }
 
-  // Load standard fonts
-  const fontTitle = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-  const fontBody = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  // Load fonts: Unicode DejaVu Sans for anything that can contain user text,
+  // standard fonts for the fixed English labels.
+  pdfDoc.registerFontkit(fontkit);
+  const [boldBytes, regularBytes] = await Promise.all([
+    fs.readFile(path.join(FONT_DIR, 'DejaVuSans-Bold.ttf')),
+    fs.readFile(path.join(FONT_DIR, 'DejaVuSans.ttf')),
+  ]);
+  const fontTitle = await pdfDoc.embedFont(boldBytes, { subset: true });
+  const fontBody = await pdfDoc.embedFont(regularBytes, { subset: true });
   const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
   const fontMono = await pdfDoc.embedFont(StandardFonts.Courier);
 
@@ -128,18 +140,18 @@ export async function generateCertificatePdf(
   const page = pages[0];
   const { width, height } = page.getSize();
 
-  // Extract certificate attributes with character normalization for WinAnsi PDF encoding
-  const recipientName = toWinAnsiCompatibleText(
+  // Extract certificate attributes (Arabic shaped for display; the certificate JSON is unchanged)
+  const recipientName = toPdfText(
     certificate.credentialSubject?.recipientName || 'Valued Participant'
   );
-  const eventTitle = toWinAnsiCompatibleText(
+  const eventTitle = toPdfText(
     certificate.credentialSubject?.eventTitle || 'University Workshop'
   );
-  const eventDate = toWinAnsiCompatibleText(
+  const eventDate = toPdfText(
     certificate.credentialSubject?.eventDate ||
       new Date(certificate.validFrom || Date.now()).toLocaleDateString()
   );
-  const clubName = toWinAnsiCompatibleText(
+  const clubName = toPdfText(
     certificate.issuer?.name || 'Istanbul Kültür University Student Club'
   );
   const certificateId = certificate.id || '';
@@ -286,7 +298,11 @@ export async function generateCertificatePdf(
   });
 
   if (verificationUrl) {
-    const urlDisplay = `Verify: ${verificationUrl}`;
+    // The full GitHub Pages link is too long for one line; the QR code holds
+    // the link, so print the certificate hash (which verify.html accepts) and
+    // only fall back to the URL when no hash is in it.
+    const hashParam = (verificationUrl.match(/[?&]hash=(0x[0-9a-fA-F]{64})/) || [])[1];
+    const urlDisplay = hashParam ? `Certificate hash: ${hashParam}` : `Verify: ${verificationUrl}`;
     page.drawText(urlDisplay, {
       x: 80,
       y: 38,

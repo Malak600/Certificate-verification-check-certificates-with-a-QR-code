@@ -37,8 +37,15 @@ export function sha256(data) {
  * @param {string} [paramName='hash'] - 'hash' or 'id'
  * @returns {string}
  */
+/**
+ * Public verify page, served by GitHub Pages from web/verify.html on main.
+ * Override with the VERIFY_BASE_URL environment variable (e.g. for a local test).
+ */
+export const DEFAULT_VERIFY_BASE_URL =
+  'https://malak600.github.io/Certificate-verification-check-certificates-with-a-QR-code/web/verify.html';
+
 export function buildVerificationUrl(baseUrl, identifier, paramName = 'hash') {
-  const cleanBase = (baseUrl || 'https://certichain.example.com/verify').replace(/\/+$/, '');
+  const cleanBase = (baseUrl || DEFAULT_VERIFY_BASE_URL).replace(/\/+$/, '');
   const cleanParam = encodeURIComponent(identifier);
   return `${cleanBase}?${paramName}=${cleanParam}`;
 }
