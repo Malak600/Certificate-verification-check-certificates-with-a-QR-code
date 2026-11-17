@@ -41,13 +41,111 @@ Only cryptographic hashes go on chain. **No personal data is stored on the block
 
 ## Architecture & Workflow
 
+
 ```mermaid
 flowchart LR
-    O[Event organiser] -->|CSV + event info| D[Issuer dashboard<br/>web/issue.html]
-    D -->|POST /api/issue| S[Certificate service<br/>Node.js · JSON-LD + SHACL + PDF/QR]
-    S -->|SHA-256 hashes + PDFs| D
-    D -->|issueBatch via MetaMask| C[(CertificateRegistry<br/>Sepolia Testnet)]
-    S -->|PDF with QR| H[Certificate holder]
-    H -->|shares QR / PDF| V[Verifier]
-    V --> P[Verification page<br/>web/verify.html]
-    P -->|verify hash · free RPC read| C
+    O["Event organiser"] -->|"CSV + event info"| D["Issuer dashboard<br/>web/issue.html"]
+    D -->|"POST /api/issue"| S["Certificate service<br/>Node.js, JSON-LD, SHACL, PDF + QR"]
+    S -->|"SHA-256 hashes + PDFs"| D
+    D -->|"issueBatch via MetaMask"| C[("CertificateRegistry<br/>Sepolia testnet")]
+    S -->|"PDF with QR"| H["Certificate holder"]
+    H -->|"shares QR or PDF"| V["Verifier"]
+    V --> P["Verification page<br/>web/verify.html"]
+    P -->|"verify hash, free RPC read"| C
+```
+
+---
+
+## Why Blockchain?
+
+A normal database run by the club could be edited, or disappear when the board changes. The on-chain record is **append-only, timestamped and publicly readable**, so a verifier doesn't have to trust the club or us. Revoking a certificate is public too.
+
+---
+
+## Quick Start
+
+**Verify a certificate:** open the [public verify page](https://malak600.github.io/Certificate-verification-check-certificates-with-a-QR-code/web/verify.html), then scan the QR code, paste the hash, or upload the certificate JSON.
+
+**Issue certificates (organiser):**
+
+```bash
+cd service
+npm install
+npm start            # API on http://localhost:3001
+```
+
+Then open `web/issue.html` (e.g. with VS Code Live Server), connect MetaMask on **Sepolia** with a wallet that has the issuer role, upload the attendance CSV (`name,email`), fill in the event details and press **Issue**. The page sends the CSV to the service, records the hashes with `issueBatch`, and lets you download the PDFs as a ZIP.
+
+**Run the tests:**
+
+```bash
+# from the repository root
+(cd service && npm install && npm test)               # service tests
+(cd contracts && npm install && npm test)             # contract tests (Hardhat)
+pip install pyshacl                                   # SHACL check (objective O4)
+node schema/tools/generate-samples.mjs schema-samples
+python schema/tools/validate.py schema-samples
+```
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Smart contract | Solidity, OpenZeppelin AccessControl, Hardhat |
+| Network | Ethereum Sepolia testnet (free) |
+| Frontend | HTML + JavaScript, ethers.js v6, MetaMask, GitHub Pages |
+| Backend | Node.js HTTP API (certificate builder, PDF and QR generation) |
+| Data format | JSON-LD (W3C Verifiable Credentials v2), PROV-O, SHACL (pySHACL in CI) |
+| CI | GitHub Actions (service tests, SHACL conformance, contract tests + coverage) |
+
+---
+
+## Team
+
+| Member | Responsibility | Role |
+|---|---|---|
+| Malak Alfakavi | Certificate registry smart contract | Team lead, smart-contract developer |
+| Raghd Alfakavi | Issuer dashboard and verification page | Frontend, customer liaison |
+| Mohammed Ammar | Certificate generator and storage service | Backend developer |
+| Mohamad Mahfouz Khalil | Credential schema, tests and CI | Test engineer, quality lead |
+| Ujala Ali Qureshi | User guide and December trial (joined Nov 2026) | Documentation |
+
+**Customer:** IKU Computer Club — contact: Asmaa, events organization coordinator ([interview notes](customer-interview.md))
+
+---
+
+## Roadmap
+
+| Date | Milestone |
+|---|---|
+| 22 Oct 2026 | Proposal submitted, repository set up, customer interview done ✅ |
+| 9 Nov 2026 | Smart contract with tests deployed on Sepolia ✅ (deployed 30 Oct) |
+| 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end ⏳ |
+| 7 Dec 2026 | Verification page done; trial at the IKU Computer Club's December workshops |
+| 16 Dec 2026 | Release v1.0 and test report |
+
+---
+
+## Repository Structure
+
+```
+contracts/     Solidity smart contract + Hardhat tests
+service/       Node.js certificate service: HTTP API, JSON-LD builder, PDF + QR
+web/           Issuer dashboard (issue.html) and verification page (verify.html)
+schema/        JSON-LD context, SHACL shape and the pySHACL check
+.github/       CI workflow
+HASHING.md     How a certificate hash is computed
+Verification & Test Report.md   Week 2 test report
+customer-interview.md           Interview with the IKU Computer Club
+```
+
+---
+
+## Out of Scope
+
+- Mainnet deployment (costs real money)
+- Personal data on chain
+- Official university diplomas and transcripts
+- Native mobile apps
