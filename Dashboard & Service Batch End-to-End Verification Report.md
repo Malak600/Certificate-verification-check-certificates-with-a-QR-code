@@ -60,7 +60,7 @@ Verified that `service/tests/hashingSpec.test.js` reproduces the exact W3C VC v2
 
 ## 5. Batch Issuance Error-Handling & Edge Cases
 
-The test suite in `service/tests/batchIssuanceEdgeCases.test.js` verified robust handling of abnormal inputs:
+The test suite in `service/tests/csvParser.test.js` verified robust handling of abnormal inputs:
 * **Empty CSV Files:** Immediately rejected with descriptive error, preventing zero-length batch transactions on Sepolia.
 * **Missing Column Headers:** Files lacking mandatory `name` or `email` headers are safely rejected.
 * **Corrupt / Partial Rows:** Rows missing participant names are quarantined into the `errors` array while preserving valid rows.
@@ -74,7 +74,7 @@ The test suite in `service/tests/batchIssuanceEdgeCases.test.js` verified robust
 * **PR Title:** `Story S7: verify a certificate by uploading its PDF` (by Malak Alfakavi)
 * **Quality Lead Evaluation:**
   * **Functional Review:** Embeds `certichain-certificate.json` inside generated PDF attachments, allowing verifiers without QR scanners to upload the PDF directly into `web/verify.html`.
-  * **Security Check:** Altering any visual or embedded character in the PDF changes the computed hash, causing the contract lookup to return `NotFound` (0).
+  * **Security Check:** Changing the embedded certificate data changes the hash, so the page shows Not found. The page also shows the name, event and date so the verifier can compare them with the printed PDF.
   * **Compatibility:** Backward-compatible with QR-code link verification.
   * **Approval Status:** **RECOMMENDED FOR MERGE** ✅
 
