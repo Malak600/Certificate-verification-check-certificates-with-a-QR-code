@@ -137,7 +137,8 @@ web/           Issuer dashboard (issue.html) and verification page (verify.html)
 schema/        JSON-LD context, SHACL shape and the pySHACL check
 .github/       CI workflow
 HASHING.md     How a certificate hash is computed
-Verification & Test Report.md   Week 2 test report
+Verification & Test Report.md   Milestone 2 test report
+Dashboard & Service Batch End-to-End Verification Report.md   Batch issuance end-to-end report
 customer-interview.md           Interview with the IKU Computer Club
 ```
 
