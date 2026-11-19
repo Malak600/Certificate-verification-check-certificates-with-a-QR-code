@@ -122,7 +122,7 @@ python schema/tools/validate.py schema-samples
 |---|---|
 | 22 Oct 2026 | Proposal submitted, repository set up, customer interview done ✅ |
 | 9 Nov 2026 | Smart contract with tests deployed on Sepolia ✅ (deployed 30 Oct) |
-| 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end ✅ |
+| 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end ⏳ |
 | 7 Dec 2026 | Verification page done; trial at the IKU Computer Club's December workshops |
 | 16 Dec 2026 | Release v1.0 and test report |
 
