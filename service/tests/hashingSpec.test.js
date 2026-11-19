@@ -9,6 +9,62 @@ import { sha256 } from '../src/utils.js';
  * Verification test for HASHING.md specification compliance.
  */
 
+test('HASHING.md Spec - reproduces W3C VC v2.0 worked example hash exactly (Section 5)', async () => {
+  const cert = {
+    "@context": [
+      "https://www.w3.org/ns/credentials/v2",
+      "http://www.w3.org/ns/prov#",
+      {
+        "certichain": "https://certichain.iku.edu.tr/schema#",
+        "ParticipationCertificate": "certichain:ParticipationCertificate",
+        "clubName": "certichain:clubName",
+        "eventDate": "certichain:eventDate",
+        "eventTitle": "certichain:eventTitle",
+        "hours": "certichain:hours",
+        "recipientEmail": "certichain:recipientEmail",
+        "recipientName": "certichain:recipientName",
+        "salt": "certichain:salt"
+      }
+    ],
+    "id": "urn:uuid:00000000-0000-4000-8000-000000000001",
+    "type": [
+      "VerifiableCredential",
+      "ParticipationCertificate"
+    ],
+    "issuer": {
+      "id": "did:pkh:eip155:11155111:0x7b40b303bd39685ed6f7a236ff7e8f21d5d6b860",
+      "name": "IKU Computer Club"
+    },
+    "validFrom": "2026-12-05T00:00:00.000Z",
+    "credentialSubject": {
+      "id": "urn:uuid:1111111122223333",
+      "recipientName": "Ayse Yilmaz",
+      "recipientEmail": "ayse@stu.iku.edu.tr",
+      "eventTitle": "Git Workshop",
+      "eventDate": "2026-12-05",
+      "hours": 3
+    },
+    "wasAttributedTo": {
+      "id": "did:pkh:eip155:11155111:0x7b40b303bd39685ed6f7a236ff7e8f21d5d6b860"
+    },
+    "wasGeneratedBy": {
+      "type": "prov:Activity",
+      "name": "IKU Computer Club - Git Workshop"
+    },
+    "salt": "9f2c4a1be07d33c85a6e1f40d2b9c7a8"
+  };
+
+  const expectedCanonical = '{"@context":["https://www.w3.org/ns/credentials/v2","http://www.w3.org/ns/prov#",{"ParticipationCertificate":"certichain:ParticipationCertificate","certichain":"https://certichain.iku.edu.tr/schema#","clubName":"certichain:clubName","eventDate":"certichain:eventDate","eventTitle":"certichain:eventTitle","hours":"certichain:hours","recipientEmail":"certichain:recipientEmail","recipientName":"certichain:recipientName","salt":"certichain:salt"}],"credentialSubject":{"eventDate":"2026-12-05","eventTitle":"Git Workshop","hours":3,"id":"urn:uuid:1111111122223333","recipientEmail":"ayse@stu.iku.edu.tr","recipientName":"Ayse Yilmaz"},"id":"urn:uuid:00000000-0000-4000-8000-000000000001","issuer":{"id":"did:pkh:eip155:11155111:0x7b40b303bd39685ed6f7a236ff7e8f21d5d6b860","name":"IKU Computer Club"},"salt":"9f2c4a1be07d33c85a6e1f40d2b9c7a8","type":["VerifiableCredential","ParticipationCertificate"],"validFrom":"2026-12-05T00:00:00.000Z","wasAttributedTo":{"id":"did:pkh:eip155:11155111:0x7b40b303bd39685ed6f7a236ff7e8f21d5d6b860"},"wasGeneratedBy":{"name":"IKU Computer Club - Git Workshop","type":"prov:Activity"}}';
+  const expectedHash = '0x7893cc0d9d8ef11eeeea8226c0722b660e236f33739ff93d5c7ed9f4d41515f2';
+
+  const actualCanonical = canonicalizeJson(cert);
+  assert.equal(actualCanonical, expectedCanonical, 'Canonical JSON output must match HASHING.md section 5');
+
+  const result = await hashCertificate(cert);
+  assert.equal(result.hash, expectedHash, 'Computed hash must match HASHING.md section 5');
+  assert.equal(result.bytes32, expectedHash, 'bytes32 format must match HASHING.md section 5');
+});
+
 test('HASHING.md Spec - reproduces the earlier v1 example hash exactly (canonicalisation regression)', async () => {
   // Exact JSON from Section 5 of HASHING.md (in mixed key order)
   const cert = {
