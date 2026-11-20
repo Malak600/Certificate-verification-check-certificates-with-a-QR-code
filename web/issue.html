@@ -176,7 +176,22 @@ const text = await file.text();
 
   /* ---------- Issue (Service API + Smart Contract) ---------- */
   const CONTRACT_ADDRESS = "0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860";
-  const ABI = ["function issueBatch(bytes32[] hashes)"];
+  const ABI = [
+    "function issueBatch(bytes32[] hashes)",
+    "error EmptyHash()",
+    "error AlreadyIssued(bytes32 certHash)",
+    "error BadBatchSize(uint256 size)",
+    "error AccessControlUnauthorizedAccount(address account, bytes32 neededRole)"
+  ];
+
+  // Name of the contract error (e.g. AlreadyIssued) from an ethers error, or "".
+  // MetaMask returns the revert data without decoding it, so we decode it here.
+  function contractErrorName(err, abi) {
+    if (err.revert && err.revert.name) return err.revert.name;
+    const data = err.data || (err.info && err.info.error && err.info.error.data) || (err.error && err.error.data);
+    if (typeof data !== "string") return "";
+    try { return new ethers.Interface(abi).parseError(data).name; } catch (e) { return ""; }
+  }
 
   function updateIssueButton() {
     $("issueBtn").disabled = !(wallet && attendees.length && $("title").value.trim() && $("date").value);
@@ -199,6 +214,11 @@ const text = await file.text();
 
   function friendlyError(err) {
     if (err.code === "ACTION_REJECTED" || err.code === 4001) return "Cancelled";
+    const name = contractErrorName(err, ABI);
+    if (name === "AccessControlUnauthorizedAccount") return "This wallet is not an authorised club issuer";
+    if (name === "AlreadyIssued") return "Already issued";
+    if (name === "BadBatchSize") return "Too many certificates in one batch (the maximum is 200)";
+    if (name === "EmptyHash") return "The service returned an empty certificate hash";
     const text = (JSON.stringify(err) + " " + (err.message || "")).toLowerCase();
     if (text.includes("accesscontrol") || text.includes("role") || text.includes("not authorised") || text.includes("not authorized")) {
       return "This wallet is not an authorised club issuer";
@@ -316,8 +336,8 @@ const text = await file.text();
   const REVOKE_ABI = [
     "function revoke(bytes32 certHash)",
     "function verify(bytes32 certHash) view returns (uint8 status, address issuer, uint64 issuedAt, uint64 revokedAt)",
-    "error NotIssued()",
-    "error AlreadyRevoked()",
+    "error NotIssued(bytes32 certHash)",
+    "error AlreadyRevoked(bytes32 certHash)",
     "error AccessControlUnauthorizedAccount(address account, bytes32 neededRole)"
   ];
   const HASH_RE = /^0x[0-9a-fA-F]{64}$/;
@@ -346,12 +366,7 @@ const text = await file.text();
 
   function friendlyRevokeError(err) {
     if (err.code === "ACTION_REJECTED" || err.code === 4001) return "Cancelled";
-    // Name of the contract error (e.g. NotIssued), read from the revert data
-    let name = err.revert && err.revert.name;
-    const data = err.data || (err.info && err.info.error && err.info.error.data) || (err.error && err.error.data);
-    if (!name && typeof data === "string") {
-      try { name = new ethers.Interface(REVOKE_ABI).parseError(data).name; } catch (e) { /* not one of ours */ }
-    }
+    const name = contractErrorName(err, REVOKE_ABI);
     if (name === "NotIssued") return "❌ This certificate was never issued, so there is nothing to revoke.";
     if (name === "AlreadyRevoked") return "⚠️ This certificate is already revoked.";
     if (name === "AccessControlUnauthorizedAccount") return "This wallet is not an authorised club issuer";
