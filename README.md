@@ -122,7 +122,7 @@ python schema/tools/validate.py schema-samples
 |---|---|
 | 22 Oct 2026 | Proposal submitted, repository set up, customer interview done ✅ |
 | 9 Nov 2026 | Smart contract with tests deployed on Sepolia ✅ (deployed 30 Oct) |
-| 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end ⏳ |
+| 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end ✅ (done 20 Nov on Sepolia: [issue](https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4), [revoke](https://sepolia.etherscan.io/tx/0x73cd25d01cc15d01292e4002eac1f5dc0a37090266486ad08a1d571d239f9034)) |
 | 7 Dec 2026 | Verification page done; trial at the IKU Computer Club's December workshops |
 | 16 Dec 2026 | Release v1.0 and test report |
 
@@ -137,9 +137,11 @@ web/           Issuer dashboard (issue.html) and verification page (verify.html)
 schema/        JSON-LD context, SHACL shape and the pySHACL check
 .github/       CI workflow
 HASHING.md     How a certificate hash is computed
-Verification & Test Report.md   Milestone 2 test report
-Dashboard & Service Batch End-to-End Verification Report.md   Batch issuance end-to-end report
-customer-interview.md           Interview with the IKU Computer Club
+USER_GUIDE.md  Guide for the club organiser and verifiers, December trial plan
+customer-interview.md   Interview with the IKU Computer Club
+CertiChain_…_proposal.*   Current project proposal (Proposal Workbench export)
+docs/reports/             Test reports (week 2, batch end-to-end)
+docs/proposal-history/    Proposal as submitted on 23 Oct 2026
 ```
 
 ---

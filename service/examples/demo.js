@@ -50,7 +50,7 @@ Ammar Cashlan,2200002676@stu.iku.edu.tr
     console.log(`     Saved PDF:     ${pdfPath}`);
   }
 
-  console.log('\n✅ Demo batch complete! All files saved in service/examples/output/');
+  console.log('\n✅ Demo batch complete! All files saved in service/examples/output/ (not committed to git)');
 }
 
 runDemo().catch(console.error);
