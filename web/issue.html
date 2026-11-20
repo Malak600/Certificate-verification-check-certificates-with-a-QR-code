@@ -80,6 +80,16 @@
   </div>
 </div>
 
+<!-- 5. Revoke -->
+<div class="card">
+  <h2>4. Revoke a certificate</h2>
+  <p class="hint">Use this only if a certificate was issued by mistake (wrong name, wrong event…). The hash is printed at the bottom of the certificate PDF. Revoking cannot be undone.</p>
+  <label for="revokeHash">Certificate hash</label>
+  <input type="text" id="revokeHash" placeholder="0x… (64 hex characters)" autocomplete="off" spellcheck="false">
+  <button id="revokeBtn" style="margin-top:12px" disabled>Revoke certificate</button>
+  <div id="revokeMsg"></div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script>
@@ -300,6 +310,87 @@ const text = await file.text();
     } finally {
       btn.disabled = false;
       btn.textContent = "Download all PDFs (ZIP)";
+    }
+  };
+  /* ---------- Revoke (story S4) ---------- */
+  const REVOKE_ABI = [
+    "function revoke(bytes32 certHash)",
+    "function verify(bytes32 certHash) view returns (uint8 status, address issuer, uint64 issuedAt, uint64 revokedAt)",
+    "error NotIssued()",
+    "error AlreadyRevoked()",
+    "error AccessControlUnauthorizedAccount(address account, bytes32 neededRole)"
+  ];
+  const HASH_RE = /^0x[0-9a-fA-F]{64}$/;
+
+  function revokeMsg(text, ok, linkHref, linkText) {
+    const p = document.createElement("p");
+    p.className = "msg " + (ok ? "ok" : "err");
+    p.textContent = text;
+    if (linkHref) {
+      p.appendChild(document.createTextNode(" "));
+      const a = document.createElement("a");
+      a.href = linkHref; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = linkText;
+      p.appendChild(a);
+    }
+    $("revokeMsg").replaceChildren(p);
+  }
+
+  function updateRevokeButton() {
+    $("revokeBtn").disabled = !(wallet && HASH_RE.test($("revokeHash").value.trim()));
+  }
+  $("revokeHash").addEventListener("input", updateRevokeButton);
+  // connect() calls updateIssueButton() when the wallet changes, so update the revoke button there too
+  const updateIssueButtonOnly = updateIssueButton;
+  updateIssueButton = function () { updateIssueButtonOnly(); updateRevokeButton(); };
+
+  function friendlyRevokeError(err) {
+    if (err.code === "ACTION_REJECTED" || err.code === 4001) return "Cancelled";
+    // Name of the contract error (e.g. NotIssued), read from the revert data
+    let name = err.revert && err.revert.name;
+    const data = err.data || (err.info && err.info.error && err.info.error.data) || (err.error && err.error.data);
+    if (!name && typeof data === "string") {
+      try { name = new ethers.Interface(REVOKE_ABI).parseError(data).name; } catch (e) { /* not one of ours */ }
+    }
+    if (name === "NotIssued") return "❌ This certificate was never issued, so there is nothing to revoke.";
+    if (name === "AlreadyRevoked") return "⚠️ This certificate is already revoked.";
+    if (name === "AccessControlUnauthorizedAccount") return "This wallet is not an authorised club issuer";
+    return "Something went wrong: " + (err.shortMessage || err.message);
+  }
+
+  $("revokeBtn").onclick = async () => {
+    const hash = $("revokeHash").value.trim().toLowerCase();
+    $("revokeBtn").disabled = true;
+    try {
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      if (chainId !== SEPOLIA_CHAIN_ID) {
+        await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_ID }] });
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, REVOKE_ABI, signer);
+
+      // Step 1: check the certificate first, so we never send a transaction that will fail
+      revokeMsg("Checking the certificate…", true);
+      const [status] = await contract.verify(hash);
+      if (Number(status) === 0) { revokeMsg("❌ This certificate was never issued, so there is nothing to revoke.", false); return; }
+      if (Number(status) === 2) { revokeMsg("⚠️ This certificate is already revoked.", false); return; }
+
+      // Step 2: ask the organiser to confirm, then revoke via MetaMask
+      if (!confirm("Revoke this certificate? Anyone who checks it will see \"Revoked\". This cannot be undone.")) {
+        revokeMsg("Cancelled", false);
+        return;
+      }
+      revokeMsg("Waiting for MetaMask confirmation…", true);
+      const tx = await contract.revoke(hash);
+      revokeMsg("Transaction sent, waiting for confirmation…", true);
+      await tx.wait();
+      revokeMsg("✅ Certificate revoked", true, "https://sepolia.etherscan.io/tx/" + tx.hash, "View on Etherscan");
+      $("revokeHash").value = "";
+    } catch (err) {
+      revokeMsg(friendlyRevokeError(err), false);
+    } finally {
+      updateRevokeButton();
     }
   };
 </script>
