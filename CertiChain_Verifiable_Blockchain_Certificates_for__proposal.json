@@ -4,7 +4,7 @@
  "stage": "proposal",
  "stageLabel": "Proposal",
  "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
- "saved": "2026-11-20T09:02:05.333Z",
+ "saved": "2026-11-20T09:19:59.616Z",
  "proposal": {
   "course": "SEN0401",
   "semester": "2026-2027 Fall",
@@ -445,6 +445,20 @@
     "ref": "",
     "prev": "5a2126ceb6862db3a11273593b28a4f71e9e00ec88dbe71434e124e090a5357d",
     "hash": "e90a58931bf2ab56b3c7bca69a5169a8b15c73aef157a6b036c25a814b20827b"
+   },
+   {
+    "seq": 23,
+    "ts": "2026-11-20T09:15:29.551Z",
+    "member": "Raghd Alfakavi",
+    "process": "P02",
+    "story": "S2",
+    "hours": 0.25,
+    "description": "Correction to entry 2: the customer contact was Asmaa, the events organization coordinator of the IKU Computer Club, not the club president.",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "e90a58931bf2ab56b3c7bca69a5169a8b15c73aef157a6b036c25a814b20827b",
+    "hash": "059da52c5cb8ab1fba585e20f708233b6c28be849f65fabf0217c0c53aefd26a"
    }
   ],
   "repo": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",

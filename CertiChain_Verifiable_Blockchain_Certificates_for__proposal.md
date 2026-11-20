@@ -35,7 +35,7 @@ SEN0401 Special Topics: Blockchain · 2026-2027 Fall · Proposal · Method: BRSF
 
 ### Work log
 
-22 entries; chain intact; head fingerprint e90a58931bf2ab56b3c7bca69a5169a8b15c73aef157a6b036c25a814b20827b.
+23 entries; chain intact; head fingerprint 059da52c5cb8ab1fba585e20f708233b6c28be849f65fabf0217c0c53aefd26a.
 
 | No. | Time (UTC) | Member | Process | Hours | What | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -61,6 +61,7 @@ SEN0401 Special Topics: Blockchain · 2026-2027 Fall · Proposal · Method: BRSF
 | 20 | 2026-11-20 08:44 | Ujala Ali Qureshi | Transition | 0.5 | On 20 Nov ran the contract and service tests, local end-to-end checks and drafted the test report with screenshots | https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4 |
 | 21 | 2026-11-20 08:45 | Raghd Alfakavi | Verification | 1.5 | On 20 Nov I ran the first live end-to-end test on Sepolia. I issued a 5-person batch from issue.html with MetaMask, downloaded the PDFs, and verified a certificate by scanning the QR code and by uploading the PDF. Both showed Valid. My first try used an old copy of the repo, so I downloaded the latest version and issued again. | https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4 |
 | 22 | 2026-11-20 09:01 | Raghd Alfakavi | Verification | 0.5 | On 20 Nov I ran the live revoke test on Sepolia. I revoked one test certificate from the same batch through Etherscan, then checked it on the verify page, which showed Revoked with the revoke time. | https://sepolia.etherscan.io/tx/0x73cd25d01cc15d01292e4002eac1f5dc0a37090266486ad08a1d571d239f9034 |
+| 23 | 2026-11-20 09:15 | Raghd Alfakavi | Stakeholder needs and requirements | 0.25 | Correction to entry 2: the customer contact was Asmaa, the events organization coordinator of the IKU Computer Club, not the club president. |  |
 
 ## 1. Mission
 
