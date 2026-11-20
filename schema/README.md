@@ -87,4 +87,4 @@ The shape is the gate that enforces both: it blocks malformed certificates (O4) 
 * **CI Pipeline Integration:** The GitHub Actions pipeline ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) now verifies both `service/` and `contracts/` tests with automated coverage checking.
 * **Specification Compliance:** Verified exact alignment with `HASHING.md` canonical JSON formatting and test vectors in [`service/tests/hashingSpec.test.js`](../service/tests/hashingSpec.test.js).
 * **KVKK Privacy Verification:** Automated audit in [`service/tests/privacyAndCompliance.test.js`](../service/tests/privacyAndCompliance.test.js) verifies that zero personal data fields are exposed to the public blockchain.
-* **Full Report:** See [`Verification & Test Report.md`](../Verification%20%26%20Test%20Report.md).
+* **Full Report:** See [`docs/reports/week2-verification-test-report.md`](../docs/reports/week2-verification-test-report.md).

@@ -1,4 +1,5 @@
 node_modules/
 schema-samples/
+service/examples/output/
 __pycache__/
 .env
