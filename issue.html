@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CertiChain – Issue certificates</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f4f6f8; color: #1f2a2e; margin: 0; padding: 24px 16px; }
+  .card { max-width: 760px; margin: 0 auto 20px; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  h1 { margin: 0 0 4px; font-size: 1.5rem; }
+  h2 { margin: 0 0 12px; font-size: 1.1rem; }
+  p.sub { margin: 0 0 16px; color: #5b6b70; }
+  label { display: block; font-weight: 600; margin: 12px 0 4px; }
+  input[type=text], input[type=date] { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5d1; border-radius: 8px; font-size: 1rem; }
+  input[type=file] { margin-top: 4px; }
+  button { padding: 12px 18px; font-size: 1rem; border: 0; border-radius: 8px; cursor: pointer; background: #1c6e8c; color: #fff; }
+  button:disabled { background: #9fb3ba; cursor: not-allowed; }
+  button.zip-btn { background: #2e7d4f; margin-top: 12px; }
+  .wallet { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .hint { color: #5b6b70; font-size: .9rem; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .95rem; }
+  th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e5e9eb; }
+  th { background: #eef2ef; }
+  tr.bad td { color: #b3541e; }
+  .msg { margin-top: 14px; padding: 10px; border-radius: 8px; background: #eef2ef; }
+  .ok { color: #2e7d4f; } .err { color: #b3541e; }
+  .pdf-list { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .pdf-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #f8fafb; border: 1px solid #e5e9eb; border-radius: 6px; font-size: 0.9rem; }
+  .pdf-item a { color: #1c6e8c; text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<!-- 1. Wallet: the organiser must connect MetaMask (the issuer wallet) -->
+<div class="card wallet">
+  <div>
+    <h1>CertiChain – Issue certificates</h1>
+    <p class="sub" style="margin:0">For event organisers of the IKU Computer Club.</p>
+  </div>
+  <div>
+    <button id="connectBtn">Connect MetaMask</button>
+    <div id="walletInfo" class="hint"></div>
+  </div>
+</div>
+
+<!-- 2. Event details -->
+<div class="card">
+  <h2>1. Event details</h2>
+  <label for="title">Event title</label>
+  <input type="text" id="title" placeholder="e.g. Git & GitHub Workshop">
+  <label for="date">Event date</label>
+  <input type="date" id="date">
+  <label for="club">Club name</label>
+  <input type="text" id="club" value="IKU Computer Club">
+</div>
+
+<!-- 3. Attendance list (CSV) -->
+<div class="card">
+  <h2>2. Attendance list</h2>
+  <p class="hint">Upload a CSV file with the columns <code>name,email</code> (one attendee per line).</p>
+  <input type="file" id="csvFile" accept=".csv,text/csv">
+  <div id="csvMsg"></div>
+  <table id="preview" hidden>
+    <thead><tr><th>#</th><th>Name</th><th>E-mail</th><th>Check</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- 4. Issue -->
+<div class="card">
+  <h2>3. Issue</h2>
+  <p class="hint">Certificates are generated via the local service and written to the Sepolia blockchain via MetaMask.</p>
+  <button id="issueBtn" disabled>Issue certificates</button>
+  <div id="issueMsg"></div>
+
+  <!-- Download ZIP & Individual PDFs -->
+  <div id="downloadsArea" hidden>
+    <button id="downloadZipBtn" class="zip-btn">Download all PDFs (ZIP)</button>
+    <div id="pdfLinks" class="pdf-list"></div>
+  </div>
+</div>
+
+<!-- 5. Revoke -->
+<div class="card">
+  <h2>4. Revoke a certificate</h2>
+  <p class="hint">Use this only if a certificate was issued by mistake (wrong name, wrong event…). The hash is printed at the bottom of the certificate PDF. Revoking cannot be undone.</p>
+  <label for="revokeHash">Certificate hash</label>
+  <input type="text" id="revokeHash" placeholder="0x… (64 hex characters)" autocomplete="off" spellcheck="false">
+  <button id="revokeBtn" style="margin-top:12px" disabled>Revoke certificate</button>
+  <div id="revokeMsg"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+  const SEPOLIA_CHAIN_ID = "0xaa36a7";
+  const SERVICE_URL = "http://localhost:3001";
+  const $ = (id) => document.getElementById(id);
+
+  let wallet = null;         // connected MetaMask address
+  let attendees = [];        // valid rows from the CSV: { name, email }
+  let rawCsvContent = "";    // raw CSV string sent to Ammar's API
+  let issuedItems = [];      // returned items with PDF download URLs
+
+  /* ---------- Wallet ---------- */
+  async function connect() {
+    if (!window.ethereum) { $("walletInfo").textContent = "MetaMask is not installed."; return; }
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      wallet = accounts[0];
+      const net = chainId === SEPOLIA_CHAIN_ID ? "Sepolia ✅" : "Wrong network – switch to Sepolia";
+      $("walletInfo").textContent = wallet.slice(0, 6) + "…" + wallet.slice(-4) + " · " + net;
+      $("connectBtn").textContent = "Connected";
+    } catch (e) {
+      $("walletInfo").textContent = "Connection rejected.";
+    }
+    updateIssueButton();
+  }
+  $("connectBtn").onclick = connect;
+
+  /* ---------- CSV ---------- */
+  function parseCsv(text) {
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l !== "");
+    if (lines.length && /^name\s*,\s*email$/i.test(lines[0])) lines.shift();
+    return lines.map(line => {
+      const parts = line.split(",").map(p => p.trim().replace(/^"|"$/g, ""));
+      return { name: parts[0] || "", email: parts[1] || "" };
+    });
+  }
+
+  function checkRow(r) {
+    if (!r.name) return "Missing name";
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(r.email)) return "Invalid e-mail";
+    return "";
+  }
+
+  $("csvFile").onchange = async (e) => {
+    const file = e.target.files[0];
+    attendees = [];
+    rawCsvContent = "";
+    const body = $("preview").querySelector("tbody");
+    body.innerHTML = "";
+    $("preview").hidden = true;
+    $("issueMsg").textContent = "";
+    $("downloadsArea").hidden = true;
+    if (!file) { updateIssueButton(); return; }
+
+const text = await file.text();
+    rawCsvContent = text.replace(/^\uFEFF/, "").trim();    const rows = parseCsv(rawCsvContent);
+    if (rows.length === 0) {
+      $("csvMsg").innerHTML = '<p class="err">The file is empty. Nothing to issue.</p>';
+      updateIssueButton();
+      return;
+    }
+
+    let bad = 0;
+    rows.forEach((r, i) => {
+      const problem = checkRow(r);
+      if (problem) bad++; else attendees.push(r);
+      const tr = document.createElement("tr");
+      if (problem) tr.className = "bad";
+      [i + 1, r.name, r.email, problem || "✔"].forEach(v => {
+        const td = document.createElement("td");
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+    $("preview").hidden = false;
+    $("csvMsg").innerHTML = bad
+      ? `<p class="err">${attendees.length} valid, ${bad} with problems (fix them in the file and upload again).</p>`
+      : `<p class="ok">${attendees.length} attendees ready.</p>`;
+    updateIssueButton();
+  };
+
+  /* ---------- Issue (Service API + Smart Contract) ---------- */
+  const CONTRACT_ADDRESS = "0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860";
+  const ABI = ["function issueBatch(bytes32[] hashes)"];
+
+  function updateIssueButton() {
+    $("issueBtn").disabled = !(wallet && attendees.length && $("title").value.trim() && $("date").value);
+  }
+  ["title", "date", "club"].forEach(id => $(id).addEventListener("input", updateIssueButton));
+
+  function setMsg(text, ok, linkHref, linkText) {
+    const p = document.createElement("p");
+    p.className = "msg " + (ok ? "ok" : "err");
+    p.textContent = text;
+    if (linkHref) {
+      p.appendChild(document.createTextNode(" "));
+      const a = document.createElement("a");
+      a.href = linkHref; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = linkText;
+      p.appendChild(a);
+    }
+    $("issueMsg").replaceChildren(p);
+  }
+
+  function friendlyError(err) {
+    if (err.code === "ACTION_REJECTED" || err.code === 4001) return "Cancelled";
+    const text = (JSON.stringify(err) + " " + (err.message || "")).toLowerCase();
+    if (text.includes("accesscontrol") || text.includes("role") || text.includes("not authorised") || text.includes("not authorized")) {
+      return "This wallet is not an authorised club issuer";
+    }
+    if (text.includes("already")) return "Already issued";
+    if (text.includes("failed to fetch")) return "Cannot connect to Certificate Service (is port 3001 running?)";
+    return "Something went wrong: " + (err.shortMessage || err.message);
+  }
+
+  $("issueBtn").onclick = async () => {
+    $("issueBtn").disabled = true;
+    $("downloadsArea").hidden = true;
+    try {
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      if (chainId !== SEPOLIA_CHAIN_ID) {
+        await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_ID }] });
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+      // Step 1: Send CSV + event details to Ammar's backend service
+      setMsg("Generating certificates & QR codes via service…", true);
+      const response = await fetch(`${SERVICE_URL}/api/issue`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          csv: rawCsvContent,
+          event: {
+            title: $("title").value.trim(),
+            date: $("date").value,
+            hours: 2
+          },
+          issuer: {
+            name: $("club").value.trim(),
+            clubName: $("club").value.trim(),
+            walletAddress: wallet
+          }
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Certificate service returned an error.");
+      }
+      if (!data.hashes || data.hashes.length === 0) {
+        throw new Error(data.errors?.[0]?.error || "No valid certificates generated.");
+      }
+
+      // Step 2: Record the real hashes on Sepolia via MetaMask
+      setMsg("Waiting for MetaMask confirmation…", true);
+      const tx = await contract.issueBatch(data.hashes);
+      setMsg("Transaction sent, waiting for confirmation…", true);
+      await tx.wait();
+
+      // Step 3: Show success + enable PDF/ZIP downloads
+      issuedItems = data.items || [];
+      setMsg(`✅ ${data.hashes.length} certificates issued`, true,
+        "https://sepolia.etherscan.io/tx/" + tx.hash, "View on Etherscan");
+
+      renderDownloads(issuedItems);
+    } catch (err) {
+      setMsg(friendlyError(err), false);
+    } finally {
+      updateIssueButton();
+    }
+  };
+
+  function renderDownloads(items) {
+    const container = $("pdfLinks");
+    container.innerHTML = "";
+    items.forEach(item => {
+      const div = document.createElement("div");
+      div.className = "pdf-item";
+      const span = document.createElement("span");
+      span.textContent = `${item.name} (${item.email})`;
+      const a = document.createElement("a");
+      a.href = `${SERVICE_URL}${item.pdfDownloadUrl}`;
+      a.target = "_blank";
+      a.download = `${item.name.replace(/\s+/g, "_")}.pdf`;
+      a.textContent = "Download PDF";
+      div.append(span, a);
+      container.appendChild(div);
+    });
+    $("downloadsArea").hidden = items.length === 0;
+  }
+
+  $("downloadZipBtn").onclick = async () => {
+    const btn = $("downloadZipBtn");
+    btn.disabled = true;
+    btn.textContent = "Creating ZIP…";
+    try {
+      const zip = new JSZip();
+      for (const item of issuedItems) {
+        const res = await fetch(`${SERVICE_URL}${item.pdfDownloadUrl}`);
+        const blob = await res.blob();
+        const fileName = `${item.name.replace(/[^a-z0-9]/gi, "_")}_certificate.pdf`;
+        zip.file(fileName, blob);
+      }
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "CertiChain_Certificates.zip";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setMsg("Failed to bundle ZIP: " + err.message, false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Download all PDFs (ZIP)";
+    }
+  };
+  /* ---------- Revoke (story S4) ---------- */
+  const REVOKE_ABI = [
+    "function revoke(bytes32 certHash)",
+    "function verify(bytes32 certHash) view returns (uint8 status, address issuer, uint64 issuedAt, uint64 revokedAt)",
+    "error NotIssued()",
+    "error AlreadyRevoked()",
+    "error AccessControlUnauthorizedAccount(address account, bytes32 neededRole)"
+  ];
+  const HASH_RE = /^0x[0-9a-fA-F]{64}$/;
+
+  function revokeMsg(text, ok, linkHref, linkText) {
+    const p = document.createElement("p");
+    p.className = "msg " + (ok ? "ok" : "err");
+    p.textContent = text;
+    if (linkHref) {
+      p.appendChild(document.createTextNode(" "));
+      const a = document.createElement("a");
+      a.href = linkHref; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = linkText;
+      p.appendChild(a);
+    }
+    $("revokeMsg").replaceChildren(p);
+  }
+
+  function updateRevokeButton() {
+    $("revokeBtn").disabled = !(wallet && HASH_RE.test($("revokeHash").value.trim()));
+  }
+  $("revokeHash").addEventListener("input", updateRevokeButton);
+  // connect() calls updateIssueButton() when the wallet changes, so update the revoke button there too
+  const updateIssueButtonOnly = updateIssueButton;
+  updateIssueButton = function () { updateIssueButtonOnly(); updateRevokeButton(); };
+
+  function friendlyRevokeError(err) {
+    if (err.code === "ACTION_REJECTED" || err.code === 4001) return "Cancelled";
+    // Name of the contract error (e.g. NotIssued), read from the revert data
+    let name = err.revert && err.revert.name;
+    const data = err.data || (err.info && err.info.error && err.info.error.data) || (err.error && err.error.data);
+    if (!name && typeof data === "string") {
+      try { name = new ethers.Interface(REVOKE_ABI).parseError(data).name; } catch (e) { /* not one of ours */ }
+    }
+    if (name === "NotIssued") return "❌ This certificate was never issued, so there is nothing to revoke.";
+    if (name === "AlreadyRevoked") return "⚠️ This certificate is already revoked.";
+    if (name === "AccessControlUnauthorizedAccount") return "This wallet is not an authorised club issuer";
+    return "Something went wrong: " + (err.shortMessage || err.message);
+  }
+
+  $("revokeBtn").onclick = async () => {
+    const hash = $("revokeHash").value.trim().toLowerCase();
+    $("revokeBtn").disabled = true;
+    try {
+      const chainId = await window.ethereum.request({ method: "eth_chainId" });
+      if (chainId !== SEPOLIA_CHAIN_ID) {
+        await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: SEPOLIA_CHAIN_ID }] });
+      }
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, REVOKE_ABI, signer);
+
+      // Step 1: check the certificate first, so we never send a transaction that will fail
+      revokeMsg("Checking the certificate…", true);
+      const [status] = await contract.verify(hash);
+      if (Number(status) === 0) { revokeMsg("❌ This certificate was never issued, so there is nothing to revoke.", false); return; }
+      if (Number(status) === 2) { revokeMsg("⚠️ This certificate is already revoked.", false); return; }
+
+      // Step 2: ask the organiser to confirm, then revoke via MetaMask
+      if (!confirm("Revoke this certificate? Anyone who checks it will see \"Revoked\". This cannot be undone.")) {
+        revokeMsg("Cancelled", false);
+        return;
+      }
+      revokeMsg("Waiting for MetaMask confirmation…", true);
+      const tx = await contract.revoke(hash);
+      revokeMsg("Transaction sent, waiting for confirmation…", true);
+      await tx.wait();
+      revokeMsg("✅ Certificate revoked", true, "https://sepolia.etherscan.io/tx/" + tx.hash, "View on Etherscan");
+      $("revokeHash").value = "";
+    } catch (err) {
+      revokeMsg(friendlyRevokeError(err), false);
+    } finally {
+      updateRevokeButton();
+    }
+  };
+</script>
+</body>
+</html>
