@@ -4,7 +4,7 @@
  "stage": "proposal",
  "stageLabel": "Proposal",
  "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
- "saved": "2026-11-20T12:03:54.617Z",
+ "saved": "2026-11-23T14:01:25.656Z",
  "proposal": {
   "course": "SEN0401",
   "semester": "2026-2027 Fall",
@@ -515,6 +515,20 @@
     "ref": "17",
     "prev": "64668b5cf0b9390450718fd1601c1dbbf6889e066b57cecb3200b7babc4c2d5f",
     "hash": "4e1991f660df0258dda473ecc6ef6b0df0ebbfdb3acde9e2921170d09534efda"
+   },
+   {
+    "seq": 28,
+    "ts": "2026-11-23T14:01:20.519Z",
+    "member": "Malak Alfakavi",
+    "process": "P07",
+    "story": "",
+    "hours": 0.5,
+    "description": "On 23 Nov updated the proposal to match the implementation: plain HTML pages instead of React, the real contract data model (Record with revokedAt), the ZIP download and the real issue sequence.",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "4e1991f660df0258dda473ecc6ef6b0df0ebbfdb3acde9e2921170d09534efda",
+    "hash": "29a1312fc9b09b9e1c4798ddd80a097c025b61b98c222888c7ff2f52ac55509a"
    }
   ],
   "repo": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
@@ -562,7 +576,7 @@
    },
    {
     "area": "Issuer application",
-    "where": "Issuer dashboard (React) and Node.js certificate service",
+    "where": "Issuer dashboard (HTML and ethers.js) and Node.js certificate service",
     "measure": "Today certificates are made by hand from a Word/Canva template"
    },
    {
@@ -691,7 +705,7 @@
    "RDFLibPython",
    "CoolURIPractice"
   ],
-  "techWhy": "JSON-LD 1.1 contexts give each certificate a machine-readable format that follows the W3C Verifiable Credentials data model, so other systems can read it, and its canonical form is what we hash. PROV-O describes who issued the certificate, for which event and when, so the provenance chain is explicit. SHACL shapes check every certificate before it is issued, so a malformed certificate never reaches the chain; RDFLib with pySHACL-style validation runs those checks in our test suite. Stable IRI practice gives every certificate a permanent verification URL that the QR code points to. Outside the semantic stack we use Solidity with OpenZeppelin AccessControl, Hardhat for testing and deployment, ethers.js in the browser, React for the pages and Node.js for the PDF and QR service.",
+  "techWhy": "JSON-LD 1.1 contexts give each certificate a machine-readable format that follows the W3C Verifiable Credentials data model, so other systems can read it, and its canonical form is what we hash. PROV-O describes who issued the certificate, for which event and when, so the provenance chain is explicit. SHACL shapes check every certificate before it is issued, so a malformed certificate never reaches the chain; RDFLib with pySHACL-style validation runs those checks in our test suite. Stable IRI practice gives every certificate a permanent verification URL that the QR code points to. Outside the semantic stack we use Solidity with OpenZeppelin AccessControl, Hardhat for testing and deployment, ethers.js in the browser, plain HTML and JavaScript for the pages (hosted on GitHub Pages) and Node.js for the PDF and QR service.",
   "goals": [
    {
     "goal": "Any verifier can confirm that a certificate is genuine and not revoked without contacting the club",
@@ -795,8 +809,8 @@
     "dir": "Dir_Hold"
    }
   ],
-  "activity": "1. The organiser runs the event and exports the attendance list as CSV. 2. The organiser connects MetaMask to the dashboard; if the wallet has no ISSUER role, the flow stops with an error. 3. The organiser enters event details and uploads the CSV; if the file is empty or malformed, the dashboard rejects it. 4. The service builds and SHACL-validates one certificate per row; invalid rows are listed for correction. 5. The dashboard sends one batch transaction; on failure nothing is recorded and the organiser may retry. 6. PDFs with QR codes are generated and e-mailed or downloaded. 7. A verifier opens the QR link; the page queries the contract and branches to Valid, Revoked or Not found.",
-  "sequence": "Organiser → Dashboard: upload CSV and event details. Dashboard → Certificate service: build certificates. Certificate service → SHACL validator: validate each; validator → service: report. Service → Dashboard: list of hashes. Dashboard → MetaMask: request signature for issueBatch(hashes). MetaMask → Registry contract: transaction. Contract → Dashboard: CertificateIssued events. Dashboard → Service: generate PDFs. Verifier → Verification page: open QR link with certificate ID. Page → Public RPC → Registry contract: verify(hash). Contract → Page: issuer, date, revoked flag. Page → Verifier: result.",
+  "activity": "1. The organiser runs the event and exports the attendance list as CSV. 2. The organiser connects MetaMask to the dashboard; if the wallet has no ISSUER role, the flow stops with an error. 3. The organiser enters event details and uploads the CSV; if the file is empty or malformed, the dashboard rejects it. 4. The service builds and SHACL-validates one certificate per row; invalid rows are listed for correction. 5. The dashboard sends one batch transaction; on failure nothing is recorded and the organiser may retry. 6. The organiser downloads the PDFs with QR codes as one ZIP file and shares them with the attendees . 7. A verifier opens the QR link; the page queries the contract and branches to Valid, Revoked or Not found.",
+  "sequence": "Organiser → Dashboard: upload CSV and event details. Dashboard → Certificate service: POST /api/issue. Certificate service: builds one certificate per row, validates it, hashes it and renders its PDF with a QR code. Service → Dashboard: hashes and PDFs. Dashboard → MetaMask: request signature for issueBatch(hashes). MetaMask → Registry contract: transaction. Contract → Dashboard: CertificateIssued events; dashboard shows the Etherscan link and the ZIP download. Verifier → Verification page: open QR link with the hash, or upload the PDF. Page → Public RPC → Registry contract: verify(hash). Contract → Page: status, issuer, issue and revoke time. Page → Verifier: Valid, Revoked or Not found.",
   "initiativeKind": "Kind_InitialDevelopment",
   "epics": [
    {
@@ -940,7 +954,7 @@
     "check": "Reviewer checks contract storage and events in the pull request"
    }
   ],
-  "classModel": "CertificateRegistry (contract): owner: address; certificates: mapping(bytes32 => CertificateRecord); functions issue(bytes32), issueBatch(bytes32[]), revoke(bytes32), verify(bytes32) returns (issuer, issuedAt, revoked, revokedAt); uses OpenZeppelin AccessControl with ISSUER_ROLE. CertificateRecord (struct): issuer: address; issuedAt: uint64; revoked: bool; revokedAt: uint64. Certificate (off chain, JSON-LD): id: URI; event: Event; participant: Participant; issuedBy: Issuer; issuedOn: date; salt: string; hash: bytes32. Event: title, date, organiser. Participant: name, email (off chain only). Issuer: clubName, wallet address. Relations: an Event has many Certificates; a Certificate belongs to one Participant and one Issuer; a CertificateRecord stores the hash of exactly one Certificate.",
+  "classModel": "CertificateRegistry (contract): uses OpenZeppelin AccessControl with ISSUER_ROLE; records: mapping(bytes32 => Record); functions issue(bytes32), issueBatch(bytes32[]) (at most 200 hashes), revoke(bytes32), verify(bytes32) returns (status, issuer, issuedAt, revokedAt) where status is NotFound, Valid or Revoked; errors EmptyHash, AlreadyIssued, NotIssued, AlreadyRevoked, BadBatchSize. Record (struct): issuer: address; issuedAt: uint64; revokedAt: uint64 (0 while the certificate is valid). Certificate (off chain, W3C VC JSON-LD): id: URI; issuer: Issuer; validFrom: dateTime; credentialSubject: recipientName, recipientEmail, eventTitle, eventDate, hours; wasGeneratedBy: Event; salt: string. Its SHA-256 hash of the canonical JSON is the bytes32 key; the hash is not a field of the certificate. Event: title, date. Issuer: club name, wallet address (did:pkh). Relations: an Event has many Certificates; a Certificate belongs to one Participant and one Issuer; a Record stores the hash of exactly one Certificate.",
   "tests": [
    {
     "story": "S1",
@@ -988,7 +1002,7 @@
     "data": "5-row CSV including Turkish characters, Sepolia contract, one phone and one laptop"
    }
   ],
-  "model_Data": "Class diagram: CertificateRegistry holds a mapping from bytes32 hash to CertificateRecord (issuer, issuedAt, revoked, revokedAt). Off chain, Certificate links Event, Participant and Issuer; only its salted SHA-256 hash crosses to the chain.",
+  "model_Data": "Class diagram: CertificateRegistry holds a mapping from bytes32 hash to Record (issuer, issuedAt, revokedAt). Off chain, the Certificate (W3C VC JSON-LD) links Event, Participant and Issuer; only the SHA-256 hash of its salted canonical JSON crosses to the chain.HA-256 hash crosses to the chain.",
   "model_Security": "State machine for a certificate hash: Unknown → Issued (issue by ISSUER_ROLE only) → Revoked (revoke by ISSUER_ROLE only). Revoked is final; issuing an existing hash is refused; any call from a wallet without the role is refused in every state.",
   "model_Interaction": "Sequence diagram: Organiser uploads CSV to Dashboard; Dashboard asks the service to build and validate certificates; MetaMask signs issueBatch; the contract emits events; Verifier opens the QR link; the page calls verify through a public RPC and shows the result.",
   "model_User_interface": "Mockups for three screens: dashboard event form with CSV upload and batch preview; certificate PDF layout with QR code; verification page with a large green Valid, orange Revoked or red Not found result and the issuer details below.",
