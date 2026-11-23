@@ -35,7 +35,7 @@ SEN0401 Special Topics: Blockchain · 2026-2027 Fall · Proposal · Method: BRSF
 
 ### Work log
 
-28 entries; chain intact; head fingerprint 29a1312fc9b09b9e1c4798ddd80a097c025b61b98c222888c7ff2f52ac55509a.
+29 entries; chain intact; head fingerprint 7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec.
 
 | No. | Time (UTC) | Member | Process | Hours | What | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -67,6 +67,7 @@ SEN0401 Special Topics: Blockchain · 2026-2027 Fall · Proposal · Method: BRSF
 | 26 | 2026-11-20 12:03 | Mohammed Ammar | Implementation | 0.25 | Entry 11 is a correction of entry 8, not new work; its hours should not be counted. |  |
 | 27 | 2026-11-20 12:03 | Mohamad Mahfouz Khalil | Implementation | 0.25 | Entry 17 is a correction of entry 12, not new work; its hours should not be counted. |  |
 | 28 | 2026-11-23 14:01 | Malak Alfakavi | Implementation | 0.5 | On 23 Nov updated the proposal to match the implementation: plain HTML pages instead of React, the real contract data model (Record with revokedAt), the ZIP download and the real issue sequence. |  |
+| 29 | 2026-11-23 14:34 | Malak Alfakavi | Verification | 0.5 | On 23 Nov ran the O1 phone timing test over Wi-Fi: median 0.61 s in Chrome over 9 tries, 0.31 to 0.83 s on a first visit in incognito, 11.46 s inside the WhatsApp in-app browser. Target under 10 s met in Chrome. |  |
 
 ## 1. Mission
 
@@ -285,9 +286,9 @@ Link to the course chapters. Chapter 1: the trust argument above is the problem 
 | 2026-10-26 | Proposal submitted, repository set up, customer meeting notes committed | Malak Alfakavi |
 | 2026-11-09 | CertificateRegistry contract with tests deployed on Sepolia | Malak Alfakavi |
 | 2026-11-23 | Issuer dashboard and certificate service issue a test batch end to end | Mohammed Ammar |
-| 2026-11-30 | End-to-end test report with screenshots and failure-case results; first draft of the organiser and verifier user guide | Ujala Ali Qureshi |
-| 2026-12-07 | Verification page done; trial at the IKU Computer Club's December workshop with the organiser and three verifiers | Raghd Alfakavi |
-| 2026-12-16 | Tagged release v1.0, test report and final submission | Malak Alfakavi |
+| 2026-11-29 | End-to-end test report with screenshots and failure-case results; first draft of the organiser and verifier user guide | Ujala Ali Qureshi |
+| 2026-12-06 | Trial with the IKU Computer Club (December workshop, or a small club event if the workshop is later) with the organiser and three verifiers | Raghd Alfakavi |
+| 2026-12-10 | Tagged release v1.0, final test report and final submission | Malak Alfakavi |
 
 | Risk | Likelihood | Impact | Mitigation |
 | --- | --- | --- | --- |
@@ -336,5 +337,5 @@ Project grade 100 (60%), team grade 100 (20%), individual contribution (20%).
 | Raghd Alfakavi | 2200002698 | 100 | 100 |
 | Mohammed Ammar | 2200002676 | 100 | 100 |
 | Mohamad Mahfouz Khalil | 2200009092 | 100 | 100 |
-| Ujala Ali Qureshi | 2400003598 | 78 | 95.6 |
+| Ujala Ali Qureshi | 2400003598 | 44 | 88.8 |
 
