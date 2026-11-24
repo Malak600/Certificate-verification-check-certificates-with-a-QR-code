@@ -35,7 +35,7 @@ SEN0401 Special Topics: Blockchain · 2026-2027 Fall · Proposal · Method: BRSF
 
 ### Work log
 
-27 entries; chain intact; head fingerprint 4e1991f660df0258dda473ecc6ef6b0df0ebbfdb3acde9e2921170d09534efda.
+29 entries; chain intact; head fingerprint 7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec.
 
 | No. | Time (UTC) | Member | Process | Hours | What | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -66,6 +66,8 @@ SEN0401 Special Topics: Blockchain · 2026-2027 Fall · Proposal · Method: BRSF
 | 25 | 2026-11-20 12:02 | Raghd Alfakavi | Implementation | 0.25 | Entry 23 is the correction of entry 2; it was saved with the wrong kind. |  |
 | 26 | 2026-11-20 12:03 | Mohammed Ammar | Implementation | 0.25 | Entry 11 is a correction of entry 8, not new work; its hours should not be counted. |  |
 | 27 | 2026-11-20 12:03 | Mohamad Mahfouz Khalil | Implementation | 0.25 | Entry 17 is a correction of entry 12, not new work; its hours should not be counted. |  |
+| 28 | 2026-11-23 14:01 | Malak Alfakavi | Implementation | 0.5 | On 23 Nov updated the proposal to match the implementation: plain HTML pages instead of React, the real contract data model (Record with revokedAt), the ZIP download and the real issue sequence. |  |
+| 29 | 2026-11-23 14:34 | Malak Alfakavi | Verification | 0.5 | On 23 Nov ran the O1 phone timing test over Wi-Fi: median 0.61 s in Chrome over 9 tries, 0.31 to 0.83 s on a first visit in incognito, 11.46 s inside the WhatsApp in-app browser. Target under 10 s met in Chrome. |  |
 
 ## 1. Mission
 
@@ -104,7 +106,7 @@ Once CertiChain exists, a certificate holder can send a single link that proves 
 | Area | Where it lives | How big it is today |
 | --- | --- | --- |
 | On-chain certificate registry | Solidity smart contract on the Ethereum Sepolia testnet | Does not exist today; 0 certificates on chain |
-| Issuer application | Issuer dashboard (React) and Node.js certificate service | Today certificates are made by hand from a Word/Canva template |
+| Issuer application | Issuer dashboard (HTML and ethers.js) and Node.js certificate service | Today certificates are made by hand from a Word/Canva template |
 | Public verification | Public web page opened from the QR code | Today verification is done by e-mail to the club |
 | Credential data model | JSON-LD context and SHACL shape in the repository | No agreed certificate format today |
 
@@ -152,7 +154,7 @@ Provenance and trust › Blockchain-anchored provenance. Stack layers they need:
 - Serialisation: JSON-LD 1.1 contexts, RDFLib
 - Validation: SHACL shapes
 
-JSON-LD 1.1 contexts give each certificate a machine-readable format that follows the W3C Verifiable Credentials data model, so other systems can read it, and its canonical form is what we hash. PROV-O describes who issued the certificate, for which event and when, so the provenance chain is explicit. SHACL shapes check every certificate before it is issued, so a malformed certificate never reaches the chain; RDFLib with pySHACL-style validation runs those checks in our test suite. Stable IRI practice gives every certificate a permanent verification URL that the QR code points to. Outside the semantic stack we use Solidity with OpenZeppelin AccessControl, Hardhat for testing and deployment, ethers.js in the browser, React for the pages and Node.js for the PDF and QR service.
+JSON-LD 1.1 contexts give each certificate a machine-readable format that follows the W3C Verifiable Credentials data model, so other systems can read it, and its canonical form is what we hash. PROV-O describes who issued the certificate, for which event and when, so the provenance chain is explicit. SHACL shapes check every certificate before it is issued, so a malformed certificate never reaches the chain; RDFLib with pySHACL-style validation runs those checks in our test suite. Stable IRI practice gives every certificate a permanent verification URL that the QR code points to. Outside the semantic stack we use Solidity with OpenZeppelin AccessControl, Hardhat for testing and deployment, ethers.js in the browser, plain HTML and JavaScript for the pages (hosted on GitHub Pages) and Node.js for the PDF and QR service.
 
 ## 3. Goals
 
@@ -194,11 +196,11 @@ Actors: Event organiser (issue batch, revoke certificate, add issuer), Certifica
 
 ### Activity model
 
-1. The organiser runs the event and exports the attendance list as CSV. 2. The organiser connects MetaMask to the dashboard; if the wallet has no ISSUER role, the flow stops with an error. 3. The organiser enters event details and uploads the CSV; if the file is empty or malformed, the dashboard rejects it. 4. The service builds and SHACL-validates one certificate per row; invalid rows are listed for correction. 5. The dashboard sends one batch transaction; on failure nothing is recorded and the organiser may retry. 6. PDFs with QR codes are generated and e-mailed or downloaded. 7. A verifier opens the QR link; the page queries the contract and branches to Valid, Revoked or Not found.
+1. The organiser runs the event and exports the attendance list as CSV. 2. The organiser connects MetaMask to the dashboard; if the wallet has no ISSUER role, the flow stops with an error. 3. The organiser enters event details and uploads the CSV; if the file is empty or malformed, the dashboard rejects it. 4. The service builds and SHACL-validates one certificate per row; invalid rows are listed for correction. 5. The dashboard sends one batch transaction; on failure nothing is recorded and the organiser may retry. 6. The organiser downloads the PDFs with QR codes as one ZIP file and shares them with the attendees . 7. A verifier opens the QR link; the page queries the contract and branches to Valid, Revoked or Not found.
 
 ### Sequence model
 
-Organiser → Dashboard: upload CSV and event details. Dashboard → Certificate service: build certificates. Certificate service → SHACL validator: validate each; validator → service: report. Service → Dashboard: list of hashes. Dashboard → MetaMask: request signature for issueBatch(hashes). MetaMask → Registry contract: transaction. Contract → Dashboard: CertificateIssued events. Dashboard → Service: generate PDFs. Verifier → Verification page: open QR link with certificate ID. Page → Public RPC → Registry contract: verify(hash). Contract → Page: issuer, date, revoked flag. Page → Verifier: result.
+Organiser → Dashboard: upload CSV and event details. Dashboard → Certificate service: POST /api/issue. Certificate service: builds one certificate per row, validates it, hashes it and renders its PDF with a QR code. Service → Dashboard: hashes and PDFs. Dashboard → MetaMask: request signature for issueBatch(hashes). MetaMask → Registry contract: transaction. Contract → Dashboard: CertificateIssued events; dashboard shows the Etherscan link and the ZIP download. Verifier → Verification page: open QR link with the hash, or upload the PDF. Page → Public RPC → Registry contract: verify(hash). Contract → Page: status, issuer, issue and revoke time. Page → Verifier: Valid, Revoked or Not found.
 
 ## 5. Backlog
 
@@ -237,7 +239,7 @@ Kind of development: Initial development
 
 ### Class model
 
-CertificateRegistry (contract): owner: address; certificates: mapping(bytes32 => CertificateRecord); functions issue(bytes32), issueBatch(bytes32[]), revoke(bytes32), verify(bytes32) returns (issuer, issuedAt, revoked, revokedAt); uses OpenZeppelin AccessControl with ISSUER_ROLE. CertificateRecord (struct): issuer: address; issuedAt: uint64; revoked: bool; revokedAt: uint64. Certificate (off chain, JSON-LD): id: URI; event: Event; participant: Participant; issuedBy: Issuer; issuedOn: date; salt: string; hash: bytes32. Event: title, date, organiser. Participant: name, email (off chain only). Issuer: clubName, wallet address. Relations: an Event has many Certificates; a Certificate belongs to one Participant and one Issuer; a CertificateRecord stores the hash of exactly one Certificate.
+CertificateRegistry (contract): uses OpenZeppelin AccessControl with ISSUER_ROLE; records: mapping(bytes32 => Record); functions issue(bytes32), issueBatch(bytes32[]) (at most 200 hashes), revoke(bytes32), verify(bytes32) returns (status, issuer, issuedAt, revokedAt) where status is NotFound, Valid or Revoked; errors EmptyHash, AlreadyIssued, NotIssued, AlreadyRevoked, BadBatchSize. Record (struct): issuer: address; issuedAt: uint64; revokedAt: uint64 (0 while the certificate is valid). Certificate (off chain, W3C VC JSON-LD): id: URI; issuer: Issuer; validFrom: dateTime; credentialSubject: recipientName, recipientEmail, eventTitle, eventDate, hours; wasGeneratedBy: Event; salt: string. Its SHA-256 hash of the canonical JSON is the bytes32 key; the hash is not a field of the certificate. Event: title, date. Issuer: club name, wallet address (did:pkh). Relations: an Event has many Certificates; a Certificate belongs to one Participant and one Issuer; a Record stores the hash of exactly one Certificate.
 
 ### Test cases
 
@@ -255,7 +257,7 @@ CertificateRegistry (contract): owner: address; certificates: mapping(bytes32 =>
 
 ### Data — Class diagram
 
-Class diagram: CertificateRegistry holds a mapping from bytes32 hash to CertificateRecord (issuer, issuedAt, revoked, revokedAt). Off chain, Certificate links Event, Participant and Issuer; only its salted SHA-256 hash crosses to the chain.
+Class diagram: CertificateRegistry holds a mapping from bytes32 hash to Record (issuer, issuedAt, revokedAt). Off chain, the Certificate (W3C VC JSON-LD) links Event, Participant and Issuer; only the SHA-256 hash of its salted canonical JSON crosses to the chain.HA-256 hash crosses to the chain.
 
 ### Interaction — Sequence diagram
 
@@ -284,9 +286,9 @@ Link to the course chapters. Chapter 1: the trust argument above is the problem 
 | 2026-10-26 | Proposal submitted, repository set up, customer meeting notes committed | Malak Alfakavi |
 | 2026-11-09 | CertificateRegistry contract with tests deployed on Sepolia | Malak Alfakavi |
 | 2026-11-23 | Issuer dashboard and certificate service issue a test batch end to end | Mohammed Ammar |
-| 2026-11-30 | End-to-end test report with screenshots and failure-case results; first draft of the organiser and verifier user guide | Ujala Ali Qureshi |
-| 2026-12-07 | Verification page done; trial at the IKU Computer Club's December workshop with the organiser and three verifiers | Raghd Alfakavi |
-| 2026-12-16 | Tagged release v1.0, test report and final submission | Malak Alfakavi |
+| 2026-11-29 | End-to-end test report with screenshots and failure-case results; first draft of the organiser and verifier user guide | Ujala Ali Qureshi |
+| 2026-12-06 | Trial with the IKU Computer Club (December workshop, or a small club event if the workshop is later) with the organiser and three verifiers | Raghd Alfakavi |
+| 2026-12-10 | Tagged release v1.0, final test report and final submission | Malak Alfakavi |
 
 | Risk | Likelihood | Impact | Mitigation |
 | --- | --- | --- | --- |
@@ -335,5 +337,5 @@ Project grade 100 (60%), team grade 100 (20%), individual contribution (20%).
 | Raghd Alfakavi | 2200002698 | 100 | 100 |
 | Mohammed Ammar | 2200002676 | 100 | 100 |
 | Mohamad Mahfouz Khalil | 2200009092 | 100 | 100 |
-| Ujala Ali Qureshi | 2400003598 | 78 | 95.6 |
+| Ujala Ali Qureshi | 2400003598 | 44 | 88.8 |
 
