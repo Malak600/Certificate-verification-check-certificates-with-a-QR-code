@@ -35,9 +35,7 @@ npm start
 ```
 You will see:
 ```text
-CertiChain API service running on port 3001
-CORS enabled for web/issue.html
-Health check: http://localhost:3001/api/health
+CertiChain Certificate Service API listening on http://localhost:3001
 ```
 
 ### Step 4: Verify It Is Running
@@ -55,10 +53,10 @@ curl http://localhost:3001/api/health
 ### Step 5: Connect with Frontend (`web/issue.html`)
 1. Keep the API server running in your terminal (`npm start`).
 2. Open `web/issue.html` in your browser (or serve it with Live Server).
-3. Connect your **MetaMask** wallet (Sepolia testnet).
-4. Fill in the event info (Title, Date, Club Name, Wallet Address).
+3. Connect your **MetaMask** wallet (Sepolia testnet) — the issuer wallet address is detected automatically.
+4. Fill in the event info (**Title**, **Date**, **Club Name**).
 5. Upload an attendance CSV (for example: `tests/fixtures/sample-attendance-30.csv`).
-6. Click **Generate & Issue Batch**.
+6. Click **Issue certificates**.
    - The frontend automatically calls `http://localhost:3001/api/issue`.
    - The backend validates the CSV, generates W3C VC JSON-LD credentials, checks SHACL shapes, hashes canonical JSON with SHA-256, and builds PDFs with verification QR codes.
    - The frontend receives the `bytes32` hashes and prompts MetaMask to confirm the on-chain batch transaction.
@@ -66,18 +64,12 @@ curl http://localhost:3001/api/health
 
 ---
 
-### Step 6: (Optional) Run Tests & Batch Generator
-- **Run all automated tests:**
-  ```bash
-  npm test
-  ```
-  Runs all unit and integration tests (CSV parsing, canonical RFC 8785 hashing, SHACL schema gate, PDF generator, and REST API).
-
-- **Run standalone 30-certificate milestone batch generator:**
-  ```bash
-  node run-milestone-batch.js
-  ```
-  Generates 30 W3C JSON-LD files and 30 print-ready PDF certificates with verification QR codes into `examples/milestone-batch-30/`.
+### Step 6: (Optional) Run Tests
+Run all automated tests:
+```bash
+npm test
+```
+Runs all unit and integration tests (CSV parsing, canonical RFC 8785 hashing, SHACL schema gate, PDF generator, and REST API endpoints).
 
 ---
 
@@ -137,7 +129,6 @@ Health check endpoint: `{ "status": "ok", "service": "certichain-api" }`.
 service/
 ├── package.json                       # ESM project configuration, scripts & deps
 ├── README.md                          # Comprehensive documentation (this file)
-├── run-milestone-batch.js             # Standalone 30-attendee milestone batch generator
 ├── src/
 │   ├── server.js                      # REST API server (POST /api/issue, GET /api/certificate/:hash)
 │   ├── index.js                       # Main orchestrator & public API (processBatch)
@@ -162,7 +153,7 @@ service/
 │   └── integration.test.js            # End-to-end batch, TC3 & KVKK privacy tests
 └── examples/
     ├── demo.js                        # Demo execution script
-    └── milestone-batch-30/            # Generated 30 JSON-LD credentials & PDFs
+    └── output/                        # Sample generated JSON-LD & PDF files
 ```
 
 ---
