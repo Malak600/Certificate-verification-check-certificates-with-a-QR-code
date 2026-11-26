@@ -48,7 +48,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Hardhat's EDR runtime (0.26+, released 20 Nov 2026) requires Node.js 22
+          node-version: 22
       - name: Install contract dependencies
         working-directory: contracts
         run: |
