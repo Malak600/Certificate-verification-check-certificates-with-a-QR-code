@@ -4,7 +4,7 @@
  "stage": "proposal",
  "stageLabel": "Proposal",
  "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
- "saved": "2026-11-23T14:50:06.395Z",
+ "saved": "2026-11-26T20:29:36.177Z",
  "proposal": {
   "course": "SEN0401",
   "semester": "2026-2027 Fall",
@@ -543,6 +543,34 @@
     "ref": "",
     "prev": "29a1312fc9b09b9e1c4798ddd80a097c025b61b98c222888c7ff2f52ac55509a",
     "hash": "7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec"
+   },
+   {
+    "seq": 30,
+    "ts": "2026-11-26T20:26:22.721Z",
+    "member": "Mohammed Ammar",
+    "process": "P07",
+    "story": "",
+    "hours": 1,
+    "description": "On 24 Nov wrote the step-by-step run guide in service/README.md for the club trial and fixed it after review",
+    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/75ba647",
+    "kind": "work",
+    "ref": "",
+    "prev": "7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec",
+    "hash": "f77889bd3d1838329b2e24417ae27fc9ea0068304dc2233bb2905271ef98615f"
+   },
+   {
+    "seq": 31,
+    "ts": "2026-11-26T20:27:56.928Z",
+    "member": "Raghd Alfakavi",
+    "process": "P02",
+    "story": "",
+    "hours": 0.5,
+    "description": "On 25 Nov Contacted Asmaa (IKU Computer Club events coordinator) and agreed the club trial date: 7 December 2026 at the club's workshop.",
+    "evidence": "",
+    "kind": "work",
+    "ref": "",
+    "prev": "f77889bd3d1838329b2e24417ae27fc9ea0068304dc2233bb2905271ef98615f",
+    "hash": "713c4c47812172f087a16d20b3fbbd6373387e669efb9492fc90a7f05a41d4ed"
    }
   ],
   "repo": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
@@ -1043,7 +1071,7 @@
     "owner": "Ujala Ali Qureshi"
    },
    {
-    "date": "2026-12-06",
+    "date": "2026-12-07",
     "deliverable": "Trial with the IKU Computer Club (December workshop, or a small club event if the workshop is later) with the organiser and three verifiers",
     "owner": "Raghd Alfakavi"
    },

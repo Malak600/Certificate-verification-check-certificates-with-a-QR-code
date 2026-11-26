@@ -124,7 +124,7 @@ python schema/tools/validate.py schema-samples
 | 9 Nov 2026 | Smart contract with tests deployed on Sepolia ✅ (deployed 30 Oct) |
 | 23 Nov 2026 | Dashboard and certificate service issue a test batch end to end ✅ (done 20 Nov on Sepolia: [issue](https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4), [revoke](https://sepolia.etherscan.io/tx/0x73cd25d01cc15d01292e4002eac1f5dc0a37090266486ad08a1d571d239f9034)) |
 | 29 Nov 2026 | End-to-end test report and user guide |
-| 6 Dec 2026 | Trial with the IKU Computer Club (December workshop, or a small club event if the workshop is later) |
+| 7 Dec 2026 | Trial at the IKU Computer Club's December workshop (date agreed with the club on 25 Nov) |
 | 10 Dec 2026 | Release v1.0, final test report and final submission |
 
 ---
