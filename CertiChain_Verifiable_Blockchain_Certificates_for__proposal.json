@@ -1,1161 +1,1217 @@
 {
- "tool": "proposal_tool",
- "version": "4.11.0",
- "stage": "proposal",
- "stageLabel": "Proposal",
- "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
- "saved": "2026-11-26T20:29:36.177Z",
- "proposal": {
-  "course": "SEN0401",
-  "semester": "2026-2027 Fall",
+  "tool": "proposal_tool",
+  "version": "4.11.0",
   "stage": "proposal",
-  "title": "CertiChain: Verifiable Blockchain Certificates for University Club Events",
-  "team": [
-   {
-    "name": "Malak Alfakavi",
-    "no": "2200002701",
-    "email": "2200002701@stu.iku.edu.tr",
-    "share": 25,
-    "dev": [
-     "R_Chain",
-     "R_Architect"
+  "stageLabel": "Proposal",
+  "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
+  "saved": "2026-11-27T16:10:23.089Z",
+  "proposal": {
+    "course": "SEN0401",
+    "semester": "2026-2027 Fall",
+    "stage": "proposal",
+    "title": "CertiChain: Verifiable Blockchain Certificates for University Club Events",
+    "team": [
+      {
+        "name": "Malak Alfakavi",
+        "no": "2200002701",
+        "email": "2200002701@stu.iku.edu.tr",
+        "share": 25,
+        "dev": [
+          "R_Chain",
+          "R_Architect"
+        ],
+        "admin": [
+          "A_TeamLead",
+          "A_ReleaseManager"
+        ]
+      },
+      {
+        "name": "Raghd Alfakavi",
+        "no": "2200002698",
+        "email": "2200002698@stu.iku.edu.tr",
+        "share": 20,
+        "dev": [
+          "R_Frontend",
+          "R_UX"
+        ],
+        "admin": [
+          "A_CustomerLiaison"
+        ]
+      },
+      {
+        "name": "Mohammed Ammar",
+        "no": "2200002676",
+        "email": "2200002676@stu.iku.edu.tr",
+        "share": 20,
+        "dev": [
+          "R_Backend",
+          "R_Data"
+        ],
+        "admin": [
+          "A_LogSteward"
+        ]
+      },
+      {
+        "name": "Mohamad Mahfouz Khalil",
+        "no": "2200009092",
+        "email": "2200009092@stu.iku.edu.tr",
+        "share": 20,
+        "dev": [
+          "R_Tester",
+          "R_Analyst"
+        ],
+        "admin": [
+          "A_QualityLead"
+        ]
+      },
+      {
+        "name": "Ujala Ali Qureshi",
+        "no": "2400003598",
+        "email": "2400003598@stu.iku.edu.tr",
+        "share": 15,
+        "dev": [
+          "R_Tester",
+          "R_UX"
+        ],
+        "admin": [
+          "A_DocLead"
+        ]
+      }
     ],
-    "admin": [
-     "A_TeamLead",
-     "A_ReleaseManager"
-    ]
-   },
-   {
-    "name": "Raghd Alfakavi",
-    "no": "2200002698",
-    "email": "2200002698@stu.iku.edu.tr",
-    "share": 20,
-    "dev": [
-     "R_Frontend",
-     "R_UX"
+    "modules": [
+      {
+        "name": "Certificate registry smart contract",
+        "kind": "module",
+        "what": "Solidity contract that stores certificate hashes, issuer roles and revocations on the Sepolia testnet.",
+        "epic": "E1",
+        "owner": "Malak Alfakavi",
+        "second": "Mohammed Ammar"
+      },
+      {
+        "name": "Issuer dashboard",
+        "kind": "module",
+        "what": "Web page where the club's event organiser uploads the participant list and issues or revokes certificates with MetaMask.",
+        "epic": "E2",
+        "owner": "Raghd Alfakavi",
+        "second": "Malak Alfakavi"
+      },
+      {
+        "name": "Certificate generator and storage service",
+        "kind": "module",
+        "what": "Node.js service that builds each certificate as a JSON-LD document, computes its SHA-256 hash and renders the PDF with a QR code.",
+        "epic": "E2",
+        "owner": "Mohammed Ammar",
+        "second": "Malak Alfakavi"
+      },
+      {
+        "name": "Public verification page",
+        "kind": "feature",
+        "what": "Page opened from the QR code or by uploading the PDF; it recomputes the hash and checks it against the contract.",
+        "epic": "E3",
+        "owner": "Raghd Alfakavi",
+        "second": "Mohamad Mahfouz Khalil"
+      },
+      {
+        "name": "Credential schema, tests and CI",
+        "kind": "feature",
+        "what": "SHACL shape for the certificate, contract and end-to-end tests, and the GitHub Actions pipeline.",
+        "epic": "E4",
+        "owner": "Mohamad Mahfouz Khalil",
+        "second": "Mohammed Ammar"
+      },
+      {
+        "name": "End-to-end tests and user guide",
+        "kind": "feature",
+        "what": "Full-flow tests (CSV to service to contract to QR verification) with screenshots, failure cases (edited PDF, revoked certificate, empty CSV, Turkish characters), a phone timing test, and a short guide for the club organiser and verifiers.",
+        "epic": "E4",
+        "owner": "Ujala Ali Qureshi",
+        "second": "Mohamad Mahfouz Khalil"
+      }
     ],
-    "admin": [
-     "A_CustomerLiaison"
-    ]
-   },
-   {
-    "name": "Mohammed Ammar",
-    "no": "2200002676",
-    "email": "2200002676@stu.iku.edu.tr",
-    "share": 20,
-    "dev": [
-     "R_Backend",
-     "R_Data"
+    "leads": {
+      "P02": "Raghd Alfakavi",
+      "P03": "Mohamad Mahfouz Khalil",
+      "P04": "Malak Alfakavi",
+      "P07": "Mohammed Ammar",
+      "P09": "Mohamad Mahfouz Khalil",
+      "P05": "Raghd Alfakavi",
+      "P11": "Raghd Alfakavi"
+    },
+    "worklog": [
+      {
+        "seq": 1,
+        "ts": "2026-10-17T12:29:41.758Z",
+        "member": "Malak Alfakavi",
+        "process": "P07",
+        "story": "S1",
+        "hours": 2,
+        "description": "Created the GitHub repository, invited the team and the instructor, and wrote the README",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
+        "kind": "work",
+        "ref": "",
+        "prev": "GENESIS",
+        "hash": "08f3a96718b76d65e38ddc3f91c5690b19243e7b7856cce9e84de1de9dc10f0e"
+      },
+      {
+        "seq": 2,
+        "ts": "2026-10-17T12:31:43.356Z",
+        "member": "Raghd Alfakavi",
+        "process": "P02",
+        "story": "S6",
+        "hours": 1,
+        "description": "Contacted the club president on WhatsApp to agree on being our customer and asked about their certificates",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
+        "kind": "work",
+        "ref": "",
+        "prev": "08f3a96718b76d65e38ddc3f91c5690b19243e7b7856cce9e84de1de9dc10f0e",
+        "hash": "74f18f698bda4d2348e8fc39dc47e55d2162f70a9451decdbdb54e3fa7b14ad0"
+      },
+      {
+        "seq": 3,
+        "ts": "2026-10-17T12:32:53.625Z",
+        "member": "Mohammed Ammar",
+        "process": "P04",
+        "story": "S3",
+        "hours": 1.5,
+        "description": "Researched Node.js libraries for PDF and QR generation and planned the certificate service structure",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
+        "kind": "work",
+        "ref": "",
+        "prev": "74f18f698bda4d2348e8fc39dc47e55d2162f70a9451decdbdb54e3fa7b14ad0",
+        "hash": "d2305f259298352f773465e992a22171230d59e052ec10fdf25e5a2cb658ce60"
+      },
+      {
+        "seq": 4,
+        "ts": "2026-10-17T12:35:18.887Z",
+        "member": "Mohamad Mahfouz Khalil",
+        "process": "P03",
+        "story": "",
+        "hours": 1.5,
+        "description": "Reviewed all user stories and acceptance criteria and checked each one has a matching test case",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
+        "kind": "work",
+        "ref": "",
+        "prev": "d2305f259298352f773465e992a22171230d59e052ec10fdf25e5a2cb658ce60",
+        "hash": "1de1061c02c560a4a13c053c18ff0e54bda29d988f53a7c92fe830edc0155a02"
+      },
+      {
+        "seq": 5,
+        "ts": "2026-11-15T22:33:05.079Z",
+        "member": "Malak Alfakavi",
+        "process": "P06",
+        "story": "",
+        "hours": 2,
+        "description": "On 13 Nov wrote HASHING.md with canonical JSON rules, salt handling and a worked example hash",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/3",
+        "kind": "work",
+        "ref": "",
+        "prev": "1de1061c02c560a4a13c053c18ff0e54bda29d988f53a7c92fe830edc0155a02",
+        "hash": "9063a97699c1174a355c217c70a3f22c943c4b2468b51ef3066dbe8858b7beae"
+      },
+      {
+        "seq": 6,
+        "ts": "2026-11-15T22:33:52.035Z",
+        "member": "Malak Alfakavi",
+        "process": "P04",
+        "story": "",
+        "hours": 3,
+        "description": "On 15 Nov verified the CertificateRegistry source on Sepolia Etherscan and reached 100 percent line coverage in Hardhat",
+        "evidence": "https://sepolia.etherscan.io/address/0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860#code",
+        "kind": "work",
+        "ref": "",
+        "prev": "9063a97699c1174a355c217c70a3f22c943c4b2468b51ef3066dbe8858b7beae",
+        "hash": "3420381f0685f1369fd45dc5085c0c6358691bdc32d13c9931405fd88ac0f97f"
+      },
+      {
+        "seq": 7,
+        "ts": "2026-11-15T22:34:21.997Z",
+        "member": "Malak Alfakavi",
+        "process": "P07",
+        "story": "",
+        "hours": 2,
+        "description": "On 15 Nov updated the README and HASHING.md to match the real W3C VC schema and API endpoint",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/6",
+        "kind": "work",
+        "ref": "",
+        "prev": "3420381f0685f1369fd45dc5085c0c6358691bdc32d13c9931405fd88ac0f97f",
+        "hash": "294e9ab8725c2e3f7514fc988cc6d041cfd9d811e91eefb0ce6c9ba22522637b"
+      },
+      {
+        "seq": 8,
+        "ts": "2026-11-15T22:34:56.528Z",
+        "member": "Mohammed Ammar",
+        "process": "P04",
+        "story": "",
+        "hours": 2,
+        "description": "On 13 Nov implemented the HTTP server and API tests for POST /api/issue and certificate download",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/4",
+        "kind": "work",
+        "ref": "",
+        "prev": "294e9ab8725c2e3f7514fc988cc6d041cfd9d811e91eefb0ce6c9ba22522637b",
+        "hash": "1fda9d4a49324d8494e70a1a4c9dfc7fef0b68955a19cc867716950105324e63"
+      },
+      {
+        "seq": 9,
+        "ts": "2026-11-15T22:35:24.503Z",
+        "member": "Mohamad Mahfouz Khalil",
+        "process": "P03",
+        "story": "",
+        "hours": 1,
+        "description": "On 13 and 15 Nov added week 2 tests, the verification test report and the CI pipeline",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/5",
+        "kind": "work",
+        "ref": "",
+        "prev": "1fda9d4a49324d8494e70a1a4c9dfc7fef0b68955a19cc867716950105324e63",
+        "hash": "e5bb2faaee890f8533922a7cd12efea261d13813d8b161333eb81ca256f92931"
+      },
+      {
+        "seq": 10,
+        "ts": "2026-11-15T22:35:55.997Z",
+        "member": "Raghd Alfakavi",
+        "process": "P04",
+        "story": "",
+        "hours": 2,
+        "description": "On 15 Nov connected issue.html to the certificate service API and added ZIP download of the certificates",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/tree/main/web",
+        "kind": "work",
+        "ref": "",
+        "prev": "e5bb2faaee890f8533922a7cd12efea261d13813d8b161333eb81ca256f92931",
+        "hash": "7099077bc46ef0635cee3256ce68c653957cd78f629551009ddb9521463bdafd"
+      },
+      {
+        "seq": 11,
+        "ts": "2026-11-15T22:37:44.730Z",
+        "member": "Mohammed Ammar",
+        "process": "P07",
+        "story": "",
+        "hours": 2,
+        "description": "Correction to entry 8: this work was implementation of the HTTP server and API tests, not architecture definition",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/4",
+        "kind": "work",
+        "ref": "8",
+        "prev": "7099077bc46ef0635cee3256ce68c653957cd78f629551009ddb9521463bdafd",
+        "hash": "1a9da5f57842fc397693bdfddb6de9eb8476b8a01f44f4673d910281f8c35527"
+      },
+      {
+        "seq": 12,
+        "ts": "2026-11-15T22:38:30.894Z",
+        "member": "Mohamad Mahfouz Khalil",
+        "process": "P07",
+        "story": "",
+        "hours": 1,
+        "description": "On 13 and 15 Nov added week 2 tests, the verification test report and the CI pipeline",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/5",
+        "kind": "work",
+        "ref": "",
+        "prev": "1a9da5f57842fc397693bdfddb6de9eb8476b8a01f44f4673d910281f8c35527",
+        "hash": "8778ca6e4c1e8aec9fafb7c5bebe29a3a4c13fac127e43b996cf6e24af0568f3"
+      },
+      {
+        "seq": 13,
+        "ts": "2026-11-15T22:38:57.128Z",
+        "member": "Raghd Alfakavi",
+        "process": "P07",
+        "story": "",
+        "hours": 2,
+        "description": "On 15 Nov connected issue.html to the certificate service API and added ZIP download of the certificates",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/tree/main/web",
+        "kind": "work",
+        "ref": "",
+        "prev": "8778ca6e4c1e8aec9fafb7c5bebe29a3a4c13fac127e43b996cf6e24af0568f3",
+        "hash": "65202f26c76f36df13763c94d3ed084e7bf5987a673d26c889d53a0746474d2c"
+      },
+      {
+        "seq": 14,
+        "ts": "2026-11-17T17:43:18.610Z",
+        "member": "Malak Alfakavi",
+        "process": "P09",
+        "story": "S5",
+        "hours": 2,
+        "description": "On 17 Nov reviewed the team’s 13–16 Nov work (with AI assistance) and opened PR #9: SHACL shape now validates real certificates in CI (30/30), Arabic names no longer crash the PDF batch, QR codes point to the real verify page, test report corrected. CI 3/3 green, merged after Ammar’s approval.",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/9",
+        "kind": "work",
+        "ref": "",
+        "prev": "65202f26c76f36df13763c94d3ed084e7bf5987a673d26c889d53a0746474d2c",
+        "hash": "0d0294f0a392fc101a89de3c835f82c4d968d38f2fa28f16704e09d849edeced"
+      },
+      {
+        "seq": 15,
+        "ts": "2026-11-17T17:44:56.026Z",
+        "member": "Malak Alfakavi",
+        "process": "P10",
+        "story": "S6",
+        "hours": 0.5,
+        "description": "On 17 Nov enabled GitHub Pages so the public verify page is online and every certificate QR code opens it.",
+        "evidence": "https://malak600.github.io/Certificate-verification-check-certificates-with-a-QR-code/web/verify.html",
+        "kind": "work",
+        "ref": "",
+        "prev": "0d0294f0a392fc101a89de3c835f82c4d968d38f2fa28f16704e09d849edeced",
+        "hash": "c7f6b21be76301e839c8a49f64b2e16332b5abd7a1f189c65663dcd075c6a160"
+      },
+      {
+        "seq": 16,
+        "ts": "2026-11-17T17:45:30.013Z",
+        "member": "Malak Alfakavi",
+        "process": "P07",
+        "story": "",
+        "hours": 0.5,
+        "description": "On 17 Nov fixed the README (PR #10): the architecture diagram did not render and several sections were lost on 16 Nov; restored them, updated the team and roadmap, added a Quick Start.",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/10",
+        "kind": "work",
+        "ref": "",
+        "prev": "c7f6b21be76301e839c8a49f64b2e16332b5abd7a1f189c65663dcd075c6a160",
+        "hash": "0f3ae6875e5a04af258c8d5bd4b152ba189e471d5e2054666b8892817eacc071"
+      },
+      {
+        "seq": 17,
+        "ts": "2026-11-20T08:27:23.635Z",
+        "member": "Mohamad Mahfouz Khalil",
+        "process": "P07",
+        "story": "",
+        "hours": 1,
+        "description": "Correction to entry 12: duplicate of entry 9, the same work should be counted only once",
+        "evidence": "",
+        "kind": "work",
+        "ref": "12",
+        "prev": "0f3ae6875e5a04af258c8d5bd4b152ba189e471d5e2054666b8892817eacc071",
+        "hash": "5e9eef611d82612a81d6002fa2ce0d6a4f1e5f7e435a2206b08f6e009a83619f"
+      },
+      {
+        "seq": 18,
+        "ts": "2026-11-20T08:32:43.084Z",
+        "member": "Raghd Alfakavi",
+        "process": "P07",
+        "story": "",
+        "hours": 0.25,
+        "description": "Correction to entry 13: duplicate of entry 10, the same work should be counted only once",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/tree/main/web",
+        "kind": "correction",
+        "ref": "13",
+        "prev": "5e9eef611d82612a81d6002fa2ce0d6a4f1e5f7e435a2206b08f6e009a83619f",
+        "hash": "53dfb71f210dc321831f7d5835967e3a6f94d3bab88a570539162be1888e79f1"
+      },
+      {
+        "seq": 19,
+        "ts": "2026-11-20T08:42:03.133Z",
+        "member": "Ujala Ali Qureshi",
+        "process": "P10",
+        "story": "",
+        "hours": 2,
+        "description": "On 20 Nov wrote USER_GUIDE.md with an organiser guide and a verifier guide for the club trial",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/d11a671",
+        "kind": "work",
+        "ref": "",
+        "prev": "53dfb71f210dc321831f7d5835967e3a6f94d3bab88a570539162be1888e79f1",
+        "hash": "353ef40f43dc34559bbfde2a9d0a5a244561664818b181a9887f46b3d54cd898"
+      },
+      {
+        "seq": 20,
+        "ts": "2026-11-20T08:44:27.742Z",
+        "member": "Ujala Ali Qureshi",
+        "process": "P10",
+        "story": "",
+        "hours": 0.5,
+        "description": "On 20 Nov ran the contract and service tests, local end-to-end checks and drafted the test report with screenshots",
+        "evidence": "https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4",
+        "kind": "work",
+        "ref": "",
+        "prev": "353ef40f43dc34559bbfde2a9d0a5a244561664818b181a9887f46b3d54cd898",
+        "hash": "169e5070ea2e37a78a591eb01309390e9bae19b17d4bd63c8e1f182afd5df0dc"
+      },
+      {
+        "seq": 21,
+        "ts": "2026-11-20T08:45:00.894Z",
+        "member": "Raghd Alfakavi",
+        "process": "P09",
+        "story": "S3",
+        "hours": 1.5,
+        "description": "On 20 Nov I ran the first live end-to-end test on Sepolia. I issued a 5-person batch from issue.html with MetaMask, downloaded the PDFs, and verified a certificate by scanning the QR code and by uploading the PDF. Both showed Valid. My first try used an old copy of the repo, so I downloaded the latest version and issued again.",
+        "evidence": "https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4",
+        "kind": "work",
+        "ref": "",
+        "prev": "169e5070ea2e37a78a591eb01309390e9bae19b17d4bd63c8e1f182afd5df0dc",
+        "hash": "5a2126ceb6862db3a11273593b28a4f71e9e00ec88dbe71434e124e090a5357d"
+      },
+      {
+        "seq": 22,
+        "ts": "2026-11-20T09:01:50.805Z",
+        "member": "Raghd Alfakavi",
+        "process": "P09",
+        "story": "S4",
+        "hours": 0.5,
+        "description": "On 20 Nov I ran the live revoke test on Sepolia. I revoked one test certificate from the same batch through Etherscan, then checked it on the verify page, which showed Revoked with the revoke time.",
+        "evidence": "https://sepolia.etherscan.io/tx/0x73cd25d01cc15d01292e4002eac1f5dc0a37090266486ad08a1d571d239f9034",
+        "kind": "work",
+        "ref": "",
+        "prev": "5a2126ceb6862db3a11273593b28a4f71e9e00ec88dbe71434e124e090a5357d",
+        "hash": "e90a58931bf2ab56b3c7bca69a5169a8b15c73aef157a6b036c25a814b20827b"
+      },
+      {
+        "seq": 23,
+        "ts": "2026-11-20T09:15:29.551Z",
+        "member": "Raghd Alfakavi",
+        "process": "P02",
+        "story": "S2",
+        "hours": 0.25,
+        "description": "Correction to entry 2: the customer contact was Asmaa, the events organization coordinator of the IKU Computer Club, not the club president.",
+        "evidence": "",
+        "kind": "work",
+        "ref": "",
+        "prev": "e90a58931bf2ab56b3c7bca69a5169a8b15c73aef157a6b036c25a814b20827b",
+        "hash": "059da52c5cb8ab1fba585e20f708233b6c28be849f65fabf0217c0c53aefd26a"
+      },
+      {
+        "seq": 24,
+        "ts": "2026-11-20T12:01:23.878Z",
+        "member": "Raghd Alfakavi",
+        "process": "P07",
+        "story": "S4",
+        "hours": 1,
+        "description": "On 20 Nov added section 4 “Revoke a certificate” to issue.html (with AI assistance): the organiser pastes the certificate hash, the page checks its status on Sepolia first, asks for confirmation, then calls revoke through MetaMask and shows the Etherscan link.",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/94e8ea3",
+        "kind": "work",
+        "ref": "",
+        "prev": "059da52c5cb8ab1fba585e20f708233b6c28be849f65fabf0217c0c53aefd26a",
+        "hash": "bd4792091926646c6f49375c6d7db9776ca3628cdbd8061f22fe2a64b0401a7d"
+      },
+      {
+        "seq": 25,
+        "ts": "2026-11-20T12:02:45.481Z",
+        "member": "Raghd Alfakavi",
+        "process": "P07",
+        "story": "",
+        "hours": 0.25,
+        "description": "Entry 23 is the correction of entry 2; it was saved with the wrong kind.",
+        "evidence": "",
+        "kind": "correction",
+        "ref": "23",
+        "prev": "bd4792091926646c6f49375c6d7db9776ca3628cdbd8061f22fe2a64b0401a7d",
+        "hash": "d55bb4bb00c0cc97453bd65bdfa256531fceb3b13ab89c46ab4a76a81e538ebf"
+      },
+      {
+        "seq": 26,
+        "ts": "2026-11-20T12:03:17.705Z",
+        "member": "Mohammed Ammar",
+        "process": "P07",
+        "story": "",
+        "hours": 0.25,
+        "description": "Entry 11 is a correction of entry 8, not new work; its hours should not be counted.",
+        "evidence": "",
+        "kind": "correction",
+        "ref": "11",
+        "prev": "d55bb4bb00c0cc97453bd65bdfa256531fceb3b13ab89c46ab4a76a81e538ebf",
+        "hash": "64668b5cf0b9390450718fd1601c1dbbf6889e066b57cecb3200b7babc4c2d5f"
+      },
+      {
+        "seq": 27,
+        "ts": "2026-11-20T12:03:49.522Z",
+        "member": "Mohamad Mahfouz Khalil",
+        "process": "P07",
+        "story": "",
+        "hours": 0.25,
+        "description": "Entry 17 is a correction of entry 12, not new work; its hours should not be counted.",
+        "evidence": "",
+        "kind": "correction",
+        "ref": "17",
+        "prev": "64668b5cf0b9390450718fd1601c1dbbf6889e066b57cecb3200b7babc4c2d5f",
+        "hash": "4e1991f660df0258dda473ecc6ef6b0df0ebbfdb3acde9e2921170d09534efda"
+      },
+      {
+        "seq": 28,
+        "ts": "2026-11-23T14:01:20.519Z",
+        "member": "Malak Alfakavi",
+        "process": "P07",
+        "story": "",
+        "hours": 0.5,
+        "description": "On 23 Nov updated the proposal to match the implementation: plain HTML pages instead of React, the real contract data model (Record with revokedAt), the ZIP download and the real issue sequence.",
+        "evidence": "",
+        "kind": "work",
+        "ref": "",
+        "prev": "4e1991f660df0258dda473ecc6ef6b0df0ebbfdb3acde9e2921170d09534efda",
+        "hash": "29a1312fc9b09b9e1c4798ddd80a097c025b61b98c222888c7ff2f52ac55509a"
+      },
+      {
+        "seq": 29,
+        "ts": "2026-11-23T14:34:21.737Z",
+        "member": "Malak Alfakavi",
+        "process": "P09",
+        "story": "S6",
+        "hours": 0.5,
+        "description": "On 23 Nov ran the O1 phone timing test over Wi-Fi: median 0.61 s in Chrome over 9 tries, 0.31 to 0.83 s on a first visit in incognito, 11.46 s inside the WhatsApp in-app browser. Target under 10 s met in Chrome.",
+        "evidence": "",
+        "kind": "work",
+        "ref": "",
+        "prev": "29a1312fc9b09b9e1c4798ddd80a097c025b61b98c222888c7ff2f52ac55509a",
+        "hash": "7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec"
+      },
+      {
+        "seq": 30,
+        "ts": "2026-11-26T20:26:22.721Z",
+        "member": "Mohammed Ammar",
+        "process": "P07",
+        "story": "",
+        "hours": 1,
+        "description": "On 24 Nov wrote the step-by-step run guide in service/README.md for the club trial and fixed it after review",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/75ba647",
+        "kind": "work",
+        "ref": "",
+        "prev": "7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec",
+        "hash": "f77889bd3d1838329b2e24417ae27fc9ea0068304dc2233bb2905271ef98615f"
+      },
+      {
+        "seq": 31,
+        "ts": "2026-11-26T20:27:56.928Z",
+        "member": "Raghd Alfakavi",
+        "process": "P02",
+        "story": "",
+        "hours": 0.5,
+        "description": "On 25 Nov Contacted Asmaa (IKU Computer Club events coordinator) and agreed the club trial date: 7 December 2026 at the club's workshop.",
+        "evidence": "",
+        "kind": "work",
+        "ref": "",
+        "prev": "f77889bd3d1838329b2e24417ae27fc9ea0068304dc2233bb2905271ef98615f",
+        "hash": "713c4c47812172f087a16d20b3fbbd6373387e669efb9492fc90a7f05a41d4ed"
+      },
+      {
+        "seq": 32,
+        "ts": "2026-11-27T16:10:14.382Z",
+        "member": "Mohammed Ammar",
+        "process": "P07",
+        "story": "S3",
+        "hours": 6,
+        "description": "On 22 Oct implemented the core certificate generator and storage service (PR #1): CSV parser, W3C VC JSON-LD builder, SHACL validator, QR generator, PDF generator, batch orchestrator, and unit/integration tests.",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/1",
+        "kind": "work",
+        "ref": "",
+        "prev": "713c4c47812172f087a16d20b3fbbd6373387e669efb9492fc90a7f05a41d4ed",
+        "hash": "018109c35ccc1f6d54add3889904549f22de21f0146de173774622ef43077c42"
+      },
+      {
+        "seq": 33,
+        "ts": "2026-11-27T16:12:47.619Z",
+        "member": "Mohammed Ammar",
+        "process": "P07",
+        "story": "S8",
+        "hours": 3,
+        "description": "On 30 Oct refactored certificate hashing to pure RFC 8785 canonical JSON + SHA-256 and updated verification URL helpers and demo script (PR #2).",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/2",
+        "kind": "work",
+        "ref": "",
+        "prev": "018109c35ccc1f6d54add3889904549f22de21f0146de173774622ef43077c42",
+        "hash": "6ada1ce18cee63a158436789ad4c0dec981210e4b9582c3b852eda168720bd00"
+      },
+      {
+        "seq": 34,
+        "ts": "2026-11-27T16:15:23.104Z",
+        "member": "Mohammed Ammar",
+        "process": "P09",
+        "story": "S3",
+        "hours": 2.5,
+        "description": "On 13-16 Nov reviewed and merged HASHING.md spec (PR #3), verified exact canonical SHA-256 hash parity for PR #6, and ran the 30-certificate milestone batch test.",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/3",
+        "kind": "work",
+        "ref": "",
+        "prev": "6ada1ce18cee63a158436789ad4c0dec981210e4b9582c3b852eda168720bd00",
+        "hash": "d05a9d6bda090bd2b0eb7ea2dd39a13786386e92ec139dff354e1d0742743bc1"
+      },
+      {
+        "seq": 35,
+        "ts": "2026-11-27T16:17:51.845Z",
+        "member": "Mohammed Ammar",
+        "process": "P09",
+        "story": "S5",
+        "hours": 1.5,
+        "description": "On 17 Nov reviewed, tested locally, and approved PR #9 (SHACL validation on real certificates, DejaVu Unicode PDF font support, and GitHub Pages QR links).",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/9",
+        "kind": "work",
+        "ref": "",
+        "prev": "d05a9d6bda090bd2b0eb7ea2dd39a13786386e92ec139dff354e1d0742743bc1",
+        "hash": "84dbdad756858dfcdf1fe16673dc1eeafa57ecc3aad64ade610422b7fa89f300"
+      }
     ],
-    "admin": [
-     "A_LogSteward"
-    ]
-   },
-   {
-    "name": "Mohamad Mahfouz Khalil",
-    "no": "2200009092",
-    "email": "2200009092@stu.iku.edu.tr",
-    "share": 20,
-    "dev": [
-     "R_Tester",
-     "R_Analyst"
+    "repo": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
+    "customers": [
+      {
+        "name": "IKU Computer Club (Istanbul Kültür University student club)",
+        "contact": "Asmaa, events organization coordinator of the IKU Computer Club",
+        "reached": "WhatsApp: we sent our questions on 17 October 2026 at about 17:00; she answered all of them on 22 October 2026 and agreed to a trial at the club's December workshops",
+        "relation": "owner",
+        "gets": "A free, tamper-proof way to issue participation certificates for its workshops and events that anyone can check in seconds, without the club searching Excel and Google Drive files to answer verification requests."
+      }
     ],
-    "admin": [
-     "A_QualityLead"
-    ]
-   },
-   {
-    "name": "Ujala Ali Qureshi",
-    "no": "2400003598",
-    "email": "2400003598@stu.iku.edu.tr",
-    "share": 15,
-    "dev": [
-     "R_Tester",
-     "R_UX"
+    "endUsers": [
+      {
+        "group": "Event organiser",
+        "who": "Club board member who runs a workshop or event",
+        "task": "Uploads the attendance list after an event, issues the certificates and revokes one issued by mistake",
+        "frequency": "monthly",
+        "device": "Laptop browser with the MetaMask wallet"
+      },
+      {
+        "group": "Certificate holder",
+        "who": "IKU student who attended a club event",
+        "task": "Downloads the PDF certificate, adds it to a CV or LinkedIn profile and shares the verification link",
+        "frequency": "occasional",
+        "device": "Phone or laptop browser"
+      },
+      {
+        "group": "Verifier",
+        "who": "Employer, internship coordinator or another university's staff member",
+        "task": "Scans the QR code or uploads the PDF to check that the certificate is genuine and not revoked",
+        "frequency": "occasional",
+        "device": "Phone camera or laptop browser, no wallet needed"
+      }
     ],
-    "admin": [
-     "A_DocLead"
-    ]
-   }
-  ],
-  "modules": [
-   {
-    "name": "Certificate registry smart contract",
-    "kind": "module",
-    "what": "Solidity contract that stores certificate hashes, issuer roles and revocations on the Sepolia testnet.",
-    "epic": "E1",
-    "owner": "Malak Alfakavi",
-    "second": "Mohammed Ammar"
-   },
-   {
-    "name": "Issuer dashboard",
-    "kind": "module",
-    "what": "Web page where the club's event organiser uploads the participant list and issues or revokes certificates with MetaMask.",
-    "epic": "E2",
-    "owner": "Raghd Alfakavi",
-    "second": "Malak Alfakavi"
-   },
-   {
-    "name": "Certificate generator and storage service",
-    "kind": "module",
-    "what": "Node.js service that builds each certificate as a JSON-LD document, computes its SHA-256 hash and renders the PDF with a QR code.",
-    "epic": "E2",
-    "owner": "Mohammed Ammar",
-    "second": "Malak Alfakavi"
-   },
-   {
-    "name": "Public verification page",
-    "kind": "feature",
-    "what": "Page opened from the QR code or by uploading the PDF; it recomputes the hash and checks it against the contract.",
-    "epic": "E3",
-    "owner": "Raghd Alfakavi",
-    "second": "Mohamad Mahfouz Khalil"
-   },
-   {
-    "name": "Credential schema, tests and CI",
-    "kind": "feature",
-    "what": "SHACL shape for the certificate, contract and end-to-end tests, and the GitHub Actions pipeline.",
-    "epic": "E4",
-    "owner": "Mohamad Mahfouz Khalil",
-    "second": "Mohammed Ammar"
-   },
-   {
-    "name": "End-to-end tests and user guide",
-    "kind": "feature",
-    "what": "Full-flow tests (CSV to service to contract to QR verification) with screenshots, failure cases (edited PDF, revoked certificate, empty CSV, Turkish characters), a phone timing test, and a short guide for the club organiser and verifiers.",
-    "epic": "E4",
-    "owner": "Ujala Ali Qureshi",
-    "second": "Mohamad Mahfouz Khalil"
-   }
-  ],
-  "leads": {
-   "P02": "Raghd Alfakavi",
-   "P03": "Mohamad Mahfouz Khalil",
-   "P04": "Malak Alfakavi",
-   "P07": "Mohammed Ammar",
-   "P09": "Mohamad Mahfouz Khalil",
-   "P05": "Raghd Alfakavi",
-   "P11": "Raghd Alfakavi"
-  },
-  "worklog": [
-   {
-    "seq": 1,
-    "ts": "2026-10-17T12:29:41.758Z",
-    "member": "Malak Alfakavi",
-    "process": "P07",
-    "story": "S1",
-    "hours": 2,
-    "description": "Created the GitHub repository, invited the team and the instructor, and wrote the README",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
-    "kind": "work",
-    "ref": "",
-    "prev": "GENESIS",
-    "hash": "08f3a96718b76d65e38ddc3f91c5690b19243e7b7856cce9e84de1de9dc10f0e"
-   },
-   {
-    "seq": 2,
-    "ts": "2026-10-17T12:31:43.356Z",
-    "member": "Raghd Alfakavi",
-    "process": "P02",
-    "story": "S6",
-    "hours": 1,
-    "description": "Contacted the club president on WhatsApp to agree on being our customer and asked about their certificates",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
-    "kind": "work",
-    "ref": "",
-    "prev": "08f3a96718b76d65e38ddc3f91c5690b19243e7b7856cce9e84de1de9dc10f0e",
-    "hash": "74f18f698bda4d2348e8fc39dc47e55d2162f70a9451decdbdb54e3fa7b14ad0"
-   },
-   {
-    "seq": 3,
-    "ts": "2026-10-17T12:32:53.625Z",
-    "member": "Mohammed Ammar",
-    "process": "P04",
-    "story": "S3",
-    "hours": 1.5,
-    "description": "Researched Node.js libraries for PDF and QR generation and planned the certificate service structure",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
-    "kind": "work",
-    "ref": "",
-    "prev": "74f18f698bda4d2348e8fc39dc47e55d2162f70a9451decdbdb54e3fa7b14ad0",
-    "hash": "d2305f259298352f773465e992a22171230d59e052ec10fdf25e5a2cb658ce60"
-   },
-   {
-    "seq": 4,
-    "ts": "2026-10-17T12:35:18.887Z",
-    "member": "Mohamad Mahfouz Khalil",
-    "process": "P03",
-    "story": "",
-    "hours": 1.5,
-    "description": "Reviewed all user stories and acceptance criteria and checked each one has a matching test case",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
-    "kind": "work",
-    "ref": "",
-    "prev": "d2305f259298352f773465e992a22171230d59e052ec10fdf25e5a2cb658ce60",
-    "hash": "1de1061c02c560a4a13c053c18ff0e54bda29d988f53a7c92fe830edc0155a02"
-   },
-   {
-    "seq": 5,
-    "ts": "2026-11-15T22:33:05.079Z",
-    "member": "Malak Alfakavi",
-    "process": "P06",
-    "story": "",
-    "hours": 2,
-    "description": "On 13 Nov wrote HASHING.md with canonical JSON rules, salt handling and a worked example hash",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/3",
-    "kind": "work",
-    "ref": "",
-    "prev": "1de1061c02c560a4a13c053c18ff0e54bda29d988f53a7c92fe830edc0155a02",
-    "hash": "9063a97699c1174a355c217c70a3f22c943c4b2468b51ef3066dbe8858b7beae"
-   },
-   {
-    "seq": 6,
-    "ts": "2026-11-15T22:33:52.035Z",
-    "member": "Malak Alfakavi",
-    "process": "P04",
-    "story": "",
-    "hours": 3,
-    "description": "On 15 Nov verified the CertificateRegistry source on Sepolia Etherscan and reached 100 percent line coverage in Hardhat",
-    "evidence": "https://sepolia.etherscan.io/address/0x7B40B303bD39685Ed6f7A236ff7E8F21D5D6B860#code",
-    "kind": "work",
-    "ref": "",
-    "prev": "9063a97699c1174a355c217c70a3f22c943c4b2468b51ef3066dbe8858b7beae",
-    "hash": "3420381f0685f1369fd45dc5085c0c6358691bdc32d13c9931405fd88ac0f97f"
-   },
-   {
-    "seq": 7,
-    "ts": "2026-11-15T22:34:21.997Z",
-    "member": "Malak Alfakavi",
-    "process": "P07",
-    "story": "",
-    "hours": 2,
-    "description": "On 15 Nov updated the README and HASHING.md to match the real W3C VC schema and API endpoint",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/6",
-    "kind": "work",
-    "ref": "",
-    "prev": "3420381f0685f1369fd45dc5085c0c6358691bdc32d13c9931405fd88ac0f97f",
-    "hash": "294e9ab8725c2e3f7514fc988cc6d041cfd9d811e91eefb0ce6c9ba22522637b"
-   },
-   {
-    "seq": 8,
-    "ts": "2026-11-15T22:34:56.528Z",
-    "member": "Mohammed Ammar",
-    "process": "P04",
-    "story": "",
-    "hours": 2,
-    "description": "On 13 Nov implemented the HTTP server and API tests for POST /api/issue and certificate download",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/4",
-    "kind": "work",
-    "ref": "",
-    "prev": "294e9ab8725c2e3f7514fc988cc6d041cfd9d811e91eefb0ce6c9ba22522637b",
-    "hash": "1fda9d4a49324d8494e70a1a4c9dfc7fef0b68955a19cc867716950105324e63"
-   },
-   {
-    "seq": 9,
-    "ts": "2026-11-15T22:35:24.503Z",
-    "member": "Mohamad Mahfouz Khalil",
-    "process": "P03",
-    "story": "",
-    "hours": 1,
-    "description": "On 13 and 15 Nov added week 2 tests, the verification test report and the CI pipeline",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/5",
-    "kind": "work",
-    "ref": "",
-    "prev": "1fda9d4a49324d8494e70a1a4c9dfc7fef0b68955a19cc867716950105324e63",
-    "hash": "e5bb2faaee890f8533922a7cd12efea261d13813d8b161333eb81ca256f92931"
-   },
-   {
-    "seq": 10,
-    "ts": "2026-11-15T22:35:55.997Z",
-    "member": "Raghd Alfakavi",
-    "process": "P04",
-    "story": "",
-    "hours": 2,
-    "description": "On 15 Nov connected issue.html to the certificate service API and added ZIP download of the certificates",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/tree/main/web",
-    "kind": "work",
-    "ref": "",
-    "prev": "e5bb2faaee890f8533922a7cd12efea261d13813d8b161333eb81ca256f92931",
-    "hash": "7099077bc46ef0635cee3256ce68c653957cd78f629551009ddb9521463bdafd"
-   },
-   {
-    "seq": 11,
-    "ts": "2026-11-15T22:37:44.730Z",
-    "member": "Mohammed Ammar",
-    "process": "P07",
-    "story": "",
-    "hours": 2,
-    "description": "Correction to entry 8: this work was implementation of the HTTP server and API tests, not architecture definition",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/4",
-    "kind": "work",
-    "ref": "8",
-    "prev": "7099077bc46ef0635cee3256ce68c653957cd78f629551009ddb9521463bdafd",
-    "hash": "1a9da5f57842fc397693bdfddb6de9eb8476b8a01f44f4673d910281f8c35527"
-   },
-   {
-    "seq": 12,
-    "ts": "2026-11-15T22:38:30.894Z",
-    "member": "Mohamad Mahfouz Khalil",
-    "process": "P07",
-    "story": "",
-    "hours": 1,
-    "description": "On 13 and 15 Nov added week 2 tests, the verification test report and the CI pipeline",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/5",
-    "kind": "work",
-    "ref": "",
-    "prev": "1a9da5f57842fc397693bdfddb6de9eb8476b8a01f44f4673d910281f8c35527",
-    "hash": "8778ca6e4c1e8aec9fafb7c5bebe29a3a4c13fac127e43b996cf6e24af0568f3"
-   },
-   {
-    "seq": 13,
-    "ts": "2026-11-15T22:38:57.128Z",
-    "member": "Raghd Alfakavi",
-    "process": "P07",
-    "story": "",
-    "hours": 2,
-    "description": "On 15 Nov connected issue.html to the certificate service API and added ZIP download of the certificates",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/tree/main/web",
-    "kind": "work",
-    "ref": "",
-    "prev": "8778ca6e4c1e8aec9fafb7c5bebe29a3a4c13fac127e43b996cf6e24af0568f3",
-    "hash": "65202f26c76f36df13763c94d3ed084e7bf5987a673d26c889d53a0746474d2c"
-   },
-   {
-    "seq": 14,
-    "ts": "2026-11-17T17:43:18.610Z",
-    "member": "Malak Alfakavi",
-    "process": "P09",
-    "story": "S5",
-    "hours": 2,
-    "description": "On 17 Nov reviewed the team’s 13–16 Nov work (with AI assistance) and opened PR #9: SHACL shape now validates real certificates in CI (30/30), Arabic names no longer crash the PDF batch, QR codes point to the real verify page, test report corrected. CI 3/3 green, merged after Ammar’s approval.",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/9",
-    "kind": "work",
-    "ref": "",
-    "prev": "65202f26c76f36df13763c94d3ed084e7bf5987a673d26c889d53a0746474d2c",
-    "hash": "0d0294f0a392fc101a89de3c835f82c4d968d38f2fa28f16704e09d849edeced"
-   },
-   {
-    "seq": 15,
-    "ts": "2026-11-17T17:44:56.026Z",
-    "member": "Malak Alfakavi",
-    "process": "P10",
-    "story": "S6",
-    "hours": 0.5,
-    "description": "On 17 Nov enabled GitHub Pages so the public verify page is online and every certificate QR code opens it.",
-    "evidence": "https://malak600.github.io/Certificate-verification-check-certificates-with-a-QR-code/web/verify.html",
-    "kind": "work",
-    "ref": "",
-    "prev": "0d0294f0a392fc101a89de3c835f82c4d968d38f2fa28f16704e09d849edeced",
-    "hash": "c7f6b21be76301e839c8a49f64b2e16332b5abd7a1f189c65663dcd075c6a160"
-   },
-   {
-    "seq": 16,
-    "ts": "2026-11-17T17:45:30.013Z",
-    "member": "Malak Alfakavi",
-    "process": "P07",
-    "story": "",
-    "hours": 0.5,
-    "description": "On 17 Nov fixed the README (PR #10): the architecture diagram did not render and several sections were lost on 16 Nov; restored them, updated the team and roadmap, added a Quick Start.",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/10",
-    "kind": "work",
-    "ref": "",
-    "prev": "c7f6b21be76301e839c8a49f64b2e16332b5abd7a1f189c65663dcd075c6a160",
-    "hash": "0f3ae6875e5a04af258c8d5bd4b152ba189e471d5e2054666b8892817eacc071"
-   },
-   {
-    "seq": 17,
-    "ts": "2026-11-20T08:27:23.635Z",
-    "member": "Mohamad Mahfouz Khalil",
-    "process": "P07",
-    "story": "",
-    "hours": 1,
-    "description": "Correction to entry 12: duplicate of entry 9, the same work should be counted only once",
-    "evidence": "",
-    "kind": "work",
-    "ref": "12",
-    "prev": "0f3ae6875e5a04af258c8d5bd4b152ba189e471d5e2054666b8892817eacc071",
-    "hash": "5e9eef611d82612a81d6002fa2ce0d6a4f1e5f7e435a2206b08f6e009a83619f"
-   },
-   {
-    "seq": 18,
-    "ts": "2026-11-20T08:32:43.084Z",
-    "member": "Raghd Alfakavi",
-    "process": "P07",
-    "story": "",
-    "hours": 0.25,
-    "description": "Correction to entry 13: duplicate of entry 10, the same work should be counted only once",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/tree/main/web",
-    "kind": "correction",
-    "ref": "13",
-    "prev": "5e9eef611d82612a81d6002fa2ce0d6a4f1e5f7e435a2206b08f6e009a83619f",
-    "hash": "53dfb71f210dc321831f7d5835967e3a6f94d3bab88a570539162be1888e79f1"
-   },
-   {
-    "seq": 19,
-    "ts": "2026-11-20T08:42:03.133Z",
-    "member": "Ujala Ali Qureshi",
-    "process": "P10",
-    "story": "",
-    "hours": 2,
-    "description": "On 20 Nov wrote USER_GUIDE.md with an organiser guide and a verifier guide for the club trial",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/d11a671",
-    "kind": "work",
-    "ref": "",
-    "prev": "53dfb71f210dc321831f7d5835967e3a6f94d3bab88a570539162be1888e79f1",
-    "hash": "353ef40f43dc34559bbfde2a9d0a5a244561664818b181a9887f46b3d54cd898"
-   },
-   {
-    "seq": 20,
-    "ts": "2026-11-20T08:44:27.742Z",
-    "member": "Ujala Ali Qureshi",
-    "process": "P10",
-    "story": "",
-    "hours": 0.5,
-    "description": "On 20 Nov ran the contract and service tests, local end-to-end checks and drafted the test report with screenshots",
-    "evidence": "https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4",
-    "kind": "work",
-    "ref": "",
-    "prev": "353ef40f43dc34559bbfde2a9d0a5a244561664818b181a9887f46b3d54cd898",
-    "hash": "169e5070ea2e37a78a591eb01309390e9bae19b17d4bd63c8e1f182afd5df0dc"
-   },
-   {
-    "seq": 21,
-    "ts": "2026-11-20T08:45:00.894Z",
-    "member": "Raghd Alfakavi",
-    "process": "P09",
-    "story": "S3",
-    "hours": 1.5,
-    "description": "On 20 Nov I ran the first live end-to-end test on Sepolia. I issued a 5-person batch from issue.html with MetaMask, downloaded the PDFs, and verified a certificate by scanning the QR code and by uploading the PDF. Both showed Valid. My first try used an old copy of the repo, so I downloaded the latest version and issued again.",
-    "evidence": "https://sepolia.etherscan.io/tx/0xa9eaf81cdb29cb161c4cab6c60622740bc391e8432abf389cdad6a1158f1f9a4",
-    "kind": "work",
-    "ref": "",
-    "prev": "169e5070ea2e37a78a591eb01309390e9bae19b17d4bd63c8e1f182afd5df0dc",
-    "hash": "5a2126ceb6862db3a11273593b28a4f71e9e00ec88dbe71434e124e090a5357d"
-   },
-   {
-    "seq": 22,
-    "ts": "2026-11-20T09:01:50.805Z",
-    "member": "Raghd Alfakavi",
-    "process": "P09",
-    "story": "S4",
-    "hours": 0.5,
-    "description": "On 20 Nov I ran the live revoke test on Sepolia. I revoked one test certificate from the same batch through Etherscan, then checked it on the verify page, which showed Revoked with the revoke time.",
-    "evidence": "https://sepolia.etherscan.io/tx/0x73cd25d01cc15d01292e4002eac1f5dc0a37090266486ad08a1d571d239f9034",
-    "kind": "work",
-    "ref": "",
-    "prev": "5a2126ceb6862db3a11273593b28a4f71e9e00ec88dbe71434e124e090a5357d",
-    "hash": "e90a58931bf2ab56b3c7bca69a5169a8b15c73aef157a6b036c25a814b20827b"
-   },
-   {
-    "seq": 23,
-    "ts": "2026-11-20T09:15:29.551Z",
-    "member": "Raghd Alfakavi",
-    "process": "P02",
-    "story": "S2",
-    "hours": 0.25,
-    "description": "Correction to entry 2: the customer contact was Asmaa, the events organization coordinator of the IKU Computer Club, not the club president.",
-    "evidence": "",
-    "kind": "work",
-    "ref": "",
-    "prev": "e90a58931bf2ab56b3c7bca69a5169a8b15c73aef157a6b036c25a814b20827b",
-    "hash": "059da52c5cb8ab1fba585e20f708233b6c28be849f65fabf0217c0c53aefd26a"
-   },
-   {
-    "seq": 24,
-    "ts": "2026-11-20T12:01:23.878Z",
-    "member": "Raghd Alfakavi",
-    "process": "P07",
-    "story": "S4",
-    "hours": 1,
-    "description": "On 20 Nov added section 4 “Revoke a certificate” to issue.html (with AI assistance): the organiser pastes the certificate hash, the page checks its status on Sepolia first, asks for confirmation, then calls revoke through MetaMask and shows the Etherscan link.",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/94e8ea3",
-    "kind": "work",
-    "ref": "",
-    "prev": "059da52c5cb8ab1fba585e20f708233b6c28be849f65fabf0217c0c53aefd26a",
-    "hash": "bd4792091926646c6f49375c6d7db9776ca3628cdbd8061f22fe2a64b0401a7d"
-   },
-   {
-    "seq": 25,
-    "ts": "2026-11-20T12:02:45.481Z",
-    "member": "Raghd Alfakavi",
-    "process": "P07",
-    "story": "",
-    "hours": 0.25,
-    "description": "Entry 23 is the correction of entry 2; it was saved with the wrong kind.",
-    "evidence": "",
-    "kind": "correction",
-    "ref": "23",
-    "prev": "bd4792091926646c6f49375c6d7db9776ca3628cdbd8061f22fe2a64b0401a7d",
-    "hash": "d55bb4bb00c0cc97453bd65bdfa256531fceb3b13ab89c46ab4a76a81e538ebf"
-   },
-   {
-    "seq": 26,
-    "ts": "2026-11-20T12:03:17.705Z",
-    "member": "Mohammed Ammar",
-    "process": "P07",
-    "story": "",
-    "hours": 0.25,
-    "description": "Entry 11 is a correction of entry 8, not new work; its hours should not be counted.",
-    "evidence": "",
-    "kind": "correction",
-    "ref": "11",
-    "prev": "d55bb4bb00c0cc97453bd65bdfa256531fceb3b13ab89c46ab4a76a81e538ebf",
-    "hash": "64668b5cf0b9390450718fd1601c1dbbf6889e066b57cecb3200b7babc4c2d5f"
-   },
-   {
-    "seq": 27,
-    "ts": "2026-11-20T12:03:49.522Z",
-    "member": "Mohamad Mahfouz Khalil",
-    "process": "P07",
-    "story": "",
-    "hours": 0.25,
-    "description": "Entry 17 is a correction of entry 12, not new work; its hours should not be counted.",
-    "evidence": "",
-    "kind": "correction",
-    "ref": "17",
-    "prev": "64668b5cf0b9390450718fd1601c1dbbf6889e066b57cecb3200b7babc4c2d5f",
-    "hash": "4e1991f660df0258dda473ecc6ef6b0df0ebbfdb3acde9e2921170d09534efda"
-   },
-   {
-    "seq": 28,
-    "ts": "2026-11-23T14:01:20.519Z",
-    "member": "Malak Alfakavi",
-    "process": "P07",
-    "story": "",
-    "hours": 0.5,
-    "description": "On 23 Nov updated the proposal to match the implementation: plain HTML pages instead of React, the real contract data model (Record with revokedAt), the ZIP download and the real issue sequence.",
-    "evidence": "",
-    "kind": "work",
-    "ref": "",
-    "prev": "4e1991f660df0258dda473ecc6ef6b0df0ebbfdb3acde9e2921170d09534efda",
-    "hash": "29a1312fc9b09b9e1c4798ddd80a097c025b61b98c222888c7ff2f52ac55509a"
-   },
-   {
-    "seq": 29,
-    "ts": "2026-11-23T14:34:21.737Z",
-    "member": "Malak Alfakavi",
-    "process": "P09",
-    "story": "S6",
-    "hours": 0.5,
-    "description": "On 23 Nov ran the O1 phone timing test over Wi-Fi: median 0.61 s in Chrome over 9 tries, 0.31 to 0.83 s on a first visit in incognito, 11.46 s inside the WhatsApp in-app browser. Target under 10 s met in Chrome.",
-    "evidence": "",
-    "kind": "work",
-    "ref": "",
-    "prev": "29a1312fc9b09b9e1c4798ddd80a097c025b61b98c222888c7ff2f52ac55509a",
-    "hash": "7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec"
-   },
-   {
-    "seq": 30,
-    "ts": "2026-11-26T20:26:22.721Z",
-    "member": "Mohammed Ammar",
-    "process": "P07",
-    "story": "",
-    "hours": 1,
-    "description": "On 24 Nov wrote the step-by-step run guide in service/README.md for the club trial and fixed it after review",
-    "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/75ba647",
-    "kind": "work",
-    "ref": "",
-    "prev": "7f91dfef49224d450f1114c67d8c32e3baa5f5cebc8b8b5ff6b59694a567b8ec",
-    "hash": "f77889bd3d1838329b2e24417ae27fc9ea0068304dc2233bb2905271ef98615f"
-   },
-   {
-    "seq": 31,
-    "ts": "2026-11-26T20:27:56.928Z",
-    "member": "Raghd Alfakavi",
-    "process": "P02",
-    "story": "",
-    "hours": 0.5,
-    "description": "On 25 Nov Contacted Asmaa (IKU Computer Club events coordinator) and agreed the club trial date: 7 December 2026 at the club's workshop.",
-    "evidence": "",
-    "kind": "work",
-    "ref": "",
-    "prev": "f77889bd3d1838329b2e24417ae27fc9ea0068304dc2233bb2905271ef98615f",
-    "hash": "713c4c47812172f087a16d20b3fbbd6373387e669efb9492fc90a7f05a41d4ed"
-   }
-  ],
-  "repo": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
-  "customers": [
-   {
-    "name": "IKU Computer Club (Istanbul Kültür University student club)",
-    "contact": "Asmaa, events organization coordinator of the IKU Computer Club",
-    "reached": "WhatsApp: we sent our questions on 17 October 2026 at about 17:00; she answered all of them on 22 October 2026 and agreed to a trial at the club's December workshops",
-    "relation": "owner",
-    "gets": "A free, tamper-proof way to issue participation certificates for its workshops and events that anyone can check in seconds, without the club searching Excel and Google Drive files to answer verification requests."
-   }
-  ],
-  "endUsers": [
-   {
-    "group": "Event organiser",
-    "who": "Club board member who runs a workshop or event",
-    "task": "Uploads the attendance list after an event, issues the certificates and revokes one issued by mistake",
-    "frequency": "monthly",
-    "device": "Laptop browser with the MetaMask wallet"
-   },
-   {
-    "group": "Certificate holder",
-    "who": "IKU student who attended a club event",
-    "task": "Downloads the PDF certificate, adds it to a CV or LinkedIn profile and shares the verification link",
-    "frequency": "occasional",
-    "device": "Phone or laptop browser"
-   },
-   {
-    "group": "Verifier",
-    "who": "Employer, internship coordinator or another university's staff member",
-    "task": "Scans the QR code or uploads the PDF to check that the certificate is genuine and not revoked",
-    "frequency": "occasional",
-    "device": "Phone camera or laptop browser, no wallet needed"
-   }
-  ],
-  "problem": "The IKU Computer Club hands out participation certificates for its workshops and events as plain PDF or printed files. According to the club's events organization coordinator, the club issues about 150 to 200 certificates per semester, and a single workshop or large event gives out 50 to 70 certificates to attendees. These files are made from a shared template, so anyone with a PDF editor can change a name, a date or an event title in a few minutes, and the result looks identical to a genuine certificate. When a company asks whether a certificate is real, the club has to search by hand through the Excel files and Google Drive folders linked to that event to find the person's name; the club reports that this takes about 1 to 2 days before they can reply. Once a board graduates, these files are easily lost. As a result, certificate holders cannot prove that their certificate is real, verifiers either trust the file blindly or ignore it, and the club cannot withdraw a certificate that was issued by mistake. The club has no budget for a paid certificate platform, so the solution must run at zero cost. The problem is not storing the file, which the club already does, but giving third parties an independent proof that the club issued it and has not revoked it.",
-  "mission": "CertiChain lets an IKU student club issue event certificates whose authenticity anyone can check in seconds. The event organiser issues certificates from a simple dashboard; each certificate's fingerprint is recorded on a public blockchain. Every certificate holder gets a PDF with a QR code, and any verifier can confirm it is genuine and not revoked without contacting the club or trusting a central server.",
-  "missionOrigin": "IOrigin_SessionDrafted",
-  "outcome": "Once CertiChain exists, a certificate holder can send a single link that proves their certificate is genuine, a verifier can check it in under ten seconds without e-mailing anyone, and the club can revoke a wrong certificate publicly, even after the board that issued it has graduated.",
-  "areas": [
-   {
-    "area": "On-chain certificate registry",
-    "where": "Solidity smart contract on the Ethereum Sepolia testnet",
-    "measure": "Does not exist today; 0 certificates on chain"
-   },
-   {
-    "area": "Issuer application",
-    "where": "Issuer dashboard (HTML and ethers.js) and Node.js certificate service",
-    "measure": "Today certificates are made by hand from a Word/Canva template"
-   },
-   {
-    "area": "Public verification",
-    "where": "Public web page opened from the QR code",
-    "measure": "Today verification is done by e-mail to the club"
-   },
-   {
-    "area": "Credential data model",
-    "where": "JSON-LD context and SHACL shape in the repository",
-    "measure": "No agreed certificate format today"
-   }
-  ],
-  "deliverables": [
-   {
-    "text": "CertificateRegistry contract with issue, revoke and verify functions and issuer roles",
-    "area": "A1",
-    "layer": "Layer_Product",
-    "kind": "Kind_Functional"
-   },
-   {
-    "text": "Contract deployed and verified on Sepolia with a public address",
-    "area": "A1",
-    "layer": "Layer_Work",
-    "kind": "Kind_Functional"
-   },
-   {
-    "text": "Only authorised issuer wallets can write to the registry",
-    "area": "A1",
-    "layer": "Layer_Product",
-    "kind": "Kind_NonFunctional"
-   },
-   {
-    "text": "Dashboard to upload a CSV attendance list and issue certificates in one batch",
-    "area": "A2",
-    "layer": "Layer_Product",
-    "kind": "Kind_Functional"
-   },
-   {
-    "text": "PDF certificate generation with an embedded QR verification link",
-    "area": "A2",
-    "layer": "Layer_Product",
-    "kind": "Kind_Functional"
-   },
-   {
-    "text": "Verification page that checks a certificate by QR link or PDF upload and shows valid, revoked or unknown",
-    "area": "A3",
-    "layer": "Layer_Product",
-    "kind": "Kind_Functional"
-   },
-   {
-    "text": "Verification answers in under 10 seconds on a phone without a wallet",
-    "area": "A3",
-    "layer": "Layer_Product",
-    "kind": "Kind_NonFunctional"
-   },
-   {
-    "text": "JSON-LD certificate context and SHACL shape that every issued certificate passes",
-    "area": "A4",
-    "layer": "Layer_Product",
-    "kind": "Kind_NonFunctional"
-   }
-  ],
-  "exclusions": [
-   {
-    "what": "Deployment to Ethereum mainnet or any network that costs real money",
-    "why": "The club has no budget; the Sepolia testnet shows the same mechanism at zero cost."
-   },
-   {
-    "what": "Storing personal data (names, student numbers) on the blockchain",
-    "why": "On-chain data cannot be deleted, which conflicts with KVKK; only a salted hash goes on chain."
-   },
-   {
-    "what": "Certificates for official university diplomas or transcripts",
-    "why": "Those belong to the Registrar's Office and need legal approval far outside a one-term project."
-   },
-   {
-    "what": "Native mobile apps",
-    "why": "A responsive web page with a QR code covers phone users without app-store work."
-   }
-  ],
-  "entities": [
-   {
-    "entity": "Certificate",
-    "def": "A record that a named participant attended a specific club event, issued as a JSON-LD document and PDF whose SHA-256 hash is stored on chain.",
-    "create": "yes",
-    "use": "yes",
-    "end": "yes"
-   },
-   {
-    "entity": "Issuer",
-    "def": "A club wallet address authorised by the contract owner to issue and revoke certificates.",
-    "create": "yes",
-    "use": "yes",
-    "end": "yes"
-   },
-   {
-    "entity": "Event",
-    "def": "A workshop, bootcamp or competition run by the club, with a title, date and organiser.",
-    "create": "yes",
-    "use": "yes",
-    "end": "no"
-   },
-   {
-    "entity": "Participant",
-    "def": "The certificate holder: an attendee identified off chain by name and e-mail; on chain only through a salted hash.",
-    "create": "yes",
-    "use": "yes",
-    "end": "no"
-   },
-   {
-    "entity": "Revocation",
-    "def": "An on-chain record that a certificate is no longer valid, with the time and the issuer who revoked it.",
-    "create": "yes",
-    "use": "yes",
-    "end": "no"
-   }
-  ],
-  "projectKinds": [
-   "PK_ChainProv"
-  ],
-  "tech": [
-   "JSONLDContext",
-   "PROVOStandard",
-   "SHACLCore",
-   "RDFLibPython",
-   "CoolURIPractice"
-  ],
-  "techWhy": "JSON-LD 1.1 contexts give each certificate a machine-readable format that follows the W3C Verifiable Credentials data model, so other systems can read it, and its canonical form is what we hash. PROV-O describes who issued the certificate, for which event and when, so the provenance chain is explicit. SHACL shapes check every certificate before it is issued, so a malformed certificate never reaches the chain; RDFLib with pySHACL-style validation runs those checks in our test suite. Stable IRI practice gives every certificate a permanent verification URL that the QR code points to. Outside the semantic stack we use Solidity with OpenZeppelin AccessControl, Hardhat for testing and deployment, ethers.js in the browser, plain HTML and JavaScript for the pages (hosted on GitHub Pages) and Node.js for the PDF and QR service.",
-  "goals": [
-   {
-    "goal": "Any verifier can confirm that a certificate is genuine and not revoked without contacting the club",
-    "facing": "Facing_Mission",
-    "area": "A3",
-    "why": "This is the mission itself: if it holds, the problem of unverifiable certificates is solved."
-   },
-   {
-    "goal": "The registry contract issues, revokes and verifies certificates and is deployed on Sepolia",
-    "facing": "Facing_Scope",
-    "area": "A1",
-    "why": "Without the contract there is no tamper-proof record to check against."
-   },
-   {
-    "goal": "The organiser can issue a whole event's certificates from the dashboard in one batch",
-    "facing": "Facing_Scope",
-    "area": "A2",
-    "why": "If issuing is harder than the current template, the club will not use the system."
-   },
-   {
-    "goal": "Every certificate follows one JSON-LD format and passes the SHACL shape before issue",
-    "facing": "Facing_Scope",
-    "area": "A4",
-    "why": "A single checked format keeps hashes reproducible and certificates readable by others."
-   },
-   {
-    "goal": "No work goes into features outside the four areas, and no personal data is written on chain",
-    "facing": "Facing_Containment",
-    "area": "A1",
-    "why": "Keeps a one-term team effort focused and keeps the project KVKK-safe."
-   }
-  ],
-  "spec": "The system has three parts. A CertificateRegistry smart contract on Sepolia keeps a mapping from a certificate hash to its issuer, issue time and revocation status; only wallets holding the ISSUER role may call issue or revoke, and anyone may call verify for free. The issuer dashboard lets an event organiser connect MetaMask, enter event details and upload a CSV of participants; the certificate service builds one JSON-LD certificate per participant, validates it against the SHACL shape, salts and hashes it with SHA-256, and the dashboard submits all hashes in one batch transaction. The service then produces a PDF per participant with a QR code linking to the verification page. The verification page, needing no wallet, reads the certificate ID from the link or recomputes the hash from an uploaded file, queries the contract through a public RPC endpoint and shows Valid, Revoked or Not found, with the issuing club and date. Names and student numbers stay off chain.",
-  "scenarios": [
-   {
-    "kind": "Scen_Nominal",
-    "text": "Given a certificate issued by the club for the Git workshop, when a verifier scans its QR code, then the page shows Valid with the club name and issue date."
-   },
-   {
-    "kind": "Scen_Rejection",
-    "text": "Given a certificate PDF whose participant name was edited after issue, when a verifier uploads it, then the recomputed hash is not found and the page shows Not found."
-   },
-   {
-    "kind": "Scen_Rejection",
-    "text": "Given a wallet without the ISSUER role, when it calls issue on the contract, then the transaction reverts and no certificate is recorded."
-   },
-   {
-    "kind": "Scen_Boundary",
-    "text": "Given a certificate that the organiser has revoked, when a verifier checks it, then the page shows Revoked with the revocation date instead of Valid."
-   },
-   {
-    "kind": "Scen_Absent",
-    "text": "Given an empty CSV attendance file, when the organiser starts issuing, then the dashboard stops with an error and sends no transaction."
-   }
-  ],
-  "useCase": "Actors: Event organiser (issue batch, revoke certificate, add issuer), Certificate holder (download certificate, share link), Verifier (verify by QR, verify by upload), Contract owner (grant or remove issuer role).",
-  "objectives": [
-   {
-    "objective": "Time for a verifier to check one certificate",
-    "goal": "G1",
-    "mkind": "Meas_Counted",
-    "query": "Stopwatch from opening the QR link to the result, median of 10 checks on a phone over mobile data",
-    "baseline": "1-2 days of manual search in Excel and Google Drive (club's answer, 22 Oct 2026)",
-    "target": "Under 10 seconds",
-    "dir": "Dir_Decrease"
-   },
-   {
-    "objective": "Share of contract functions covered by passing Hardhat tests",
-    "goal": "G2",
-    "mkind": "Meas_Derived",
-    "query": "solidity-coverage report on the CertificateRegistry contract in CI",
-    "baseline": "0%",
-    "target": "At least 90% line coverage, all tests passing",
-    "dir": "Dir_Increase"
-   },
-   {
-    "objective": "Time for the organiser to issue certificates for a 30-person event",
-    "goal": "G3",
-    "mkind": "Meas_Counted",
-    "query": "Stopwatch during a trial with the club's organiser, from CSV upload to all PDFs ready",
-    "baseline": "Made by hand from a template; time to be measured at the club's first December workshop",
-    "target": "Under 5 minutes",
-    "dir": "Dir_Decrease"
-   },
-   {
-    "objective": "Share of issued certificates that pass the SHACL shape",
-    "goal": "G4",
-    "mkind": "Meas_Derived",
-    "query": "Validation run over all issued JSON-LD files in CI, conforming / total",
-    "baseline": "No format exists (0%)",
-    "target": "100%",
-    "dir": "Dir_Hold"
-   },
-   {
-    "objective": "Personal data fields written on chain",
-    "goal": "G5",
-    "mkind": "Meas_Counted",
-    "query": "Review of contract storage and event logs for names, e-mails or student numbers",
-    "baseline": "0",
-    "target": "0",
-    "dir": "Dir_Hold"
-   }
-  ],
-  "activity": "1. The organiser runs the event and exports the attendance list as CSV. 2. The organiser connects MetaMask to the dashboard; if the wallet has no ISSUER role, the flow stops with an error. 3. The organiser enters event details and uploads the CSV; if the file is empty or malformed, the dashboard rejects it. 4. The service builds and SHACL-validates one certificate per row; invalid rows are listed for correction. 5. The dashboard sends one batch transaction; on failure nothing is recorded and the organiser may retry. 6. The organiser downloads the PDFs with QR codes as one ZIP file and shares them with the attendees . 7. A verifier opens the QR link; the page queries the contract and branches to Valid, Revoked or Not found.",
-  "sequence": "Organiser → Dashboard: upload CSV and event details. Dashboard → Certificate service: POST /api/issue. Certificate service: builds one certificate per row, validates it, hashes it and renders its PDF with a QR code. Service → Dashboard: hashes and PDFs. Dashboard → MetaMask: request signature for issueBatch(hashes). MetaMask → Registry contract: transaction. Contract → Dashboard: CertificateIssued events; dashboard shows the Etherscan link and the ZIP download. Verifier → Verification page: open QR link with the hash, or upload the PDF. Page → Public RPC → Registry contract: verify(hash). Contract → Page: status, issuer, issue and revoke time. Page → Verifier: Valid, Revoked or Not found.",
-  "initiativeKind": "Kind_InitialDevelopment",
-  "epics": [
-   {
-    "epic": "E1 On-chain certificate registry",
-    "objective": "O2"
-   },
-   {
-    "epic": "E2 Certificate issuing for organisers",
-    "objective": "O3"
-   },
-   {
-    "epic": "E3 Public verification",
-    "objective": "O1"
-   },
-   {
-    "epic": "E4 Certificate format, privacy and quality",
-    "objective": "O4"
-   }
-  ],
-  "stories": [
-   {
-    "epic": "E1",
-    "role": "Event organiser",
-    "want": "to record each certificate's hash on the blockchain when I issue it",
-    "so": "nobody can later claim the club did not issue it",
-    "ac": "Given my wallet has the ISSUER role, when I issue a certificate, then its hash, my address and the time are stored and a CertificateIssued event is emitted",
-    "cat": "Cat_NewCapability",
-    "concern": "Concern_Data",
-    "bv": 9,
-    "tc": 8,
-    "rr": 8,
-    "js": 5
-   },
-   {
-    "epic": "E1",
-    "role": "Event organiser",
-    "want": "only authorised club wallets to be able to issue or revoke",
-    "so": "outsiders cannot create fake club certificates",
-    "ac": "Given a wallet without the ISSUER role, when it calls issue or revoke, then the transaction reverts with an access error",
-    "cat": "Cat_NewCapability",
-    "concern": "Concern_Security",
-    "bv": 9,
-    "tc": 7,
-    "rr": 9,
-    "js": 3
-   },
-   {
-    "epic": "E2",
-    "role": "Event organiser",
-    "want": "to upload the attendance CSV and issue all certificates of an event at once",
-    "so": "issuing takes minutes instead of an hour",
-    "ac": "Given a valid CSV with 30 participants, when I confirm the batch, then 30 certificates are recorded in one transaction and 30 PDFs are ready to download",
-    "cat": "Cat_NewCapability",
-    "concern": "Concern_Interaction",
-    "bv": 8,
-    "tc": 6,
-    "rr": 5,
-    "js": 5
-   },
-   {
-    "epic": "E2",
-    "role": "Event organiser",
-    "want": "to revoke a certificate issued by mistake",
-    "so": "a wrong certificate stops being shown as valid",
-    "ac": "Given an issued certificate, when I revoke it and the transaction confirms, then verify returns revoked with the revocation time",
-    "cat": "Cat_NewCapability",
-    "concern": "Concern_Data",
-    "bv": 6,
-    "tc": 4,
-    "rr": 6,
-    "js": 2
-   },
-   {
-    "epic": "E2",
-    "role": "Certificate holder",
-    "want": "to download my certificate as a PDF with a QR code",
-    "so": "I can attach it to my CV and anyone can check it",
-    "ac": "Given I attended an event and my certificate was issued, when I open my download link, then I get a PDF showing my name, the event and a QR code to the verification page",
-    "cat": "Cat_NewCapability",
-    "concern": "Concern_Interface_UI",
-    "bv": 7,
-    "tc": 5,
-    "rr": 3,
-    "js": 3
-   },
-   {
-    "epic": "E3",
-    "role": "Verifier",
-    "want": "to scan the QR code and see at once whether the certificate is genuine",
-    "so": "I do not have to e-mail the club and wait",
-    "ac": "Given a valid issued certificate, when I open its QR link on my phone, then within 10 seconds the page shows Valid with the club name and issue date",
-    "cat": "Cat_NewCapability",
-    "concern": "Concern_Interface_UI",
-    "bv": 10,
-    "tc": 7,
-    "rr": 6,
-    "js": 3
-   },
-   {
-    "epic": "E3",
-    "role": "Verifier",
-    "want": "to upload a certificate PDF and have it checked",
-    "so": "an edited copy is detected even without the QR link",
-    "ac": "Given a PDF whose content was changed after issue, when I upload it, then the page shows Not found and warns that the file does not match any issued certificate",
-    "cat": "Cat_NewCapability",
-    "concern": "Concern_Security",
-    "bv": 8,
-    "tc": 5,
-    "rr": 7,
-    "js": 5
-   },
-   {
-    "epic": "E4",
-    "role": "Certificate holder",
-    "want": "my name and student number to stay off the public blockchain",
-    "so": "my personal data cannot be read or copied by anyone",
-    "ac": "Given any issued certificate, when the contract storage and events are inspected, then only a salted hash appears and no personal field is readable",
-    "cat": "Cat_Compliance",
-    "concern": "Concern_Security",
-    "bv": 7,
-    "tc": 6,
-    "rr": 9,
-    "js": 3
-   }
-  ],
-  "dod": [
-   {
-    "criterion": "Code is merged to main through a reviewed pull request",
-    "check": "GitHub shows at least one approving review from another member"
-   },
-   {
-    "criterion": "All unit and contract tests pass in CI",
-    "check": "GitHub Actions run is green on the merge commit"
-   },
-   {
-    "criterion": "The story's acceptance criterion is demonstrated on the Sepolia deployment",
-    "check": "Transaction hash or screen recording linked in the work log"
-   },
-   {
-    "criterion": "No personal data is written on chain",
-    "check": "Reviewer checks contract storage and events in the pull request"
-   }
-  ],
-  "classModel": "CertificateRegistry (contract): uses OpenZeppelin AccessControl with ISSUER_ROLE; records: mapping(bytes32 => Record); functions issue(bytes32), issueBatch(bytes32[]) (at most 200 hashes), revoke(bytes32), verify(bytes32) returns (status, issuer, issuedAt, revokedAt) where status is NotFound, Valid or Revoked; errors EmptyHash, AlreadyIssued, NotIssued, AlreadyRevoked, BadBatchSize. Record (struct): issuer: address; issuedAt: uint64; revokedAt: uint64 (0 while the certificate is valid). Certificate (off chain, W3C VC JSON-LD): id: URI; issuer: Issuer; validFrom: dateTime; credentialSubject: recipientName, recipientEmail, eventTitle, eventDate, hours; wasGeneratedBy: Event; salt: string. Its SHA-256 hash of the canonical JSON is the bytes32 key; the hash is not a field of the certificate. Event: title, date. Issuer: club name, wallet address (did:pkh). Relations: an Event has many Certificates; a Certificate belongs to one Participant and one Issuer; a Record stores the hash of exactly one Certificate.",
-  "tests": [
-   {
-    "story": "S1",
-    "case": "Issue a certificate from an ISSUER wallet and read it back with verify",
-    "data": "Hardhat local network, issuer account #1, hash of sample certificate"
-   },
-   {
-    "story": "S2",
-    "case": "Call issue and revoke from a wallet without the role and expect a revert",
-    "data": "Hardhat account #5 without ISSUER_ROLE"
-   },
-   {
-    "story": "S3",
-    "case": "Upload a 30-row CSV and check that one transaction records 30 hashes and 30 PDFs are produced",
-    "data": "sample_attendance_30.csv"
-   },
-   {
-    "story": "S4",
-    "case": "Revoke an issued certificate and check that verify returns revoked with a timestamp",
-    "data": "Previously issued sample certificate"
-   },
-   {
-    "story": "S5",
-    "case": "Download a certificate PDF and decode its QR code to the expected verification URL",
-    "data": "Issued certificate for test participant"
-   },
-   {
-    "story": "S6",
-    "case": "Open the QR link on a phone over mobile data and time the result",
-    "data": "Certificate issued on Sepolia, Android phone"
-   },
-   {
-    "story": "S7",
-    "case": "Edit one character in a certificate PDF, upload it and expect Not found",
-    "data": "Tampered copy of sample certificate"
-   },
-   {
-    "story": "S8",
-    "case": "Scan contract storage and all CertificateIssued events for plain-text personal fields",
-    "data": "Sepolia deployment after the test batch"
-   },
-   {
-    "story": "S3",
-    "case": "Run the full flow with a 5-row CSV: issue in the dashboard, anchor with MetaMask, scan the QR code and expect Valid; then edit the PDF and expect Not found",
-    "data": "5-row CSV including Turkish characters, Sepolia contract, one phone and one laptop"
-   }
-  ],
-  "model_Data": "Class diagram: CertificateRegistry holds a mapping from bytes32 hash to Record (issuer, issuedAt, revokedAt). Off chain, the Certificate (W3C VC JSON-LD) links Event, Participant and Issuer; only the SHA-256 hash of its salted canonical JSON crosses to the chain.HA-256 hash crosses to the chain.",
-  "model_Security": "State machine for a certificate hash: Unknown → Issued (issue by ISSUER_ROLE only) → Revoked (revoke by ISSUER_ROLE only). Revoked is final; issuing an existing hash is refused; any call from a wallet without the role is refused in every state.",
-  "model_Interaction": "Sequence diagram: Organiser uploads CSV to Dashboard; Dashboard asks the service to build and validate certificates; MetaMask signs issueBatch; the contract emits events; Verifier opens the QR link; the page calls verify through a public RPC and shows the result.",
-  "model_User_interface": "Mockups for three screens: dashboard event form with CSV upload and batch preview; certificate PDF layout with QR code; verification page with a large green Valid, orange Revoked or red Not found result and the issuer details below.",
-  "chainDesign": "We use the Ethereum Sepolia testnet so the system costs nothing and is still public and independent of us; the contract could later move to a cheap layer-2 such as Polygon without changes. A Solidity CertificateRegistry contract, using OpenZeppelin AccessControl, stores only the SHA-256 hash of each salted JSON-LD certificate with its issuer and time, plus a revocation flag; verifying is a free read call. A blockchain is needed because the verifier must not have to trust the club or our server: a normal database run by the club could be edited or disappear when the board graduates, while the on-chain record is append-only, timestamped and publicly readable by anyone. Personal data stays off chain to respect KVKK.\n\nLink to the course chapters. Chapter 1: the trust argument above is the problem a public, tamper-evident ledger solves, and Sepolia lets us use it without real money. Chapters 2 and 6: an issuer sends one transaction, issueBatch, that records many certificate hashes at once, so the cost and the waiting time are shared by the whole event. Chapter 4: the certificate hash is a commitment; the salt keeps the hash from being guessed and the contract never sees the certificate itself. Chapters 7 and 8: only wallets with the issuer role may write, and each write is authorised by a digital signature made in the issuer's MetaMask wallet, so the registry cannot be changed by anyone else. Verification needs no wallet, because it only reads the chain. Bitcoin-specific topics (Script, UTXOs, running Bitcoin Core) are not used, since Ethereum accounts and smart contracts replace them; we state this choice on purpose.",
-  "milestones": [
-   {
-    "date": "2026-10-26",
-    "deliverable": "Proposal submitted, repository set up, customer meeting notes committed",
-    "owner": "Malak Alfakavi"
-   },
-   {
-    "date": "2026-11-09",
-    "deliverable": "CertificateRegistry contract with tests deployed on Sepolia",
-    "owner": "Malak Alfakavi"
-   },
-   {
-    "date": "2026-11-23",
-    "deliverable": "Issuer dashboard and certificate service issue a test batch end to end",
-    "owner": "Mohammed Ammar"
-   },
-   {
-    "date": "2026-11-29",
-    "deliverable": "End-to-end test report with screenshots and failure-case results; first draft of the organiser and verifier user guide",
-    "owner": "Ujala Ali Qureshi"
-   },
-   {
-    "date": "2026-12-07",
-    "deliverable": "Trial with the IKU Computer Club (December workshop, or a small club event if the workshop is later) with the organiser and three verifiers",
-    "owner": "Raghd Alfakavi"
-   },
-   {
-    "date": "2026-12-10",
-    "deliverable": "Tagged release v1.0, final test report and final submission",
-    "owner": "Malak Alfakavi"
-   }
-  ],
-  "risks": [
-   {
-    "risk": "Sepolia faucet limits or RPC outages slow down testing",
-    "likelihood": "medium",
-    "impact": "medium",
-    "mitigation": "Develop on a local Hardhat network, keep two RPC providers and request test ETH early."
-   },
-   {
-    "risk": "The customer club is not available for the trial in December",
-    "likelihood": "medium",
-    "impact": "high",
-    "mitigation": "Agree the trial date at the first meeting; fall back to another club event or a mock event with real club members."
-   },
-   {
-    "risk": "Smart-contract bug lets a non-issuer write or blocks revocation",
-    "likelihood": "low",
-    "impact": "high",
-    "mitigation": "Use audited OpenZeppelin AccessControl, aim for 90% test coverage and review every contract change."
-   },
-   {
-    "risk": "Team members overloaded by capstone and other courses",
-    "likelihood": "high",
-    "impact": "medium",
-    "mitigation": "Keep scope to the four areas, every module has a second member, and weekly 30-minute check-ins."
-   },
-   {
-    "risk": "Personal data accidentally leaks on chain",
-    "likelihood": "low",
-    "impact": "high",
-    "mitigation": "Only salted hashes on chain; DoD criterion and test S8 check every release."
-   }
-  ],
-  "refs": [
-   {
-    "ref": "[1] S. Nakamoto, \"Bitcoin: A Peer-to-Peer Electronic Cash System,\" 2008. https://bitcoin.org/bitcoin.pdf"
-   },
-   {
-    "ref": "[2] V. Buterin, \"Ethereum Whitepaper: A Next-Generation Smart Contract and Decentralized Application Platform,\" 2014. https://ethereum.org/en/whitepaper/"
-   },
-   {
-    "ref": "[3] W3C, \"Verifiable Credentials Data Model v2.0,\" W3C Recommendation, 2025. https://www.w3.org/TR/vc-data-model-2.0/"
-   },
-   {
-    "ref": "[4] W3C, \"JSON-LD 1.1,\" W3C Recommendation, 2020. https://www.w3.org/TR/json-ld11/"
-   },
-   {
-    "ref": "[5] W3C, \"PROV-O: The PROV Ontology,\" W3C Recommendation, 2013. https://www.w3.org/TR/prov-o/"
-   },
-   {
-    "ref": "[6] W3C, \"Shapes Constraint Language (SHACL),\" W3C Recommendation, 2017. https://www.w3.org/TR/shacl/"
-   },
-   {
-    "ref": "[7] A. Grech and A. F. Camilleri, \"Blockchain in Education,\" JRC Science for Policy Report, European Commission, 2017. doi:10.2760/60649"
-   },
-   {
-    "ref": "[8] Blockcerts, \"The Open Standard for Blockchain Credentials.\" https://www.blockcerts.org/"
-   },
-   {
-    "ref": "[9] OpenZeppelin, \"Contracts: Access Control\" documentation. https://docs.openzeppelin.com/contracts/access-control"
-   },
-   {
-    "ref": "[10] Hardhat documentation, Nomic Foundation. https://hardhat.org/docs"
-   }
-  ],
-  "repoCheck": {
-   "ok": true,
-   "result": "found",
-   "at": "2026-10-17T12:37:38.832Z",
-   "full_name": "Malak600/Certificate-verification-check-certificates-with-a-QR-code",
-   "html_url": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
-   "private": false,
-   "created_at": "2026-10-17T12:10:33Z",
-   "pushed_at": "2026-10-17T12:11:36Z",
-   "default_branch": "main",
-   "id": 1423292175
+    "problem": "The IKU Computer Club hands out participation certificates for its workshops and events as plain PDF or printed files. According to the club's events organization coordinator, the club issues about 150 to 200 certificates per semester, and a single workshop or large event gives out 50 to 70 certificates to attendees. These files are made from a shared template, so anyone with a PDF editor can change a name, a date or an event title in a few minutes, and the result looks identical to a genuine certificate. When a company asks whether a certificate is real, the club has to search by hand through the Excel files and Google Drive folders linked to that event to find the person's name; the club reports that this takes about 1 to 2 days before they can reply. Once a board graduates, these files are easily lost. As a result, certificate holders cannot prove that their certificate is real, verifiers either trust the file blindly or ignore it, and the club cannot withdraw a certificate that was issued by mistake. The club has no budget for a paid certificate platform, so the solution must run at zero cost. The problem is not storing the file, which the club already does, but giving third parties an independent proof that the club issued it and has not revoked it.",
+    "mission": "CertiChain lets an IKU student club issue event certificates whose authenticity anyone can check in seconds. The event organiser issues certificates from a simple dashboard; each certificate's fingerprint is recorded on a public blockchain. Every certificate holder gets a PDF with a QR code, and any verifier can confirm it is genuine and not revoked without contacting the club or trusting a central server.",
+    "missionOrigin": "IOrigin_SessionDrafted",
+    "outcome": "Once CertiChain exists, a certificate holder can send a single link that proves their certificate is genuine, a verifier can check it in under ten seconds without e-mailing anyone, and the club can revoke a wrong certificate publicly, even after the board that issued it has graduated.",
+    "areas": [
+      {
+        "area": "On-chain certificate registry",
+        "where": "Solidity smart contract on the Ethereum Sepolia testnet",
+        "measure": "Does not exist today; 0 certificates on chain"
+      },
+      {
+        "area": "Issuer application",
+        "where": "Issuer dashboard (HTML and ethers.js) and Node.js certificate service",
+        "measure": "Today certificates are made by hand from a Word/Canva template"
+      },
+      {
+        "area": "Public verification",
+        "where": "Public web page opened from the QR code",
+        "measure": "Today verification is done by e-mail to the club"
+      },
+      {
+        "area": "Credential data model",
+        "where": "JSON-LD context and SHACL shape in the repository",
+        "measure": "No agreed certificate format today"
+      }
+    ],
+    "deliverables": [
+      {
+        "text": "CertificateRegistry contract with issue, revoke and verify functions and issuer roles",
+        "area": "A1",
+        "layer": "Layer_Product",
+        "kind": "Kind_Functional"
+      },
+      {
+        "text": "Contract deployed and verified on Sepolia with a public address",
+        "area": "A1",
+        "layer": "Layer_Work",
+        "kind": "Kind_Functional"
+      },
+      {
+        "text": "Only authorised issuer wallets can write to the registry",
+        "area": "A1",
+        "layer": "Layer_Product",
+        "kind": "Kind_NonFunctional"
+      },
+      {
+        "text": "Dashboard to upload a CSV attendance list and issue certificates in one batch",
+        "area": "A2",
+        "layer": "Layer_Product",
+        "kind": "Kind_Functional"
+      },
+      {
+        "text": "PDF certificate generation with an embedded QR verification link",
+        "area": "A2",
+        "layer": "Layer_Product",
+        "kind": "Kind_Functional"
+      },
+      {
+        "text": "Verification page that checks a certificate by QR link or PDF upload and shows valid, revoked or unknown",
+        "area": "A3",
+        "layer": "Layer_Product",
+        "kind": "Kind_Functional"
+      },
+      {
+        "text": "Verification answers in under 10 seconds on a phone without a wallet",
+        "area": "A3",
+        "layer": "Layer_Product",
+        "kind": "Kind_NonFunctional"
+      },
+      {
+        "text": "JSON-LD certificate context and SHACL shape that every issued certificate passes",
+        "area": "A4",
+        "layer": "Layer_Product",
+        "kind": "Kind_NonFunctional"
+      }
+    ],
+    "exclusions": [
+      {
+        "what": "Deployment to Ethereum mainnet or any network that costs real money",
+        "why": "The club has no budget; the Sepolia testnet shows the same mechanism at zero cost."
+      },
+      {
+        "what": "Storing personal data (names, student numbers) on the blockchain",
+        "why": "On-chain data cannot be deleted, which conflicts with KVKK; only a salted hash goes on chain."
+      },
+      {
+        "what": "Certificates for official university diplomas or transcripts",
+        "why": "Those belong to the Registrar's Office and need legal approval far outside a one-term project."
+      },
+      {
+        "what": "Native mobile apps",
+        "why": "A responsive web page with a QR code covers phone users without app-store work."
+      }
+    ],
+    "entities": [
+      {
+        "entity": "Certificate",
+        "def": "A record that a named participant attended a specific club event, issued as a JSON-LD document and PDF whose SHA-256 hash is stored on chain.",
+        "create": "yes",
+        "use": "yes",
+        "end": "yes"
+      },
+      {
+        "entity": "Issuer",
+        "def": "A club wallet address authorised by the contract owner to issue and revoke certificates.",
+        "create": "yes",
+        "use": "yes",
+        "end": "yes"
+      },
+      {
+        "entity": "Event",
+        "def": "A workshop, bootcamp or competition run by the club, with a title, date and organiser.",
+        "create": "yes",
+        "use": "yes",
+        "end": "no"
+      },
+      {
+        "entity": "Participant",
+        "def": "The certificate holder: an attendee identified off chain by name and e-mail; on chain only through a salted hash.",
+        "create": "yes",
+        "use": "yes",
+        "end": "no"
+      },
+      {
+        "entity": "Revocation",
+        "def": "An on-chain record that a certificate is no longer valid, with the time and the issuer who revoked it.",
+        "create": "yes",
+        "use": "yes",
+        "end": "no"
+      }
+    ],
+    "projectKinds": [
+      "PK_ChainProv"
+    ],
+    "tech": [
+      "JSONLDContext",
+      "PROVOStandard",
+      "SHACLCore",
+      "RDFLibPython",
+      "CoolURIPractice"
+    ],
+    "techWhy": "JSON-LD 1.1 contexts give each certificate a machine-readable format that follows the W3C Verifiable Credentials data model, so other systems can read it, and its canonical form is what we hash. PROV-O describes who issued the certificate, for which event and when, so the provenance chain is explicit. SHACL shapes check every certificate before it is issued, so a malformed certificate never reaches the chain; RDFLib with pySHACL-style validation runs those checks in our test suite. Stable IRI practice gives every certificate a permanent verification URL that the QR code points to. Outside the semantic stack we use Solidity with OpenZeppelin AccessControl, Hardhat for testing and deployment, ethers.js in the browser, plain HTML and JavaScript for the pages (hosted on GitHub Pages) and Node.js for the PDF and QR service.",
+    "goals": [
+      {
+        "goal": "Any verifier can confirm that a certificate is genuine and not revoked without contacting the club",
+        "facing": "Facing_Mission",
+        "area": "A3",
+        "why": "This is the mission itself: if it holds, the problem of unverifiable certificates is solved."
+      },
+      {
+        "goal": "The registry contract issues, revokes and verifies certificates and is deployed on Sepolia",
+        "facing": "Facing_Scope",
+        "area": "A1",
+        "why": "Without the contract there is no tamper-proof record to check against."
+      },
+      {
+        "goal": "The organiser can issue a whole event's certificates from the dashboard in one batch",
+        "facing": "Facing_Scope",
+        "area": "A2",
+        "why": "If issuing is harder than the current template, the club will not use the system."
+      },
+      {
+        "goal": "Every certificate follows one JSON-LD format and passes the SHACL shape before issue",
+        "facing": "Facing_Scope",
+        "area": "A4",
+        "why": "A single checked format keeps hashes reproducible and certificates readable by others."
+      },
+      {
+        "goal": "No work goes into features outside the four areas, and no personal data is written on chain",
+        "facing": "Facing_Containment",
+        "area": "A1",
+        "why": "Keeps a one-term team effort focused and keeps the project KVKK-safe."
+      }
+    ],
+    "spec": "The system has three parts. A CertificateRegistry smart contract on Sepolia keeps a mapping from a certificate hash to its issuer, issue time and revocation status; only wallets holding the ISSUER role may call issue or revoke, and anyone may call verify for free. The issuer dashboard lets an event organiser connect MetaMask, enter event details and upload a CSV of participants; the certificate service builds one JSON-LD certificate per participant, validates it against the SHACL shape, salts and hashes it with SHA-256, and the dashboard submits all hashes in one batch transaction. The service then produces a PDF per participant with a QR code linking to the verification page. The verification page, needing no wallet, reads the certificate ID from the link or recomputes the hash from an uploaded file, queries the contract through a public RPC endpoint and shows Valid, Revoked or Not found, with the issuing club and date. Names and student numbers stay off chain.",
+    "scenarios": [
+      {
+        "kind": "Scen_Nominal",
+        "text": "Given a certificate issued by the club for the Git workshop, when a verifier scans its QR code, then the page shows Valid with the club name and issue date."
+      },
+      {
+        "kind": "Scen_Rejection",
+        "text": "Given a certificate PDF whose participant name was edited after issue, when a verifier uploads it, then the recomputed hash is not found and the page shows Not found."
+      },
+      {
+        "kind": "Scen_Rejection",
+        "text": "Given a wallet without the ISSUER role, when it calls issue on the contract, then the transaction reverts and no certificate is recorded."
+      },
+      {
+        "kind": "Scen_Boundary",
+        "text": "Given a certificate that the organiser has revoked, when a verifier checks it, then the page shows Revoked with the revocation date instead of Valid."
+      },
+      {
+        "kind": "Scen_Absent",
+        "text": "Given an empty CSV attendance file, when the organiser starts issuing, then the dashboard stops with an error and sends no transaction."
+      }
+    ],
+    "useCase": "Actors: Event organiser (issue batch, revoke certificate, add issuer), Certificate holder (download certificate, share link), Verifier (verify by QR, verify by upload), Contract owner (grant or remove issuer role).",
+    "objectives": [
+      {
+        "objective": "Time for a verifier to check one certificate",
+        "goal": "G1",
+        "mkind": "Meas_Counted",
+        "query": "Stopwatch from opening the QR link to the result, median of 10 checks on a phone over mobile data",
+        "baseline": "1-2 days of manual search in Excel and Google Drive (club's answer, 22 Oct 2026)",
+        "target": "Under 10 seconds",
+        "dir": "Dir_Decrease"
+      },
+      {
+        "objective": "Share of contract functions covered by passing Hardhat tests",
+        "goal": "G2",
+        "mkind": "Meas_Derived",
+        "query": "solidity-coverage report on the CertificateRegistry contract in CI",
+        "baseline": "0%",
+        "target": "At least 90% line coverage, all tests passing",
+        "dir": "Dir_Increase"
+      },
+      {
+        "objective": "Time for the organiser to issue certificates for a 30-person event",
+        "goal": "G3",
+        "mkind": "Meas_Counted",
+        "query": "Stopwatch during a trial with the club's organiser, from CSV upload to all PDFs ready",
+        "baseline": "Made by hand from a template; time to be measured at the club's first December workshop",
+        "target": "Under 5 minutes",
+        "dir": "Dir_Decrease"
+      },
+      {
+        "objective": "Share of issued certificates that pass the SHACL shape",
+        "goal": "G4",
+        "mkind": "Meas_Derived",
+        "query": "Validation run over all issued JSON-LD files in CI, conforming / total",
+        "baseline": "No format exists (0%)",
+        "target": "100%",
+        "dir": "Dir_Hold"
+      },
+      {
+        "objective": "Personal data fields written on chain",
+        "goal": "G5",
+        "mkind": "Meas_Counted",
+        "query": "Review of contract storage and event logs for names, e-mails or student numbers",
+        "baseline": "0",
+        "target": "0",
+        "dir": "Dir_Hold"
+      }
+    ],
+    "activity": "1. The organiser runs the event and exports the attendance list as CSV. 2. The organiser connects MetaMask to the dashboard; if the wallet has no ISSUER role, the flow stops with an error. 3. The organiser enters event details and uploads the CSV; if the file is empty or malformed, the dashboard rejects it. 4. The service builds and SHACL-validates one certificate per row; invalid rows are listed for correction. 5. The dashboard sends one batch transaction; on failure nothing is recorded and the organiser may retry. 6. The organiser downloads the PDFs with QR codes as one ZIP file and shares them with the attendees . 7. A verifier opens the QR link; the page queries the contract and branches to Valid, Revoked or Not found.",
+    "sequence": "Organiser → Dashboard: upload CSV and event details. Dashboard → Certificate service: POST /api/issue. Certificate service: builds one certificate per row, validates it, hashes it and renders its PDF with a QR code. Service → Dashboard: hashes and PDFs. Dashboard → MetaMask: request signature for issueBatch(hashes). MetaMask → Registry contract: transaction. Contract → Dashboard: CertificateIssued events; dashboard shows the Etherscan link and the ZIP download. Verifier → Verification page: open QR link with the hash, or upload the PDF. Page → Public RPC → Registry contract: verify(hash). Contract → Page: status, issuer, issue and revoke time. Page → Verifier: Valid, Revoked or Not found.",
+    "initiativeKind": "Kind_InitialDevelopment",
+    "epics": [
+      {
+        "epic": "E1 On-chain certificate registry",
+        "objective": "O2"
+      },
+      {
+        "epic": "E2 Certificate issuing for organisers",
+        "objective": "O3"
+      },
+      {
+        "epic": "E3 Public verification",
+        "objective": "O1"
+      },
+      {
+        "epic": "E4 Certificate format, privacy and quality",
+        "objective": "O4"
+      }
+    ],
+    "stories": [
+      {
+        "epic": "E1",
+        "role": "Event organiser",
+        "want": "to record each certificate's hash on the blockchain when I issue it",
+        "so": "nobody can later claim the club did not issue it",
+        "ac": "Given my wallet has the ISSUER role, when I issue a certificate, then its hash, my address and the time are stored and a CertificateIssued event is emitted",
+        "cat": "Cat_NewCapability",
+        "concern": "Concern_Data",
+        "bv": 9,
+        "tc": 8,
+        "rr": 8,
+        "js": 5
+      },
+      {
+        "epic": "E1",
+        "role": "Event organiser",
+        "want": "only authorised club wallets to be able to issue or revoke",
+        "so": "outsiders cannot create fake club certificates",
+        "ac": "Given a wallet without the ISSUER role, when it calls issue or revoke, then the transaction reverts with an access error",
+        "cat": "Cat_NewCapability",
+        "concern": "Concern_Security",
+        "bv": 9,
+        "tc": 7,
+        "rr": 9,
+        "js": 3
+      },
+      {
+        "epic": "E2",
+        "role": "Event organiser",
+        "want": "to upload the attendance CSV and issue all certificates of an event at once",
+        "so": "issuing takes minutes instead of an hour",
+        "ac": "Given a valid CSV with 30 participants, when I confirm the batch, then 30 certificates are recorded in one transaction and 30 PDFs are ready to download",
+        "cat": "Cat_NewCapability",
+        "concern": "Concern_Interaction",
+        "bv": 8,
+        "tc": 6,
+        "rr": 5,
+        "js": 5
+      },
+      {
+        "epic": "E2",
+        "role": "Event organiser",
+        "want": "to revoke a certificate issued by mistake",
+        "so": "a wrong certificate stops being shown as valid",
+        "ac": "Given an issued certificate, when I revoke it and the transaction confirms, then verify returns revoked with the revocation time",
+        "cat": "Cat_NewCapability",
+        "concern": "Concern_Data",
+        "bv": 6,
+        "tc": 4,
+        "rr": 6,
+        "js": 2
+      },
+      {
+        "epic": "E2",
+        "role": "Certificate holder",
+        "want": "to download my certificate as a PDF with a QR code",
+        "so": "I can attach it to my CV and anyone can check it",
+        "ac": "Given I attended an event and my certificate was issued, when I open my download link, then I get a PDF showing my name, the event and a QR code to the verification page",
+        "cat": "Cat_NewCapability",
+        "concern": "Concern_Interface_UI",
+        "bv": 7,
+        "tc": 5,
+        "rr": 3,
+        "js": 3
+      },
+      {
+        "epic": "E3",
+        "role": "Verifier",
+        "want": "to scan the QR code and see at once whether the certificate is genuine",
+        "so": "I do not have to e-mail the club and wait",
+        "ac": "Given a valid issued certificate, when I open its QR link on my phone, then within 10 seconds the page shows Valid with the club name and issue date",
+        "cat": "Cat_NewCapability",
+        "concern": "Concern_Interface_UI",
+        "bv": 10,
+        "tc": 7,
+        "rr": 6,
+        "js": 3
+      },
+      {
+        "epic": "E3",
+        "role": "Verifier",
+        "want": "to upload a certificate PDF and have it checked",
+        "so": "an edited copy is detected even without the QR link",
+        "ac": "Given a PDF whose content was changed after issue, when I upload it, then the page shows Not found and warns that the file does not match any issued certificate",
+        "cat": "Cat_NewCapability",
+        "concern": "Concern_Security",
+        "bv": 8,
+        "tc": 5,
+        "rr": 7,
+        "js": 5
+      },
+      {
+        "epic": "E4",
+        "role": "Certificate holder",
+        "want": "my name and student number to stay off the public blockchain",
+        "so": "my personal data cannot be read or copied by anyone",
+        "ac": "Given any issued certificate, when the contract storage and events are inspected, then only a salted hash appears and no personal field is readable",
+        "cat": "Cat_Compliance",
+        "concern": "Concern_Security",
+        "bv": 7,
+        "tc": 6,
+        "rr": 9,
+        "js": 3
+      }
+    ],
+    "dod": [
+      {
+        "criterion": "Code is merged to main through a reviewed pull request",
+        "check": "GitHub shows at least one approving review from another member"
+      },
+      {
+        "criterion": "All unit and contract tests pass in CI",
+        "check": "GitHub Actions run is green on the merge commit"
+      },
+      {
+        "criterion": "The story's acceptance criterion is demonstrated on the Sepolia deployment",
+        "check": "Transaction hash or screen recording linked in the work log"
+      },
+      {
+        "criterion": "No personal data is written on chain",
+        "check": "Reviewer checks contract storage and events in the pull request"
+      }
+    ],
+    "classModel": "CertificateRegistry (contract): uses OpenZeppelin AccessControl with ISSUER_ROLE; records: mapping(bytes32 => Record); functions issue(bytes32), issueBatch(bytes32[]) (at most 200 hashes), revoke(bytes32), verify(bytes32) returns (status, issuer, issuedAt, revokedAt) where status is NotFound, Valid or Revoked; errors EmptyHash, AlreadyIssued, NotIssued, AlreadyRevoked, BadBatchSize. Record (struct): issuer: address; issuedAt: uint64; revokedAt: uint64 (0 while the certificate is valid). Certificate (off chain, W3C VC JSON-LD): id: URI; issuer: Issuer; validFrom: dateTime; credentialSubject: recipientName, recipientEmail, eventTitle, eventDate, hours; wasGeneratedBy: Event; salt: string. Its SHA-256 hash of the canonical JSON is the bytes32 key; the hash is not a field of the certificate. Event: title, date. Issuer: club name, wallet address (did:pkh). Relations: an Event has many Certificates; a Certificate belongs to one Participant and one Issuer; a Record stores the hash of exactly one Certificate.",
+    "tests": [
+      {
+        "story": "S1",
+        "case": "Issue a certificate from an ISSUER wallet and read it back with verify",
+        "data": "Hardhat local network, issuer account #1, hash of sample certificate"
+      },
+      {
+        "story": "S2",
+        "case": "Call issue and revoke from a wallet without the role and expect a revert",
+        "data": "Hardhat account #5 without ISSUER_ROLE"
+      },
+      {
+        "story": "S3",
+        "case": "Upload a 30-row CSV and check that one transaction records 30 hashes and 30 PDFs are produced",
+        "data": "sample_attendance_30.csv"
+      },
+      {
+        "story": "S4",
+        "case": "Revoke an issued certificate and check that verify returns revoked with a timestamp",
+        "data": "Previously issued sample certificate"
+      },
+      {
+        "story": "S5",
+        "case": "Download a certificate PDF and decode its QR code to the expected verification URL",
+        "data": "Issued certificate for test participant"
+      },
+      {
+        "story": "S6",
+        "case": "Open the QR link on a phone over mobile data and time the result",
+        "data": "Certificate issued on Sepolia, Android phone"
+      },
+      {
+        "story": "S7",
+        "case": "Edit one character in a certificate PDF, upload it and expect Not found",
+        "data": "Tampered copy of sample certificate"
+      },
+      {
+        "story": "S8",
+        "case": "Scan contract storage and all CertificateIssued events for plain-text personal fields",
+        "data": "Sepolia deployment after the test batch"
+      },
+      {
+        "story": "S3",
+        "case": "Run the full flow with a 5-row CSV: issue in the dashboard, anchor with MetaMask, scan the QR code and expect Valid; then edit the PDF and expect Not found",
+        "data": "5-row CSV including Turkish characters, Sepolia contract, one phone and one laptop"
+      }
+    ],
+    "model_Data": "Class diagram: CertificateRegistry holds a mapping from bytes32 hash to Record (issuer, issuedAt, revokedAt). Off chain, the Certificate (W3C VC JSON-LD) links Event, Participant and Issuer; only the SHA-256 hash of its salted canonical JSON crosses to the chain.HA-256 hash crosses to the chain.",
+    "model_Security": "State machine for a certificate hash: Unknown → Issued (issue by ISSUER_ROLE only) → Revoked (revoke by ISSUER_ROLE only). Revoked is final; issuing an existing hash is refused; any call from a wallet without the role is refused in every state.",
+    "model_Interaction": "Sequence diagram: Organiser uploads CSV to Dashboard; Dashboard asks the service to build and validate certificates; MetaMask signs issueBatch; the contract emits events; Verifier opens the QR link; the page calls verify through a public RPC and shows the result.",
+    "model_User_interface": "Mockups for three screens: dashboard event form with CSV upload and batch preview; certificate PDF layout with QR code; verification page with a large green Valid, orange Revoked or red Not found result and the issuer details below.",
+    "chainDesign": "We use the Ethereum Sepolia testnet so the system costs nothing and is still public and independent of us; the contract could later move to a cheap layer-2 such as Polygon without changes. A Solidity CertificateRegistry contract, using OpenZeppelin AccessControl, stores only the SHA-256 hash of each salted JSON-LD certificate with its issuer and time, plus a revocation flag; verifying is a free read call. A blockchain is needed because the verifier must not have to trust the club or our server: a normal database run by the club could be edited or disappear when the board graduates, while the on-chain record is append-only, timestamped and publicly readable by anyone. Personal data stays off chain to respect KVKK.\n\nLink to the course chapters. Chapter 1: the trust argument above is the problem a public, tamper-evident ledger solves, and Sepolia lets us use it without real money. Chapters 2 and 6: an issuer sends one transaction, issueBatch, that records many certificate hashes at once, so the cost and the waiting time are shared by the whole event. Chapter 4: the certificate hash is a commitment; the salt keeps the hash from being guessed and the contract never sees the certificate itself. Chapters 7 and 8: only wallets with the issuer role may write, and each write is authorised by a digital signature made in the issuer's MetaMask wallet, so the registry cannot be changed by anyone else. Verification needs no wallet, because it only reads the chain. Bitcoin-specific topics (Script, UTXOs, running Bitcoin Core) are not used, since Ethereum accounts and smart contracts replace them; we state this choice on purpose.",
+    "milestones": [
+      {
+        "date": "2026-10-26",
+        "deliverable": "Proposal submitted, repository set up, customer meeting notes committed",
+        "owner": "Malak Alfakavi"
+      },
+      {
+        "date": "2026-11-09",
+        "deliverable": "CertificateRegistry contract with tests deployed on Sepolia",
+        "owner": "Malak Alfakavi"
+      },
+      {
+        "date": "2026-11-23",
+        "deliverable": "Issuer dashboard and certificate service issue a test batch end to end",
+        "owner": "Mohammed Ammar"
+      },
+      {
+        "date": "2026-11-29",
+        "deliverable": "End-to-end test report with screenshots and failure-case results; first draft of the organiser and verifier user guide",
+        "owner": "Ujala Ali Qureshi"
+      },
+      {
+        "date": "2026-12-07",
+        "deliverable": "Trial with the IKU Computer Club (December workshop, or a small club event if the workshop is later) with the organiser and three verifiers",
+        "owner": "Raghd Alfakavi"
+      },
+      {
+        "date": "2026-12-10",
+        "deliverable": "Tagged release v1.0, final test report and final submission",
+        "owner": "Malak Alfakavi"
+      }
+    ],
+    "risks": [
+      {
+        "risk": "Sepolia faucet limits or RPC outages slow down testing",
+        "likelihood": "medium",
+        "impact": "medium",
+        "mitigation": "Develop on a local Hardhat network, keep two RPC providers and request test ETH early."
+      },
+      {
+        "risk": "The customer club is not available for the trial in December",
+        "likelihood": "medium",
+        "impact": "high",
+        "mitigation": "Agree the trial date at the first meeting; fall back to another club event or a mock event with real club members."
+      },
+      {
+        "risk": "Smart-contract bug lets a non-issuer write or blocks revocation",
+        "likelihood": "low",
+        "impact": "high",
+        "mitigation": "Use audited OpenZeppelin AccessControl, aim for 90% test coverage and review every contract change."
+      },
+      {
+        "risk": "Team members overloaded by capstone and other courses",
+        "likelihood": "high",
+        "impact": "medium",
+        "mitigation": "Keep scope to the four areas, every module has a second member, and weekly 30-minute check-ins."
+      },
+      {
+        "risk": "Personal data accidentally leaks on chain",
+        "likelihood": "low",
+        "impact": "high",
+        "mitigation": "Only salted hashes on chain; DoD criterion and test S8 check every release."
+      }
+    ],
+    "refs": [
+      {
+        "ref": "[1] S. Nakamoto, \"Bitcoin: A Peer-to-Peer Electronic Cash System,\" 2008. https://bitcoin.org/bitcoin.pdf"
+      },
+      {
+        "ref": "[2] V. Buterin, \"Ethereum Whitepaper: A Next-Generation Smart Contract and Decentralized Application Platform,\" 2014. https://ethereum.org/en/whitepaper/"
+      },
+      {
+        "ref": "[3] W3C, \"Verifiable Credentials Data Model v2.0,\" W3C Recommendation, 2025. https://www.w3.org/TR/vc-data-model-2.0/"
+      },
+      {
+        "ref": "[4] W3C, \"JSON-LD 1.1,\" W3C Recommendation, 2020. https://www.w3.org/TR/json-ld11/"
+      },
+      {
+        "ref": "[5] W3C, \"PROV-O: The PROV Ontology,\" W3C Recommendation, 2013. https://www.w3.org/TR/prov-o/"
+      },
+      {
+        "ref": "[6] W3C, \"Shapes Constraint Language (SHACL),\" W3C Recommendation, 2017. https://www.w3.org/TR/shacl/"
+      },
+      {
+        "ref": "[7] A. Grech and A. F. Camilleri, \"Blockchain in Education,\" JRC Science for Policy Report, European Commission, 2017. doi:10.2760/60649"
+      },
+      {
+        "ref": "[8] Blockcerts, \"The Open Standard for Blockchain Credentials.\" https://www.blockcerts.org/"
+      },
+      {
+        "ref": "[9] OpenZeppelin, \"Contracts: Access Control\" documentation. https://docs.openzeppelin.com/contracts/access-control"
+      },
+      {
+        "ref": "[10] Hardhat documentation, Nomic Foundation. https://hardhat.org/docs"
+      }
+    ],
+    "repoCheck": {
+      "ok": true,
+      "result": "found",
+      "at": "2026-10-17T12:37:38.832Z",
+      "full_name": "Malak600/Certificate-verification-check-certificates-with-a-QR-code",
+      "html_url": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
+      "private": false,
+      "created_at": "2026-10-17T12:10:33Z",
+      "pushed_at": "2026-10-17T12:11:36Z",
+      "default_branch": "main",
+      "id": 1423292175
+    }
   }
- }
 }
