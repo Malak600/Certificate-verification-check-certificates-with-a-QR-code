@@ -4,7 +4,7 @@
   "stage": "proposal",
   "stageLabel": "Proposal",
   "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
-  "saved": "2026-11-27T16:40:05.112Z",
+  "saved": "2026-11-27T17:11:20.415Z",
   "proposal": {
     "course": "SEN0401",
     "semester": "2026-2027 Fall",
@@ -578,13 +578,13 @@
         "member": "Mohammed Ammar",
         "process": "P07",
         "story": "S3",
-        "hours": 6,
+        "hours": 5,
         "description": "On 22 Oct implemented the core certificate generator and storage service (PR #1): CSV parser, W3C VC JSON-LD builder, SHACL validator, QR generator, PDF generator, batch orchestrator, and unit/integration tests.",
         "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/1",
         "kind": "work",
         "ref": "",
         "prev": "713c4c47812172f087a16d20b3fbbd6373387e669efb9492fc90a7f05a41d4ed",
-        "hash": "018109c35ccc1f6d54add3889904549f22de21f0146de173774622ef43077c42"
+        "hash": "603e6989e5ce40fda781b3f2422bfe5ac082bc14ba60eb546482d232ad821c39"
       },
       {
         "seq": 33,
@@ -597,8 +597,8 @@
         "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/2",
         "kind": "work",
         "ref": "",
-        "prev": "018109c35ccc1f6d54add3889904549f22de21f0146de173774622ef43077c42",
-        "hash": "6ada1ce18cee63a158436789ad4c0dec981210e4b9582c3b852eda168720bd00"
+        "prev": "603e6989e5ce40fda781b3f2422bfe5ac082bc14ba60eb546482d232ad821c39",
+        "hash": "d623790ba6e862b835546db64729e998525b54873cca4649c3a375ea45db35d6"
       },
       {
         "seq": 34,
@@ -611,8 +611,8 @@
         "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/3",
         "kind": "work",
         "ref": "",
-        "prev": "6ada1ce18cee63a158436789ad4c0dec981210e4b9582c3b852eda168720bd00",
-        "hash": "d05a9d6bda090bd2b0eb7ea2dd39a13786386e92ec139dff354e1d0742743bc1"
+        "prev": "d623790ba6e862b835546db64729e998525b54873cca4649c3a375ea45db35d6",
+        "hash": "925dd270dec02dfe70818ad0a17af28b317403b935986bf129a15a0ec3b3f21b"
       },
       {
         "seq": 35,
@@ -625,8 +625,8 @@
         "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/9",
         "kind": "work",
         "ref": "",
-        "prev": "d05a9d6bda090bd2b0eb7ea2dd39a13786386e92ec139dff354e1d0742743bc1",
-        "hash": "84dbdad756858dfcdf1fe16673dc1eeafa57ecc3aad64ade610422b7fa89f300"
+        "prev": "925dd270dec02dfe70818ad0a17af28b317403b935986bf129a15a0ec3b3f21b",
+        "hash": "0171ede0a3415c3f00b7b84646d486caed87faa22088b70c8af1bf2b1293a5c1"
       },
       {
         "seq": 36,
@@ -639,8 +639,8 @@
         "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/d1ac7c4",
         "kind": "work",
         "ref": "",
-        "prev": "84dbdad756858dfcdf1fe16673dc1eeafa57ecc3aad64ade610422b7fa89f300",
-        "hash": "ef58b79650376011ae02b84bb10fda2d824a8486bf83b44c44dbd8c95944ae34"
+        "prev": "0171ede0a3415c3f00b7b84646d486caed87faa22088b70c8af1bf2b1293a5c1",
+        "hash": "17b0168443e4b9690bd340fe945e065a27f10f995f445294e5875d04408ae70d"
       },
       {
         "seq": 37,
@@ -653,8 +653,8 @@
         "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/12",
         "kind": "work",
         "ref": "",
-        "prev": "ef58b79650376011ae02b84bb10fda2d824a8486bf83b44c44dbd8c95944ae34",
-        "hash": "562ed2dc74a2e7f0c176899c2d8ca2eab91aedfdea2f80a0fe68e764fe18a56d"
+        "prev": "17b0168443e4b9690bd340fe945e065a27f10f995f445294e5875d04408ae70d",
+        "hash": "b76acc41e9e894546bedee25d79cab0cf9dc7c35a0b0cc2f4adb08b3d1a9e649"
       }
     ],
     "repo": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
