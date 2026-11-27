@@ -9,7 +9,7 @@
 
 ## Part 1: Guide for Event Organisers (Issuing Certificates)
 
-CertiChain lets the IKU Computer Club issue an entire workshop's certificates (up to **200 attendees per batch**) in one transaction while storing only cryptographic SHA-256 hashes on Ethereum Sepolia—no personal data is ever placed on the blockchain (KVKK compliant).
+CertiChain lets the IKU Computer Club issue an entire workshop's certificates (up to **200 attendees per batch**) in one transaction while storing only cryptographic SHA-256 hashes on Ethereum Sepolia—no personal data is ever placed on the blockchain.
 
 ### What You Need Before Starting
 1. **Node.js** installed on the laptop running the certificate service.
@@ -75,7 +75,13 @@ CertiChain lets the IKU Computer Club issue an entire workshop's certificates (u
 | `The file is empty. Nothing to issue.` | Ensure your CSV is saved as UTF-8 with a `name,email` header and at least one attendee row. |
 
 ### Revoking a Certificate (If Issued in Error)
-If a certificate must be invalidated (for example, due to a typo or wrong attendee), an authorised `ISSUER_ROLE` wallet calls `revoke(bytes32 certHash)` on the `CertificateRegistry` contract. The record remains publicly visible on-chain with status **⚠️ Revoked** and a revocation timestamp.
+If a certificate must be invalidated (for example, due to a typo or wrong attendee), use **Section 4 (Revoke a certificate)** in `web/issue.html`:
+
+1. Connect an authorised `ISSUER_ROLE` wallet in MetaMask on Sepolia.
+2. Paste the certificate hash into Section 4 — the page checks its current on-chain status on Sepolia first.
+3. Review the confirmation prompt, approve the `revoke(bytes32 certHash)` transaction in MetaMask, and save the Etherscan link.
+
+The record remains publicly visible on-chain with status **⚠️ Revoked** and both the issue and revocation timestamps.
 
 ---
 
