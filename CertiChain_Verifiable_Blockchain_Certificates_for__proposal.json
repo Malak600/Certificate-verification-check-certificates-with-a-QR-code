@@ -4,7 +4,7 @@
   "stage": "proposal",
   "stageLabel": "Proposal",
   "stageFills": "The plan: who the system is for, what it will do, how it will be built and checked, and who does what. Nothing is implemented yet: the Delivery and evidence part stays empty.",
-  "saved": "2026-11-27T16:10:23.089Z",
+  "saved": "2026-11-27T16:40:05.112Z",
   "proposal": {
     "course": "SEN0401",
     "semester": "2026-2027 Fall",
@@ -627,6 +627,34 @@
         "ref": "",
         "prev": "d05a9d6bda090bd2b0eb7ea2dd39a13786386e92ec139dff354e1d0742743bc1",
         "hash": "84dbdad756858dfcdf1fe16673dc1eeafa57ecc3aad64ade610422b7fa89f300"
+      },
+      {
+        "seq": 36,
+        "ts": "2026-11-27T16:37:12.418Z",
+        "member": "Mohamad Mahfouz Khalil",
+        "process": "P07",
+        "story": "S8",
+        "hours": 4,
+        "description": "On 22 Oct created the JSON-LD context (schema/context.jsonld), SHACL validation shape (schema/certificate-shape.ttl), schema README, and initial GitHub Actions CI workflow (.github/workflows/ci.yml).",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/commit/d1ac7c4",
+        "kind": "work",
+        "ref": "",
+        "prev": "84dbdad756858dfcdf1fe16673dc1eeafa57ecc3aad64ade610422b7fa89f300",
+        "hash": "ef58b79650376011ae02b84bb10fda2d824a8486bf83b44c44dbd8c95944ae34"
+      },
+      {
+        "seq": 37,
+        "ts": "2026-11-27T16:39:44.907Z",
+        "member": "Mohamad Mahfouz Khalil",
+        "process": "P09",
+        "story": "S3",
+        "hours": 3.5,
+        "description": "On 19 Nov implemented batch issuance and PDF-embedded certificate verification tests, updated hashingSpec.test.js, and authored the batch end-to-end verification report (PR #12).",
+        "evidence": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code/pull/12",
+        "kind": "work",
+        "ref": "",
+        "prev": "ef58b79650376011ae02b84bb10fda2d824a8486bf83b44c44dbd8c95944ae34",
+        "hash": "562ed2dc74a2e7f0c176899c2d8ca2eab91aedfdea2f80a0fe68e764fe18a56d"
       }
     ],
     "repo": "https://github.com/Malak600/Certificate-verification-check-certificates-with-a-QR-code",
